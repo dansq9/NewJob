@@ -26,16 +26,26 @@ class JobsViewModel @Inject constructor(
     private val jobs: JSearchRepository,
     private val tracker: TrackerRepository,
     private val selectedJob: SelectedJobStore,
+    private val profileRepo: app.ascend.data.local.ProfileRepository,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(JobsUiState())
+    private val _state = MutableStateFlow(JobsUiState(query = "", location = ""))
     val state: StateFlow<JobsUiState> = _state.asStateFlow()
 
     init {
         viewModelScope.launch {
             tracker.tracked.collect { list -> _state.update { it.copy(savedIds = list.map { t -> t.job.id }.toSet()) } }
         }
-        search()
+        viewModelScope.launch {
+            val p = profileRepo.profile.first()
+            _state.update {
+                it.copy(
+                    query = it.query.ifBlank { p.targetRole.ifBlank { "Product Manager" } },
+                    location = it.location.ifBlank { p.location },
+                )
+            }
+            search()
+        }
     }
 
     fun onQueryChange(q: String) = _state.update { it.copy(query = q) }

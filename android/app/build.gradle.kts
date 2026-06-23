@@ -14,8 +14,10 @@ val localProps = Properties().apply {
     val f = rootProject.file("local.properties")
     if (f.exists()) f.inputStream().use { load(it) }
 }
-fun secret(key: String, default: String = "") =
-    (localProps.getProperty(key) ?: System.getenv(key) ?: default)
+fun secret(key: String, default: String = ""): String {
+    val v = localProps.getProperty(key) ?: System.getenv(key)
+    return if (v.isNullOrBlank()) default else v
+}
 
 android {
     namespace = "app.ascend"

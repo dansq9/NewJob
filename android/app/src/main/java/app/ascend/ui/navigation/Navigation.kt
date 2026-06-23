@@ -12,6 +12,7 @@ import androidx.compose.material.icons.outlined.Work
 import androidx.compose.ui.graphics.vector.ImageVector
 
 object Routes {
+    const val ONBOARDING = "onboarding"
     const val HOME = "home"
     const val JOBS = "jobs"
     const val TRACKER = "tracker"

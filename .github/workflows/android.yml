@@ -1,0 +1,57 @@
+name: Android CI
+
+on:
+  push:
+    branches: [ main, "claude/**" ]
+    paths: [ "android/**", ".github/workflows/android.yml" ]
+  pull_request:
+    paths: [ "android/**", ".github/workflows/android.yml" ]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: assembleDebug + lint
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: android
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Configure secrets (local.properties)
+        run: |
+          {
+            echo "RAPIDAPI_KEY=${{ secrets.RAPIDAPI_KEY }}"
+            echo "ASCEND_API_BASE_URL=${{ secrets.ASCEND_API_BASE_URL }}"
+          } >> local.properties
+        # Blank values fall back to defaults in app/build.gradle.kts, so the
+        # build compiles even without secrets configured.
+
+      - name: Cache Gradle
+        uses: gradle/actions/setup-gradle@v4
+
+      - name: Assemble debug
+        run: ./gradlew :app:assembleDebug --stacktrace
+
+      - name: Lint
+        run: ./gradlew :app:lintDebug --stacktrace
+        continue-on-error: true
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-debug-apk
+          path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: warn

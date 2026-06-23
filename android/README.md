@@ -26,6 +26,8 @@ These are exposed as `BuildConfig.RAPIDAPI_KEY` / `BuildConfig.ASCEND_API_BASE_U
 ## What's wired
 | Area | Status |
 |------|--------|
+| Onboarding | **Live** — name · target role · location · resume (picked or skipped) |
+| Profile | **DataStore** (`ProfileRepository`) — hydrates Home/Jobs on launch; `anonymous_install_id` UUID |
 | Jobs search | **Live** via JSearch (`/search`), filters, save |
 | Home | greeting, quick actions, top matches (JSearch) |
 | Job detail | header, apply (opens link), save / mark applied |

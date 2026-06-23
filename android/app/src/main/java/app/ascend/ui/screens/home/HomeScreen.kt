@@ -38,6 +38,8 @@ private data class QuickAction(val label: String, val sub: String, val icon: Ima
 @Composable
 fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
     val matches by vm.topMatches.collectAsStateWithLifecycle()
+    val profile by vm.profile.collectAsStateWithLifecycle()
+    val firstName = profile.name.trim().substringBefore(' ').ifBlank { "there" }
     val actions = listOf(
         QuickAction("Optimize resume", "Beat the ATS", Icons.Outlined.AutoFixHigh, Routes.RESUME, AscendColors.Indigo),
         QuickAction("Mock interview", "Practice & get scored", Icons.Outlined.RecordVoiceOver, Routes.MOCK, AscendColors.Green),
@@ -54,12 +56,12 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
                     Text("Good morning", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = AscendColors.Muted2)
-                    Text(vm.userName, style = MaterialTheme.typography.headlineMedium, color = AscendColors.Ink)
+                    Text(firstName.replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.headlineMedium, color = AscendColors.Ink)
                 }
                 Box(
                     Modifier.size(40.dp).clip(CircleShape).background(AscendColors.Indigo),
                     contentAlignment = Alignment.Center,
-                ) { Text(vm.userName.firstOrNull()?.toString() ?: "A", color = Color.White, fontWeight = FontWeight.Bold) }
+                ) { Text(profile.name.firstOrNull()?.uppercase() ?: "A", color = Color.White, fontWeight = FontWeight.Bold) }
             }
         }
         item {
@@ -88,7 +90,10 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
                     modifier = Modifier.clickable { nav.navigate(Routes.JOBS) })
             }
         }
-        item { Text("for ${vm.role} · ${vm.location}", fontSize = 13.sp, color = AscendColors.Muted2) }
+        item {
+            val sub = listOf(profile.targetRole, profile.location).filter { it.isNotBlank() }.joinToString(" · ")
+            if (sub.isNotBlank()) Text("for $sub", fontSize = 13.sp, color = AscendColors.Muted2)
+        }
 
         when (val m = matches) {
             is Resource.Loading -> item { Box(Modifier.fillMaxWidth().padding(30.dp), Alignment.Center) { CircularProgressIndicator(color = AscendColors.Indigo) } }
