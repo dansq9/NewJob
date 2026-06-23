@@ -35,4 +35,13 @@ python build.py         # writes out/ascend_feature_1080p.mp4
 - `screens.py` — the six app screens
 - `build.py` — 16:9 compositor, timeline, animation, encode
 
-Audio is intentionally omitted (no licensed track); Play promo videos may be silent.
+## Music
+The video uses **"Happy Beats / Business Moves Vol. 1" by [ende.app](https://ende.app/en)**
+(120 BPM), the curated track bundled with the `/brag` skill — normalized to
+-15 LUFS with a 0.5s fade-in and 1.7s fade-out. The raw mp3 is fetched by
+`fetch_fonts.sh` and is not committed.
+
+> **License note:** verify and document the exact ende.app "Business Moves"
+> license terms before publishing the video to the Play Store. Swap in your own
+> licensed track by replacing `music/business-moves-vol1.mp3` and re-running the
+> mux step (see commit/build notes).
