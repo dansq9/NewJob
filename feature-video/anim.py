@@ -245,28 +245,32 @@ def vis_search(img,p,t):
 def vis_tracker(img,p,t):
     d=ImageDraw.Draw(img,"RGBA")
     cols=[("SAVED",(107,107,120)),("APPLIED",(37,99,235)),("INTERVIEW",(124,92,255)),("OFFER",(15,157,104))]
-    n=len(cols); gap=26; cw=152; total=n*cw+(n-1)*gap; x0=VX-total/2; y0=296; colh=430
+    n=len(cols); gap=24; cw=166; total=n*cw+(n-1)*gap; x0=VX-total/2
+    colh=300; y0=int(H*0.5-colh/2)
     for i,(lab,col) in enumerate(cols):
         x=x0+i*(cw+gap)
-        d.rounded_rectangle([x,y0,x+cw,y0+colh],radius=20,fill=(255,255,255,30))
-        d.rounded_rectangle([x,y0,x+cw,y0+46],radius=15,fill=Acol(col,0.92))
-        txt(d,x+cw/2,y0+23,lab,font(15,800),(255,255,255),1,"mm")
-    seg=clamp(p/0.9)*3; ci=min(3,int(seg)); fr=out_quint(seg-ci)
+        d.rounded_rectangle([x,y0,x+cw,y0+colh],radius=20,fill=(255,255,255,26))
+        d.rounded_rectangle([x,y0,x+cw,y0+52],radius=16,fill=Acol(col,0.95))
+        txt(d,x+cw/2,y0+26,lab,font(17,800),(255,255,255),1,"mm")
     def colx(i): return x0+i*(cw+gap)+cw/2
-    cardx=lerp(colx(ci),colx(min(3,ci+1)),fr); cy=y0+92; ch=98; cwd=cw-18
-    for i in range(ci+1):
-        gx=colx(i); d.rounded_rectangle([gx-cwd/2,cy,gx+cwd/2,cy+ch],radius=16,fill=(255,255,255,55))
-    # motion blur trail
+    cy=y0+82; ch=120; cwd=cw-22
+    # faint stub cards so columns read populated, not empty
+    for i in range(n):
+        gx=colx(i)
+        d.rounded_rectangle([gx-cwd/2,cy,gx+cwd/2,cy+ch],radius=16,fill=(255,255,255,40))
+        d.rounded_rectangle([gx-cwd/2,cy+ch+14,gx+cwd/2,cy+ch+14+62],radius=14,fill=(255,255,255,26))
+    seg=clamp(p/0.9)*3; ci=min(3,int(seg)); fr=out_quint(seg-ci)
+    cardx=lerp(colx(ci),colx(min(3,ci+1)),fr)
     if fr>0.05 and fr<0.95:
         for g in (1,2,3):
-            gx=lerp(cardx,colx(ci),0.06*g)
-            glass_card(img,gx-cwd/2,cy,cwd,ch,0.10,16,shadow=False)
+            gx=lerp(cardx,colx(ci),0.06*g); glass_card(img,gx-cwd/2,cy,cwd,ch,0.10,16,shadow=False)
     x=cardx-cwd/2; glass_card(img,x,cy,cwd,ch,1,16)
-    dd=ImageDraw.Draw(img,"RGBA"); avatar(dd,x+14,cy+15,40,INDIGO,"N",1)
-    txt(dd,x+14,cy+74,"Senior PM",font(18,700),INK,1)
-    if ci>=3 and fr>0.55:
-        a=clamp((fr-0.55)/0.45); halo(img,colx(3),y0+colh-46,70,GREEN,0.6*a)
-        icon(ImageDraw.Draw(img,"RGBA"),(colx(3),y0+colh-46),"verified",50,GREEN,fill=1,anchor="mm")
+    dd=ImageDraw.Draw(img,"RGBA"); avatar(dd,x+16,cy+16,48,INDIGO,"N",1)
+    txt(dd,x+16,cy+82,"Senior PM",font(21,800),INK,1)
+    txt(dd,x+16,cy+106,"Northwind",font(16,500),MUTE,1)
+    if ci>=3 and fr>0.5:
+        a=clamp((fr-0.5)/0.5); halo(img,colx(3),cy+ch/2,84,GREEN,0.6*a)
+        icon(ImageDraw.Draw(img,"RGBA"),(colx(3),y0+colh+34),"verified",46,GREEN,fill=1,anchor="mm")
 
 def vis_ats(img,p,t):
     cx,cy,r=VX,420,152
@@ -290,23 +294,31 @@ def vis_ats(img,p,t):
         txt(d,sx+50,yy+18,c,font(26,600),(255,255,255),a); yy+=56
 
 def vis_mock(img,p,t):
-    x=VX-330; w=660; qy=240; qh=152
-    glass_card(img,x,qy,w,qh,1,18); d=ImageDraw.Draw(img,"RGBA")
-    txt(d,x+24,qy+34,"QUESTION 3 OF 5",font(18,700,mono=True),INDIGO,1)
-    q="Design a system for 40k requests per second."; tp=clamp(p/0.4); n=int(len(q)*tp)
-    words=q[:n].split(" "); txt(d,x+24,qy+80,(" ".join(words[:5])),font(30,800),INK,1)
-    txt(d,x+24,qy+118,(" ".join(words[5:])),font(30,800),INK,1)
+    x=VX-340; w=680; qy=206; qh=178
+    glass_card(img,x,qy,w,qh,1,20); d=ImageDraw.Draw(img,"RGBA")
+    txt(d,x+28,qy+40,"QUESTION 3 OF 5",font(19,700,mono=True),INDIGO,1)
+    q="Design a system for 40k requests per second."; tp=clamp(p/0.4); nch=int(len(q)*tp)
+    words=q[:nch].split(" "); txt(d,x+28,qy+96,(" ".join(words[:5])),font(34,800),INK,1)
+    txt(d,x+28,qy+138,(" ".join(words[5:])),font(34,800),INK,1)
     areas=[("Clarity",88,INDIGO),("Structure",81,VIOLET2),("Impact",92,GREEN)]
-    by=qy+qh+54
+    by=qy+qh+52
     for i,(lab,scv,col) in enumerate(areas):
-        rp=clamp((p-0.45-i*0.12)/0.4); txt(d,x,by+i*66+18,lab,font(24,600),(255,255,255),1)
-        bx=x+180; bw=w-300
-        d.rounded_rectangle([bx,by+i*66+8,bx+bw,by+i*66+30],radius=11,fill=(255,255,255,45))
+        rp=clamp((p-0.40-i*0.12)/0.4)
+        txt(d,x,by+i*80+24,lab,font(27,600),(255,255,255),1)
+        bx=x+210; bw=w-360
+        d.rounded_rectangle([bx,by+i*80+10,bx+bw,by+i*80+42],radius=16,fill=(255,255,255,45))
         fw=bw*(scv/100)*out_quint(rp)
         if fw>3:
-            halo(img,bx+fw,by+i*66+19,30,col,0.5*rp); d=ImageDraw.Draw(img,"RGBA")
-            d.rounded_rectangle([bx,by+i*66+8,bx+fw,by+i*66+30],radius=11,fill=Acol(col,1))
-        txt(d,x+w,by+i*66+19,f"{int(scv*out_quint(rp))}",font(24,800,mono=True),col,1,"rm")
+            halo(img,bx+fw,by+i*80+26,34,col,0.5*rp); d=ImageDraw.Draw(img,"RGBA")
+            d.rounded_rectangle([bx,by+i*80+10,bx+fw,by+i*80+42],radius=16,fill=Acol(col,1))
+        txt(d,x+w,by+i*80+26,f"{int(scv*out_quint(rp))}",font(30,800,mono=True),col,1,"rm")
+    # average-score badge fills the lower area
+    ap=out_quint(clamp((p-0.55)/0.4)); avg=int(87*ap)
+    if ap>0.05:
+        cyb=by+3*80+34; halo(img,VX,cyb,96,GREEN,0.4*ap)
+        bw2=tw(d,f"Avg score  {avg}%",font(30,800))+56
+        d.rounded_rectangle([VX-bw2/2,cyb-30,VX+bw2/2,cyb+30],radius=30,fill=Acol(GREEN,0.16*ap))
+        txt(d,VX,cyb,f"Avg score  {avg}%",font(30,800),(216,255,236),ap,"mm")
 
 def waveform(img,cx,cy,t,a=1.0):
     d=ImageDraw.Draw(img,"RGBA")
@@ -343,26 +355,56 @@ def vis_copilot(img,p,t):
 NOTIFS=[("mark_email_read","Application received","Northwind · Senior Product Manager","#34d17f"),
         ("event","Interview requested","Tempo · Wednesday, 2:00 PM","#7c5cff"),
         ("military_tech","Offer extended","Hollow · Principal PM, AI","#ffb02e")]
+def paste_img_alpha(img,im,x,y,a=1.0):
+    if a<=0.01: return
+    if a>=0.99: img.paste(im,(int(x),int(y)),im); return
+    al=im.split()[3].point(lambda v:int(v*a)); im2=im.copy(); im2.putalpha(al)
+    img.paste(im2,(int(x),int(y)),im2)
+
+def draw_notif_card(img,cx,cy,item,scale=1.0,alpha=1.0):
+    ic,title,body,acc=item
+    cw=720*scale; ch=140*scale; x=cx-cw/2; y=cy-ch/2
+    glass_card(img,x,y,cw,ch,alpha,int(24*scale))
+    ls=max(2,int(56*scale)); paste_img_alpha(img,LOGO_NOTIF.resize((ls,ls),Image.LANCZOS),x+22*scale,y+22*scale,alpha)
+    dd=ImageDraw.Draw(img,"RGBA"); tx=x+(22+56+18)*scale
+    txt(dd,tx,y+30*scale,"Ascend",font(max(8,int(23*scale)),800),INK,alpha)
+    txt(dd,tx+tw(dd,"Ascend",font(max(8,int(23*scale)),800))+10*scale,y+30*scale,"· now",font(max(7,int(19*scale)),500),MUT2,alpha)
+    txt(dd,tx,y+70*scale,title,font(max(9,int(29*scale)),800),INK,alpha)
+    txt(dd,tx,y+106*scale,body,font(max(8,int(22*scale)),500),MUTE,alpha)
+    cxr=x+cw-54*scale; cyr=y+ch/2
+    if alpha>0.9: halo(img,cxr,cyr,60*scale,acc,0.5)
+    dd=ImageDraw.Draw(img,"RGBA"); dd.ellipse([cxr-32*scale,cyr-32*scale,cxr+32*scale,cyr+32*scale],fill=Acol(acc,0.18*alpha))
+    icon(dd,(cxr,cyr),ic,max(10,int(32*scale)),_rgb(acc),fill=1,anchor="mm")
+
+def vis_games(img,p,t):
+    gx=VX-330; gw=660; gy=206
+    glass_card(img,gx,gy,gw,84,1,18); d=ImageDraw.Draw(img,"RGBA")
+    halo(img,gx+46,gy+42,40,(255,150,50),0.5)
+    icon(ImageDraw.Draw(img,"RGBA"),(gx+46,gy+42),"local_fire_department",36,(255,150,50),fill=1,anchor="mm")
+    txt(d,gx+86,gy+30,"3-day streak",font(25,800),INK,1)
+    txt(d,gx+86,gy+58,"Keep your mind sharp daily",font(18,500),MUTE,1)
+    tiles=[("grid_on","Sudoku",INDIGO),("star","Stars",(224,145,63)),("dark_mode","Eclipse",VIOLET2),
+           ("apps","2048",GREEN),("extension","Clusters",(37,99,235)),("crop_square","Trail",(214,69,122))]
+    ncol=3; tw_=(gw-2*16)/3; th=120; ty=gy+104
+    for idx,(ic,name,col) in enumerate(tiles):
+        rp=stagger(clamp((p-0.18)/0.8),idx,len(tiles))
+        if rp<=0.02: continue
+        a=clamp(rp*1.4); off=(1-out_back(rp))*44
+        r=idx//ncol; c=idx%ncol; x=gx+c*(tw_+16); y=ty+r*(th+16)+off
+        glass_card(img,x,y,tw_,th,a,18)
+        dd=ImageDraw.Draw(img,"RGBA"); bx=x+tw_/2
+        dd.ellipse([bx-28,y+30-28,bx+28,y+30+28],fill=Acol(col,0.16*a))
+        icon(dd,(bx,y+30),ic,30,col,fill=1,anchor="mm")
+        txt(dd,bx,y+84,name,font(20,800),INK,a,"mm")
+
 def vis_notifs(img,p,t,count,confetti):
-    cw=720; ch=140; gap=18; x=VX-cw/2
+    cw=720; ch=140; gap=18
     items=NOTIFS[:count]; total=len(items)*ch+(len(items)-1)*gap; y0=int(H*0.5-total/2)
-    d=ImageDraw.Draw(img,"RGBA")
-    for idx,(ic,title,body,acc) in enumerate(items):
+    for idx,item in enumerate(items):
         last=idx==len(items)-1; rise=(1-out_back(clamp(p/0.6)))*90 if last else 0
-        y=y0+idx*(ch+gap)+rise
-        if last and rise>4:
-            glass_card(img,x,y+24,cw,ch,0.12,24,shadow=False)
-        glass_card(img,x,int(y),cw,ch,1,24)
-        img.paste(LOGO_NOTIF,(int(x+22),int(y)+22),LOGO_NOTIF)
-        dd=ImageDraw.Draw(img,"RGBA"); tx=x+22+56+18
-        txt(dd,tx,int(y)+30,"Ascend",font(23,800),INK,1)
-        txt(dd,tx+tw(dd,"Ascend",font(23,800))+10,int(y)+30,"· now",font(19,500),MUT2,1)
-        txt(dd,tx,int(y)+70,title,font(29,800),INK,1)
-        txt(dd,tx,int(y)+106,body,font(22,500),MUTE,1)
-        cxr=x+cw-54; cyr=int(y)+ch//2
-        if last: halo(img,cxr,cyr,60,acc,0.5)
-        dd=ImageDraw.Draw(img,"RGBA"); dd.ellipse([cxr-32,cyr-32,cxr+32,cyr+32],fill=Acol(acc,0.18))
-        icon(dd,(cxr,cyr),ic,32,_rgb(acc),fill=1,anchor="mm")
+        cy=y0+idx*(ch+gap)+ch/2+rise
+        if last and rise>4: glass_card(img,VX-cw/2,cy-ch/2+24,cw,ch,0.12,24,shadow=False)
+        draw_notif_card(img,VX,cy,item,1.0,1.0)
     if confetti>0: draw_confetti(img,confetti)
 
 def draw_confetti(img,p):
@@ -388,13 +430,14 @@ def light_sweep(img,prog):
 # ============ timeline ============
 SCENES=[
  ("intro",3.2,None),
- ("findjobs",4.2,("FIND JOBS",["Find your","next role"],"AI-matched jobs, ranked by fit","#34d17f")),
- ("tracker",4.0,("TRACKER",["Track every","application"],"From saved to offer, automatically","#8b9bff")),
- ("ats",4.0,("RESUME",["Beat the ATS"],"AI tailors your resume to each role","#ffd66b")),
+ ("findjobs",4.0,("FIND JOBS",["Find your","next role"],"AI-matched jobs, ranked by fit","#34d17f")),
+ ("tracker",3.8,("TRACKER",["Track every","application"],"From saved to offer, automatically","#8b9bff")),
+ ("ats",3.8,("RESUME",["Beat the ATS"],"AI tailors your resume to each role","#ffd66b")),
  ("mock",4.0,("PREP",["Practice,","then perform"],"Scored mock interviews","#ff8fb1")),
- ("copilot",4.4,("LIVE COPILOT",["Real-time","answers"],"In your voice, during the call","#b3a6ff")),
- ("notif1",1.7,None),("notif2",1.7,None),("notif3",2.8,None),
- ("outro",3.6,None),
+ ("copilot",4.2,("LIVE COPILOT",["Real-time","answers"],"In your voice, during the call","#b3a6ff")),
+ ("games",3.6,("BRAIN GAMES",["Sharpen up","between applications"],"A daily puzzle to stay sharp","#ffd66b")),
+ ("notif1",1.6,None),("notif2",1.6,None),("notif3",2.2,None),
+ ("finale",5.4,None),
 ]
 STARTS=[]; _t=0.0
 for _,d,_ in SCENES: STARTS.append(_t); _t+=d
@@ -418,16 +461,35 @@ def render_scene(img,i,t):
         txt(d,W//2,H//2+12,"Land your next role, faster",font(38,500),(236,234,255),smooth((p-0.4)/0.25)*fade,"mm")
         txt(d,W//2,H//2+122,"YOUR AI JOB-SEARCH COPILOT",font(25,700,mono=True),(176,164,255),smooth((p-0.58)/0.3)*fade,"mm")
         return
-    if name=="outro":
-        ap=out_cubic(clamp(p/0.4)); halo(img,W//2,H//2-250,240,VIOLET2,0.5*ap)
-        img.paste(LOGO_BIG,(W//2-75,int(H//2-250-(1-ap)*40)),LOGO_BIG)
+    if name=="finale":
+        # the "Offer extended" card glides to centre and morphs into Ascend + Google Play
+        cw=720; ch=140; gap=18; total=3*ch+2*gap; y0=int(H*0.5-total/2)
+        start=(VX, y0+2*(ch+gap)+ch/2)
+        tA=smooth(clamp(p/0.30))
+        pa=1-smooth(clamp(p/0.22))
+        if pa>0.02: draw_stage_panel(img,pa,t)
+        for idx in range(2):                       # the two earlier notifs fade out in place
+            a=1-smooth(clamp(p/0.18))
+            if a>0.02: draw_notif_card(img,VX,y0+idx*(ch+gap)+ch/2,NOTIFS[idx],1.0,a)
+        if p<0.42: draw_confetti(img, clamp(0.55+p))
+        tM=smooth(clamp((p-0.34)/0.22))            # morph window
+        cx=lerp(start[0],W/2,tA); cy=lerp(start[1],H/2-30,tA)
+        cardScale=lerp(1.0,1.12,tA)*(1-0.45*tM)
+        if (1-tM)>0.02: draw_notif_card(img,cx,cy,NOTIFS[2],cardScale,1-tM)
+        # logo grows out of the card, then rises to the lockup position
+        logoA=smooth(clamp((p-0.36)/0.2))
+        if logoA>0.02:
+            ls=max(2,int(lerp(70,150,smooth(clamp((p-0.34)/0.42)))))
+            ly=lerp(H/2-30,H/2-250,smooth(clamp((p-0.44)/0.30)))   # fully risen by ~0.74
+            halo(img,W//2,ly,210,VIOLET2,0.45*logoA)
+            paste_img_alpha(img,LOGO_BIG.resize((ls,ls),Image.LANCZOS),W//2-ls/2,ly-ls/2,logoA)
         d=ImageDraw.Draw(img,"RGBA")
-        txt(d,W//2,H//2-58,"Ascend",font(96,800),(255,255,255),ap,"mm")
-        txt(d,W//2,H//2+20,"Land your next role, faster",font(38,500),(236,234,255),ap,"mm")
-        b=out_back(clamp((p-0.4)/0.5))
+        txt(d,W//2,H/2-58,"Ascend",font(96,800),(255,255,255),smooth(clamp((p-0.66)/0.16)),"mm")
+        txt(d,W//2,H/2+20,"Land your next role, faster",font(38,500),(236,234,255),smooth(clamp((p-0.72)/0.16)),"mm")
+        b=out_back(clamp((p-0.78)/0.22))
         if b>0.02:
             bw=int(BADGE.size[0]*b); bh=int(BADGE.size[1]*b)
-            bb=BADGE.resize((max(1,bw),max(1,bh)),Image.LANCZOS); img.paste(bb,(W//2-bw//2,int(H//2+150-bh//2)),bb)
+            img.paste(BADGE.resize((max(1,bw),max(1,bh)),Image.LANCZOS),(W//2-bw//2,int(H/2+150-bh//2)),BADGE.resize((max(1,bw),max(1,bh)),Image.LANCZOS))
         return
     brand_corner(img)
     if name=="findjobs": vis_search(img,p,t)
@@ -435,13 +497,15 @@ def render_scene(img,i,t):
     elif name=="ats": vis_ats(img,p,t)
     elif name=="mock": vis_mock(img,p,t)
     elif name=="copilot": vis_copilot(img,p,t)
+    elif name=="games": vis_games(img,p,t)
     elif name.startswith("notif"):
         cnt={"notif1":1,"notif2":2,"notif3":3}[name]
         conf=clamp((local-0.2)/(dur-0.2)) if name=="notif3" else 0.0
         vis_notifs(img,p,t,cnt,conf)
         # persistent left caption across the whole notification group (no per-scene flicker)
-        gstart=STARTS[6]; gdur=STARTS[9]-STARTS[6]; gl=t-gstart
-        aL=smooth(clamp(gl/0.5))*(1-smooth(clamp((gl-(gdur-0.5))/0.5)))
+        ni=[k for k,s in enumerate(SCENES) if s[0].startswith("notif")]
+        gstart=STARTS[ni[0]]; gend=STARTS[ni[-1]]+SCENES[ni[-1]][1]; gl=t-gstart; gdur=gend-gstart
+        aL=smooth(clamp(gl/0.5))*(1-smooth(clamp((gl-(gdur-0.4))/0.4)))
         static_caption(img,"ON TRACK",["From applied","to hired"],"Notified at every step","#34d17f",aL)
     if cap is not None: caption(img,cap[0],cap[1],cap[2],cap[3],p,local,dur)
 
@@ -451,11 +515,9 @@ def frame(t):
     img=bg_base(t).convert("RGBA")
     draw_particles(img,t,front=False)
     name,dur,_=SCENES[i]; local=t-STARTS[i]
-    vis = name not in ("intro","outro")
+    vis = name not in ("intro","finale")   # finale draws/fades its own panel
     if vis:
-        pa=1.0
-        if i==1: pa=smooth(local/0.5)
-        if i==len(SCENES)-2: pa*=1-smooth((local-(dur-0.5))/0.5)
+        pa = smooth(local/0.5) if name=="findjobs" else 1.0
         draw_stage_panel(img,pa,t)
     render_scene(img,i,t)
     draw_particles(img,t,front=True)
