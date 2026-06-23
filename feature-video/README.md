@@ -20,20 +20,31 @@ Hook → Reveal → Highlights → Outro structure:
 5. **Prep** — mock interview with scored feedback
 6. **Live Copilot** — real-time interview navigator
 
-Screens are faithful recreations of the actual app UI (indigo `#4f46e5`,
-Plus Jakarta Sans, Material Symbols, real seed data: Alex Morgan / Senior PM /
-Northwind, Tempo, Ledgerline …).
+The phone screens are the **real app UI**, not recreations: `Ascend.dc.html`
+is rendered headlessly (Chromium + `support.js`, React/Babel loaded locally),
+navigated to each screen via the live instance, and captured at 3× DPI. The
+captured PNGs live in `real/`.
 
 ## Regenerate
+
+**1. Capture the real screens** (`capture/capture.mjs`, needs Chromium + Playwright):
 ```bash
-pip install Pillow imageio-ffmpeg numpy
-./fetch_fonts.sh        # brand fonts (not committed)
-python build.py         # writes out/ascend_feature_1080p.mp4
+# builds a render copy that loads React/Babel locally + exposes the instance,
+# serves it, drives each screen, screenshots [data-asc-device] at 3x → real/*.png
+PLAYWRIGHT_BROWSERS_PATH=/opt/pw-browsers node capture/capture.mjs
 ```
 
-- `ascend.py` — design tokens, fonts, primitives, phone chrome
-- `screens.py` — the six app screens
-- `build.py` — 16:9 compositor, timeline, animation, encode
+**2. Compose the video:**
+```bash
+pip install Pillow imageio-ffmpeg numpy
+./fetch_fonts.sh        # brand fonts + music (not committed)
+python build.py         # writes out/ascend_silent.mp4
+# then mux music (see Music section)
+```
+
+- `build.py` — 16:9 compositor: background, real-phone slide transitions, captions, encode
+- `ascend.py` / `screens.py` — fonts, colour tokens, gradient + logo helpers used by `build.py`
+- `real/*.png` — captured real app screens (the phone content)
 
 ## Music
 The video uses **"Happy Beats / Business Moves Vol. 1" by [ende.app](https://ende.app/en)**
