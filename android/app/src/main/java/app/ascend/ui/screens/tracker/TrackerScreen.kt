@@ -43,7 +43,7 @@ fun TrackerScreen(nav: NavController, vm: TrackerViewModel = hiltViewModel()) {
     val total = grouped.values.sumOf { it.size }
 
     LazyColumn(
-        Modifier.fillMaxSize(),
+        Modifier.fillMaxSize().statusBarsPadding(),
         contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {

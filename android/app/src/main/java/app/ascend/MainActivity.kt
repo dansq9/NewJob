@@ -5,6 +5,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -30,6 +31,7 @@ import app.ascend.ui.screens.jobdetail.JobDetailScreen
 import app.ascend.ui.screens.jobs.JobsScreen
 import app.ascend.ui.screens.mock.MockScreen
 import app.ascend.ui.screens.onboarding.OnboardingScreen
+import app.ascend.ui.screens.paywall.PaywallScreen
 import app.ascend.ui.screens.resume.ResumeScreen
 import app.ascend.ui.screens.tracker.TrackerScreen
 import app.ascend.ui.theme.AscendColors
@@ -66,6 +68,10 @@ private fun AscendRoot(startOnboarding: Boolean) {
 
     Scaffold(
         containerColor = AscendColors.Bg,
+        // Tab screens add their own status-bar padding; full-screen routes manage
+        // their own insets via their Scaffold. So the outer Scaffold only contributes
+        // the bottom-nav height (when shown) and doesn't double-inset content.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
         bottomBar = { if (showBars) AscendBottomBar(nav, currentRoute) },
     ) { padding ->
         NavHost(
@@ -87,6 +93,7 @@ private fun AscendRoot(startOnboarding: Boolean) {
             composable(Routes.MOCK) { MockScreen(nav) }
             composable(Routes.COPILOT) { CopilotScreen(nav) }
             composable(Routes.GAMES) { GamesScreen(nav) }
+            composable(Routes.PAYWALL) { PaywallScreen(onClose = { nav.popBackStack() }) }
         }
     }
 }

@@ -17,8 +17,19 @@ import javax.inject.Inject
 class HomeViewModel @Inject constructor(
     private val jobs: JSearchRepository,
     private val selectedJob: SelectedJobStore,
+    private val ads: app.ascend.monetization.ads.AdsManager,
     profileRepo: ProfileRepository,
 ) : ViewModel() {
+
+    init {
+        // Interstitial after splash, once per process (Pro users are skipped).
+        if (!interstitialShown) {
+            interstitialShown = true
+            viewModelScope.launch { ads.showInterstitial(app.ascend.monetization.ads.AdPlacement.SPLASH_INTERSTITIAL) }
+        }
+    }
+
+    private companion object { var interstitialShown = false }
 
     val profile: StateFlow<UserProfile> =
         profileRepo.profile.stateIn(viewModelScope, SharingStarted.Eagerly, UserProfile())

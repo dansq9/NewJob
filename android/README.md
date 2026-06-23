@@ -32,6 +32,7 @@ These are exposed as `BuildConfig.RAPIDAPI_KEY` / `BuildConfig.ASCEND_API_BASE_U
 | Home | greeting, quick actions, top matches (JSearch) |
 | Job detail | header, apply (opens link), save / mark applied |
 | Tracker | **Room-backed** pipeline (Saved→Applied→Interview→Offer→Closed) |
+| Monetization | Entitlement (DataStore) + **paywall** (prototype design) + Pro gates. Ads (interstitial after splash, native every 5 jobs, rewarded for AI features) and Play Billing are behind `AdsManager`/`BillingManager` interfaces with no-op/stub impls — swap for AdMob + Play Billing once unit/product IDs exist. Pro = no ads + Interview Navigator. |
 | Resume optimize | calls `AscendApi.optimizeResume` (platform) |
 | Mock interview | calls `AscendApi.startMock` / `scoreMock`; **Speak** uses OS speech recognizer |
 | Live Copilot | calls `AscendApi.copilotAnswer`; live transcription → `SpeechRecognizer` (TODO) |

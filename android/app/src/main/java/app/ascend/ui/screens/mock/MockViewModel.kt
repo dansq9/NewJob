@@ -28,7 +28,10 @@ sealed interface MockUi {
 }
 
 @HiltViewModel
-class MockViewModel @Inject constructor(private val api: AscendApi) : ViewModel() {
+class MockViewModel @Inject constructor(
+    private val api: AscendApi,
+    private val ads: app.ascend.monetization.ads.AdsManager,
+) : ViewModel() {
 
     private val _ui = MutableStateFlow<MockUi>(MockUi.Setup())
     val ui: StateFlow<MockUi> = _ui.asStateFlow()
@@ -38,8 +41,10 @@ class MockViewModel @Inject constructor(private val api: AscendApi) : ViewModel(
 
     fun start() {
         val setup = _ui.value as? MockUi.Setup ?: return
-        _ui.value = MockUi.Loading
         viewModelScope.launch {
+            // Free users watch a rewarded ad to start a mock interview (Pro bypasses).
+            if (!ads.showRewarded(app.ascend.monetization.ads.RewardedFeature.MOCK_INTERVIEW)) return@launch
+            _ui.value = MockUi.Loading
             _ui.value = try {
                 val r = api.startMock(MockStartRequest(role = setup.role, count = setup.count))
                 MockUi.Live(r.sessionId, r.questions)

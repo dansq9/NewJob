@@ -27,10 +27,15 @@ class JobsViewModel @Inject constructor(
     private val tracker: TrackerRepository,
     private val selectedJob: SelectedJobStore,
     private val profileRepo: app.ascend.data.local.ProfileRepository,
+    entitlements: app.ascend.data.billing.EntitlementRepository,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(JobsUiState(query = "", location = ""))
     val state: StateFlow<JobsUiState> = _state.asStateFlow()
+
+    /** Native ad cards (every 5 listings) show only for non-Pro users. */
+    val adsEnabled: StateFlow<Boolean> =
+        entitlements.isPro.map { !it }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
     init {
         viewModelScope.launch {

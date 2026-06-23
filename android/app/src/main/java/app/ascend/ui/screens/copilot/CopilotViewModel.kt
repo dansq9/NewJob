@@ -7,12 +7,20 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class CopilotViewModel @Inject constructor(private val api: AscendApi) : ViewModel() {
+class CopilotViewModel @Inject constructor(
+    private val api: AscendApi,
+    entitlements: app.ascend.data.billing.EntitlementRepository,
+) : ViewModel() {
+
+    // Interview Navigator is a Pro feature.
+    val isPro: kotlinx.coroutines.flow.StateFlow<Boolean> =
+        entitlements.isPro.stateIn(viewModelScope, kotlinx.coroutines.flow.SharingStarted.Eagerly, false)
 
     data class State(
         val live: Boolean = false,

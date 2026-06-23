@@ -22,6 +22,7 @@ object Routes {
     const val MOCK = "mock"
     const val COPILOT = "copilot"
     const val GAMES = "games"
+    const val PAYWALL = "paywall"
 }
 
 enum class Tab(val route: String, val label: String, val icon: ImageVector, val selectedIcon: ImageVector) {

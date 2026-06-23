@@ -1,6 +1,7 @@
 package app.ascend.ui.screens.jobs
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -8,13 +9,18 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.outlined.Campaign
 import androidx.compose.material.icons.outlined.LocationOn
 import androidx.compose.material.icons.outlined.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
+import app.ascend.data.model.Job
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,9 +36,10 @@ import app.ascend.ui.theme.AscendColors
 @Composable
 fun JobsScreen(nav: NavController, vm: JobsViewModel = hiltViewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
+    val adsEnabled by vm.adsEnabled.collectAsStateWithLifecycle()
 
     LazyColumn(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxSize().statusBarsPadding(),
         contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
@@ -89,13 +96,19 @@ fun JobsScreen(nav: NavController, vm: JobsViewModel = hiltViewModel()) {
             }
             is Resource.Success -> {
                 if (r.data.isEmpty()) item { EmptyState() }
-                else items(r.data, key = { it.id }) { job ->
-                    JobCard(
-                        job = job,
-                        onClick = { vm.select(job); nav.navigate(Routes.JOB_DETAIL) },
-                        saved = state.savedIds.contains(job.id),
-                        onToggleSave = { vm.toggleSave(job) },
-                    )
+                else {
+                    val feed = remember(r.data, adsEnabled) { buildFeed(r.data, adsEnabled) }
+                    items(feed.size) { idx ->
+                        when (val row = feed[idx]) {
+                            is FeedRow.JobItem -> JobCard(
+                                job = row.job,
+                                onClick = { vm.select(row.job); nav.navigate(Routes.JOB_DETAIL) },
+                                saved = state.savedIds.contains(row.job.id),
+                                onToggleSave = { vm.toggleSave(row.job) },
+                            )
+                            FeedRow.Ad -> NativeAdSlot()
+                        }
+                    }
                 }
             }
         }
@@ -121,5 +134,47 @@ private fun EmptyState() {
         Text("No jobs match your search", fontWeight = FontWeight.Bold, color = AscendColors.Ink)
         Spacer(Modifier.height(4.dp))
         Text("Try a different keyword or widen your filters.", fontSize = 13.sp, color = AscendColors.Muted2)
+    }
+}
+
+// ── native ad interleaving (every 5 listings, free users only) ───────────────
+private sealed interface FeedRow {
+    data class JobItem(val job: Job) : FeedRow
+    data object Ad : FeedRow
+}
+
+private fun buildFeed(jobs: List<Job>, adsEnabled: Boolean): List<FeedRow> = buildList {
+    jobs.forEachIndexed { i, job ->
+        add(FeedRow.JobItem(job))
+        if (adsEnabled && (i + 1) % 5 == 0 && i != jobs.lastIndex) add(FeedRow.Ad)
+    }
+}
+
+/** Placeholder native-ad card. Swap the inner content for a real AdMob NativeAd view. */
+@Composable
+private fun NativeAdSlot() {
+    Surface(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(18.dp),
+        color = AscendColors.Card,
+        border = BorderStroke(1.5.dp, AscendColors.Line),
+    ) {
+        Column(Modifier.padding(15.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Box(
+                    Modifier.size(46.dp).clip(RoundedCornerShape(13.dp)).background(AscendColors.ChipIndigo),
+                    contentAlignment = Alignment.Center,
+                ) { Icon(Icons.Outlined.Campaign, null, tint = AscendColors.Indigo) }
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f)) {
+                    Text("Sponsored", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+                    Text("Your native ad here", fontSize = 13.sp, color = AscendColors.Muted)
+                }
+                Text(
+                    "Ad", color = Color(0xFFB0A06A), fontSize = 9.sp, fontWeight = FontWeight.Bold,
+                    modifier = Modifier.clip(RoundedCornerShape(5.dp)).background(Color(0xFFFBF4D9)).padding(horizontal = 7.dp, vertical = 2.dp),
+                )
+            }
+        }
     }
 }

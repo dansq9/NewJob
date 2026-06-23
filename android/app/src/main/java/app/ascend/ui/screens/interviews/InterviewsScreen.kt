@@ -24,7 +24,7 @@ import app.ascend.ui.theme.AscendColors
 @Composable
 fun InterviewsScreen(nav: NavController) {
     Column(
-        Modifier.fillMaxSize().padding(18.dp),
+        Modifier.fillMaxSize().statusBarsPadding().padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         Text("Interviews", style = MaterialTheme.typography.headlineMedium, color = AscendColors.Ink)

@@ -1,6 +1,7 @@
 package app.ascend.ui.screens.copilot
 
 import androidx.compose.foundation.background
+import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -30,8 +31,43 @@ private val Lilac = Color(0xFFA89BFF)
 
 @Composable
 fun CopilotScreen(nav: NavController, vm: CopilotViewModel = hiltViewModel()) {
+    val isPro by vm.isPro.collectAsStateWithLifecycle()
+    if (!isPro) {
+        ProLock(onUpgrade = { nav.navigate(app.ascend.ui.navigation.Routes.PAYWALL) }, onBack = { nav.popBackStack() })
+        return
+    }
     val s by vm.state.collectAsStateWithLifecycle()
     if (!s.live) SetupView(vm, nav) else LiveView(vm, nav)
+}
+
+@Composable
+private fun ProLock(onUpgrade: () -> Unit, onBack: () -> Unit) {
+    Scaffold(
+        containerColor = AscendColors.Bg,
+        topBar = { app.ascend.ui.components.AscendTopBar("AI Interview Copilot", onBack = onBack) },
+    ) { padding ->
+        Column(
+            Modifier.fillMaxSize().padding(padding).padding(28.dp),
+            verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
+        ) {
+            Box(Modifier.size(72.dp).clip(RoundedCornerShape(20.dp)).background(AscendColors.ChipIndigo), Alignment.Center) {
+                Icon(Icons.Outlined.Bolt, null, tint = AscendColors.Indigo, modifier = Modifier.size(38.dp))
+            }
+            Spacer(Modifier.height(18.dp))
+            Text("Live Interview Navigator", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
+            Spacer(Modifier.height(8.dp))
+            Text(
+                "Get real-time, in-your-voice answers during interviews. The live copilot is an Ascend Pro feature.",
+                fontSize = 14.sp, color = AscendColors.Muted, lineHeight = 21.sp,
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
+            )
+            Spacer(Modifier.height(24.dp))
+            Button(
+                onClick = onUpgrade, modifier = Modifier.fillMaxWidth().height(54.dp),
+                shape = RoundedCornerShape(16.dp), colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
+            ) { Text("Unlock with Pro", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp) }
+        }
+    }
 }
 
 @Composable

@@ -24,6 +24,7 @@ sealed interface ResumeUi {
 class ResumeViewModel @Inject constructor(
     private val api: AscendApi,
     private val selectedJob: SelectedJobStore,
+    private val ads: app.ascend.monetization.ads.AdsManager,
 ) : ViewModel() {
 
     val targetTitle = selectedJob.selected.value?.title ?: "Senior Product Manager · Northwind"
@@ -33,8 +34,10 @@ class ResumeViewModel @Inject constructor(
 
     fun optimize() {
         val jobId = selectedJob.selected.value?.id ?: "demo"
-        _ui.value = ResumeUi.Loading
         viewModelScope.launch {
+            // Free users watch a rewarded ad to unlock one optimization (Pro bypasses).
+            if (!ads.showRewarded(app.ascend.monetization.ads.RewardedFeature.RESUME_OPTIMIZE)) return@launch
+            _ui.value = ResumeUi.Loading
             _ui.value = try {
                 ResumeUi.Result(api.optimizeResume(OptimizeRequest(jobId = jobId)))
             } catch (t: Throwable) {

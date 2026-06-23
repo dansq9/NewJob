@@ -48,7 +48,7 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
     )
 
     LazyColumn(
-        Modifier.fillMaxSize(),
+        Modifier.fillMaxSize().statusBarsPadding(),
         contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 12.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
