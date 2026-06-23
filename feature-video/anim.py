@@ -41,7 +41,7 @@ def halo(img,cx,cy,r,color,a=1.0):
     tile=Image.new("RGBA",(s,s),(0,0,0,0))
     col=_rgb(color) if not isinstance(color,tuple) else color
     solid=Image.new("RGBA",(s,s),col+(0,));
-    alpha=spr.point(lambda v:int(v*clamp(a)))
+    alpha=spr.point(lambda v:int(v*clamp(a)*0.55))   # globally dimmed so glows don't wash out
     solid.putalpha(alpha); img.paste(solid,(int(cx-r),int(cy-r)),solid)
 
 def logo_tile(size,r):
@@ -112,16 +112,11 @@ VIGN=np.clip(1-(_d-0.55)*0.5,0.62,1.0).astype(np.float32)[...,None]
 _GRAIN=[ (np.random.default_rng(s).standard_normal((H,W,1)).astype(np.float32))*3.0 for s in range(12) ]
 _gi=[0]
 def grade(img):
+    # No global bloom (it washes out text). Subtle vignette + film grain only;
+    # all "glow" comes from localized halos behind elements on the dark areas.
     a=np.asarray(img).astype(np.float32)
-    # bloom: bright-pass -> blur -> add (all at reduced res for speed)
-    lum=a@np.array([0.299,0.587,0.114],np.float32)
-    m=np.clip((lum-158)/97,0,1)[...,None]
-    src=Image.fromarray((a*m).astype(np.uint8))
-    b1=np.asarray(src.resize((W//2,H//2)).filter(ImageFilter.GaussianBlur(6)).resize((W,H))).astype(np.float32)
-    b2=np.asarray(src.resize((W//4,H//4)).filter(ImageFilter.GaussianBlur(12)).resize((W,H))).astype(np.float32)
-    a=a+b1*0.30+b2*0.50
     a=a*VIGN
-    _gi[0]=(_gi[0]+1)%len(_GRAIN); a=a+_GRAIN[_gi[0]]   # cheap grain (precomputed)
+    _gi[0]=(_gi[0]+1)%len(_GRAIN); a=a+_GRAIN[_gi[0]]
     return np.clip(a,0,255).astype(np.uint8)
 
 # ---------- right-side stage panel (frosted glass container) ----------
@@ -134,7 +129,7 @@ def _frosted(t):
         if len(_PANELC)>50:_PANELC.clear()
         x0,y0,x1,y1=PANEL
         crop=bg_base(k/4).crop((x0,y0,x1,y1)).filter(ImageFilter.GaussianBlur(30))
-        crop=Image.blend(crop,Image.new("RGB",crop.size,(255,255,255)),0.10)
+        crop=Image.blend(crop,Image.new("RGB",crop.size,(255,255,255)),0.05)
         _PANELC[k]=crop
     return _PANELC[k]
 def draw_stage_panel(img,a,t):
