@@ -124,6 +124,30 @@ def grade(img):
     _gi[0]=(_gi[0]+1)%len(_GRAIN); a=a+_GRAIN[_gi[0]]   # cheap grain (precomputed)
     return np.clip(a,0,255).astype(np.uint8)
 
+# ---------- right-side stage panel (frosted glass container) ----------
+VX=1360
+PANEL=(VX-410,148,VX+410,936); PR=40
+_PANELC={}
+def _frosted(t):
+    k=round(t*4)
+    if k not in _PANELC:
+        if len(_PANELC)>50:_PANELC.clear()
+        x0,y0,x1,y1=PANEL
+        crop=bg_base(k/4).crop((x0,y0,x1,y1)).filter(ImageFilter.GaussianBlur(30))
+        crop=Image.blend(crop,Image.new("RGB",crop.size,(255,255,255)),0.10)
+        _PANELC[k]=crop
+    return _PANELC[k]
+def draw_stage_panel(img,a,t):
+    if a<=0.02:return
+    x0,y0,x1,y1=PANEL; w=x1-x0; h=y1-y0
+    soft_shadow(img,x0,y0,w,h,PR,blur=44,col=(3,2,16,int(150*a)))
+    rmask=Image.new("L",(w,h),0); ImageDraw.Draw(rmask).rounded_rectangle([0,0,w-1,h-1],radius=PR,fill=255)
+    if a<1: rmask=rmask.point(lambda v:int(v*a))
+    img.paste(_frosted(t),(x0,y0),rmask)
+    d=ImageDraw.Draw(img,"RGBA")
+    d.rounded_rectangle([x0,y0,x1,y1],radius=PR,outline=(255,255,255,int(46*a)),width=2)
+    d.line([x0+PR,y0+2,x1-PR,y0+2],fill=(255,255,255,int(95*a)),width=2)  # top sheen
+
 # ---------- alpha-aware draw helpers ----------
 def Acol(c,a):
     c=c if isinstance(c,tuple) else _rgb(c); return (c[0],c[1],c[2],int(255*clamp(a)))
@@ -172,6 +196,19 @@ def caption(img,eyebrow,lines,sub,accent,p,local,dur):
     for i,ln in enumerate(lines):
         kinetic_line(img,CX,yy,ln,font(76,800),(255,255,255),clamp((cin-i*0.12)/0.6)*cout,drift=30); yy+=88
     txt(d,CX,yy+4,sub,font(30,500),(224,222,246),clamp((cin-0.25)/0.5)*cout)
+
+def static_caption(img,eyebrow,lines,sub,accent,a):
+    if a<=0.02:return
+    d=ImageDraw.Draw(img,"RGBA")
+    block=44+26+len(lines)*88+16+34; top=int(H*0.5-block/2)
+    f=font(21,800); pad=20; w=tw(d,eyebrow,f)+pad*2
+    dark=accent in ("#ffd66b","#34d17f","#ff8fb1","#b3a6ff","#8b9bff","#ffb02e")
+    halo(img,CX+w/2,top+20,90,accent,0.5*a)
+    d.rounded_rectangle([CX,top,CX+w,top+42],radius=21,fill=Acol(accent,0.96*a))
+    txt(d,CX+pad,top+21,eyebrow,f,(22,18,42) if dark else (255,255,255),a)
+    yy=top+44+26+34
+    for ln in lines: txt(d,CX,yy,ln,font(76,800),(255,255,255),a); yy+=88
+    txt(d,CX,yy+4,sub,font(30,500),(224,222,246),a)
 
 # ============ visuals ============
 VX=1360
@@ -315,7 +352,6 @@ def vis_notifs(img,p,t,count,confetti):
     cw=720; ch=140; gap=18; x=VX-cw/2
     items=NOTIFS[:count]; total=len(items)*ch+(len(items)-1)*gap; y0=int(H*0.5-total/2)
     d=ImageDraw.Draw(img,"RGBA")
-    txt(d,CX,y0-58,"YOUR SEARCH, ON TRACK",font(22,700,mono=True),(216,212,248),smooth(clamp(p/0.3)))
     for idx,(ic,title,body,acc) in enumerate(items):
         last=idx==len(items)-1; rise=(1-out_back(clamp(p/0.6)))*90 if last else 0
         y=y0+idx*(ch+gap)+rise
@@ -408,6 +444,10 @@ def render_scene(img,i,t):
         cnt={"notif1":1,"notif2":2,"notif3":3}[name]
         conf=clamp((local-0.2)/(dur-0.2)) if name=="notif3" else 0.0
         vis_notifs(img,p,t,cnt,conf)
+        # persistent left caption across the whole notification group (no per-scene flicker)
+        gstart=STARTS[6]; gdur=STARTS[9]-STARTS[6]; gl=t-gstart
+        aL=smooth(clamp(gl/0.5))*(1-smooth(clamp((gl-(gdur-0.5))/0.5)))
+        static_caption(img,"ON TRACK",["From applied","to hired"],"Notified at every step","#34d17f",aL)
     if cap is not None: caption(img,cap[0],cap[1],cap[2],cap[3],p,local,dur)
 
 def frame(t):
@@ -415,6 +455,13 @@ def frame(t):
     while i+1<len(SCENES) and t>=STARTS[i+1]: i+=1
     img=bg_base(t).convert("RGBA")
     draw_particles(img,t,front=False)
+    name,dur,_=SCENES[i]; local=t-STARTS[i]
+    vis = name not in ("intro","outro")
+    if vis:
+        pa=1.0
+        if i==1: pa=smooth(local/0.5)
+        if i==len(SCENES)-2: pa*=1-smooth((local-(dur-0.5))/0.5)
+        draw_stage_panel(img,pa,t)
     render_scene(img,i,t)
     draw_particles(img,t,front=True)
     # light-sweep transition straddling each scene cut (band crosses the frame)
