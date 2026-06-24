@@ -152,6 +152,39 @@ enum class SearchSource(val v: String) { HOME("home"), JOBS_TAB("jobs_tab"), PUS
 enum class SaveFrom(val v: String) { SEARCH("search"), DETAIL("detail") }
 enum class ApplyType(val v: String) { EXTERNAL("external"), INTERNAL("internal") }
 enum class LocationType(val v: String) { REMOTE("remote"), HYBRID("hybrid"), ONSITE("onsite"), UNKNOWN("unknown") }
+
+/** Controlled employment_type vocabulary (job_detail_view). Never log the raw JSearch string. */
+enum class EmploymentType(val v: String) {
+    FULLTIME("fulltime"), PARTTIME("parttime"), CONTRACTOR("contractor"),
+    INTERN("intern"), OTHER("other")
+}
+
+fun employmentTypeOf(raw: String?): EmploymentType {
+    val r = raw?.lowercase().orEmpty()
+    return when {
+        r.isBlank() -> EmploymentType.OTHER
+        r.contains("full") -> EmploymentType.FULLTIME
+        r.contains("part") -> EmploymentType.PARTTIME
+        r.contains("contract") || r.contains("freelan") -> EmploymentType.CONTRACTOR
+        r.contains("intern") -> EmploymentType.INTERN
+        else -> EmploymentType.OTHER
+    }
+}
+
+/** Controlled tracker-stage vocabulary (tracker_stage_change), mapped from the domain TrackStage. */
+enum class TrackerStage(val v: String) {
+    UNTRACKED("untracked"), SAVED("saved"), APPLIED("applied"),
+    INTERVIEW("interview"), OFFER("offer"), CLOSED("closed")
+}
+
+fun trackerStageOf(stage: app.ascend.data.model.TrackStage?): TrackerStage = when (stage) {
+    null -> TrackerStage.UNTRACKED
+    app.ascend.data.model.TrackStage.SAVED -> TrackerStage.SAVED
+    app.ascend.data.model.TrackStage.APPLIED -> TrackerStage.APPLIED
+    app.ascend.data.model.TrackStage.INTERVIEW -> TrackerStage.INTERVIEW
+    app.ascend.data.model.TrackStage.OFFER -> TrackerStage.OFFER
+    app.ascend.data.model.TrackStage.CLOSED -> TrackerStage.CLOSED
+}
 enum class RoleCategory(val v: String) {
     PRODUCT("product"), ENGINEERING("engineering"), SALES("sales"),
     MARKETING("marketing"), OPS("ops"), OTHER("other")

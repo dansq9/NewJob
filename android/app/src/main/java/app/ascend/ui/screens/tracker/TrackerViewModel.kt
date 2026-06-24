@@ -62,17 +62,17 @@ class TrackerViewModel @Inject constructor(
     fun setSort(s: TrackerSort) { sort.value = s }
 
     fun move(jobId: String, to: TrackStage) = viewModelScope.launch {
-        val from = tracker.stageOf(jobId)?.name ?: "untracked"
+        val from = app.ascend.analytics.trackerStageOf(tracker.stageOf(jobId))
         tracker.setStage(jobId, to)
-        analytics.trackerStageChange(from = from, to = to.name)
+        analytics.trackerStageChange(from = from, to = app.ascend.analytics.trackerStageOf(to))
     }
     fun remove(jobId: String) = viewModelScope.launch { tracker.remove(jobId) }
     fun saveNotes(jobId: String, notes: String?) = viewModelScope.launch { tracker.setNotes(jobId, notes) }
     fun saveSchedule(jobId: String, interviewDate: Long?, reminderAt: Long?) =
         viewModelScope.launch { tracker.setSchedule(jobId, interviewDate, reminderAt) }
     fun close(jobId: String, reason: String?) = viewModelScope.launch {
-        val from = tracker.stageOf(jobId)?.name ?: "untracked"
+        val from = app.ascend.analytics.trackerStageOf(tracker.stageOf(jobId))
         tracker.close(jobId, reason)
-        analytics.trackerStageChange(from = from, to = TrackStage.CLOSED.name)
+        analytics.trackerStageChange(from = from, to = app.ascend.analytics.TrackerStage.CLOSED)
     }
 }

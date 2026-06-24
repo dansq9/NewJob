@@ -113,14 +113,14 @@ class AnalyticsTracker @Inject constructor(
         log(Ev.JOB_SEARCH, Pr.QUERY_PRESENT to queryPresent, Pr.FILTERS_USED to filtersUsed,
             Pr.RESULTS_COUNT to resultsCount, Pr.SOURCE to source.v)
 
-    fun jobDetailView(matchBand: Band?, employment: String?, remote: LocationType) =
+    fun jobDetailView(matchBand: Band?, employment: EmploymentType, remote: LocationType) =
         log(Ev.JOB_DETAIL_VIEW, Pr.MATCH_SCORE_BAND to matchBand?.v,
-            Pr.EMPLOYMENT_TYPE to employment, Pr.REMOTE_TYPE to remote.v)
+            Pr.EMPLOYMENT_TYPE to employment.v, Pr.REMOTE_TYPE to remote.v)
 
     fun jobSave(from: SaveFrom) = log(Ev.JOB_SAVE, Pr.FROM_SCREEN to from.v)
     fun jobApplyClick(type: ApplyType) = log(Ev.JOB_APPLY_CLICK, Pr.APPLY_TYPE to type.v)
-    fun trackerStageChange(from: String, to: String) =
-        log(Ev.TRACKER_STAGE_CHANGE, Pr.FROM_STAGE to from, Pr.TO_STAGE to to)
+    fun trackerStageChange(from: TrackerStage, to: TrackerStage) =
+        log(Ev.TRACKER_STAGE_CHANGE, Pr.FROM_STAGE to from.v, Pr.TO_STAGE to to.v)
 
     // ---- Resume / interview ----
 

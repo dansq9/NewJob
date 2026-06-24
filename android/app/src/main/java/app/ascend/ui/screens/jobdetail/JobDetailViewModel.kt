@@ -35,7 +35,7 @@ class JobDetailViewModel @Inject constructor(
             _job.value?.let { j ->
                 analytics.jobDetailView(
                     matchBand = null,                       // JSearch jobs carry no match score
-                    employment = j.employmentType,
+                    employment = app.ascend.analytics.employmentTypeOf(j.employmentType),
                     remote = remoteTypeOf(j.workType),
                 )
             }
@@ -104,11 +104,11 @@ class JobDetailViewModel @Inject constructor(
     /** Set the pipeline stage; saves the job into the tracker first if needed. */
     fun setStage(stage: TrackStage) {
         val j = job.value ?: return
-        val from = this.stage.value?.name ?: "untracked"
+        val from = app.ascend.analytics.trackerStageOf(this.stage.value)
         viewModelScope.launch {
             if (tracker.stageOf(j.id) == null) tracker.save(j, stage)
             else tracker.setStage(j.id, stage)
-            analytics.trackerStageChange(from = from, to = stage.name)
+            analytics.trackerStageChange(from = from, to = app.ascend.analytics.trackerStageOf(stage))
         }
     }
 }
