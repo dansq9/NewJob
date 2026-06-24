@@ -33,6 +33,9 @@ object RcKeys {
     const val INTER_COOLDOWN_SECONDS = "ads.inter.cooldown_seconds"
     const val INTER_MAX_PER_SESSION = "ads.inter.max_per_session"
 
+    // Rewarded global daily cap (total ad-backed unlocks per day, across all placements)
+    const val REWARD_DAILY_CAP = "ads.reward.daily_cap"
+
     // Native frequency (job list)
     const val NATIVE_JOB_LIST_FREQUENCY = "ads.native.job_list.frequency"
 
@@ -67,6 +70,8 @@ private val DEFAULTS: Map<String, Any> = mapOf(
 
     RcKeys.INTER_COOLDOWN_SECONDS to 180L,
     RcKeys.INTER_MAX_PER_SESSION to 1L,
+
+    RcKeys.REWARD_DAILY_CAP to 3L,   // missing-key (fail-safe) value; spec default is 5
 
     RcKeys.NATIVE_JOB_LIST_FREQUENCY to 8L,
 

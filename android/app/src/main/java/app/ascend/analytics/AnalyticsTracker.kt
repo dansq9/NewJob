@@ -165,6 +165,16 @@ class AnalyticsTracker @Inject constructor(
         Pr.SESSION_NUMBER to sessionNumber,
     )
 
+    // ---- Rewarded unlocks: earned vs granted tracked separately (rule 5) ----
+
+    /** SDK earned-reward callback fired. Logged BEFORE the app grants anything. */
+    fun adRewardEarned(placementId: String, rewardType: String) =
+        log(Ev.AD_REWARD_EARNED, Pr.PLACEMENT to placementId, Pr.REWARD_TYPE to rewardType)
+
+    /** App actually unlocked the reward (exactly once). earned-without-granted = bug. */
+    fun adRewardGranted(placementId: String, rewardType: String) =
+        log(Ev.AD_REWARD_GRANTED, Pr.PLACEMENT to placementId, Pr.REWARD_TYPE to rewardType)
+
     // ---- Paywall funnel ----
 
     fun paywallView(variant: PaywallVariant, trigger: TriggerPlacement?) =

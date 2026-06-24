@@ -39,6 +39,10 @@ enum class Placement(
     val format: AdFormat,
     val rcEnabledKey: String,
     val firstEligibleSession: Int,
+    /** Rewarded only: free unlocks per day before an ad is required (spec table). */
+    val freePerDay: Int = 0,
+    /** Rewarded only: additional ad-gated unlocks per day (spec table; RC daily cap also applies). */
+    val rewardedPerDay: Int = 0,
 ) {
     // --- Native (inline; collapse when suppressed; hidden for paid) ---
     NATIVE_LANGUAGE("ad_native_language", AdFormat.NATIVE, "ads.native.language.enabled", 1),
@@ -59,18 +63,23 @@ enum class Placement(
     INTER_AFTER_GAME_COMPLETE("ad_inter_after_game_complete", AdFormat.INTERSTITIAL, "ads.inter.game_complete.enabled", 2),
 
     // --- Rewarded (user-initiated unlock; "no ad → free" for paid; reward on callback only) ---
-    REWARDED_RESUME_OPTIMIZE("ad_rewarded_resume_optimize", AdFormat.REWARDED, "ads.reward.resume_optimize.enabled", 1),
-    REWARDED_RESUME_DOWNLOAD("ad_rewarded_resume_download", AdFormat.REWARDED, "ads.reward.resume_download.enabled", 1),
-    REWARDED_COVER_LETTER("ad_rewarded_cover_letter", AdFormat.REWARDED, "ads.reward.cover_letter.enabled", 1),
-    REWARDED_MOCK_START("ad_rewarded_mock_start", AdFormat.REWARDED, "ads.reward.mock_start.enabled", 1),
-    REWARDED_MOCK_SCORE("ad_rewarded_mock_score", AdFormat.REWARDED, "ads.reward.mock_score.enabled", 1),
-    REWARDED_GAME_HINT("ad_rewarded_game_hint", AdFormat.REWARDED, "ads.reward.game_hint.enabled", 1),
+    // free/day + rewarded/day caps from the spec's "Rewarded unlocks" table.
+    REWARDED_RESUME_OPTIMIZE("ad_rewarded_resume_optimize", AdFormat.REWARDED, "ads.reward.resume_optimize.enabled", 1, freePerDay = 0, rewardedPerDay = 3),
+    REWARDED_RESUME_DOWNLOAD("ad_rewarded_resume_download", AdFormat.REWARDED, "ads.reward.resume_download.enabled", 1, freePerDay = 0, rewardedPerDay = 3),
+    REWARDED_COVER_LETTER("ad_rewarded_cover_letter", AdFormat.REWARDED, "ads.reward.cover_letter.enabled", 1, freePerDay = 0, rewardedPerDay = 5),
+    REWARDED_MOCK_START("ad_rewarded_mock_start", AdFormat.REWARDED, "ads.reward.mock_start.enabled", 1, freePerDay = 1, rewardedPerDay = 3),
+    REWARDED_MOCK_SCORE("ad_rewarded_mock_score", AdFormat.REWARDED, "ads.reward.mock_score.enabled", 1, freePerDay = 0, rewardedPerDay = 3),
+    REWARDED_GAME_HINT("ad_rewarded_game_hint", AdFormat.REWARDED, "ads.reward.game_hint.enabled", 1, freePerDay = 1, rewardedPerDay = 5),
 
     // --- App-open (full-screen on resume; suppressed for paid; fail-open) ---
     APPOPEN_RESUME("ad_appopen_resume", AdFormat.APP_OPEN, "ads.appopen.resume.enabled", 2);
 
     val isFullScreen: Boolean get() = format != AdFormat.NATIVE
 }
+
+/** Rewarded `reward_type` token for analytics (e.g. `resume_download`); spec-aligned. */
+val Placement.rewardType: String
+    get() = id.removePrefix("ad_rewarded_")
 
 /** Per-format load timeout RC key (native = non-blocking 0). */
 val Placement.loadTimeoutKey: String
@@ -108,13 +117,19 @@ sealed interface ShowOutcome {
     data class Skipped(val reason: SuppressReason?) : ShowOutcome
 }
 
-/** Outcome of a rewarded unlock attempt. Reward is granted ONLY on [Granted] (rule 5). */
+/** Outcome of a rewarded unlock attempt. An AD-backed reward is granted ONLY on [Granted] (rule 5). */
 sealed interface RewardOutcome {
     /** The user is Pro — the feature is unlocked free, no ad shown (rule 6). */
     data object ProBypass : RewardOutcome
-    /** The earned-reward callback fired exactly once — grant the unlock. */
+    /** A free daily allowance was used — unlocked without showing an ad. */
+    data object FreeGranted : RewardOutcome
+    /** The earned-reward callback fired exactly once — ad-backed unlock granted. */
     data object Granted : RewardOutcome
-    /** No reward (suppressed, no-fill, dismissed early, or offline). Show retry/upgrade. */
+    /**
+     * No reward. [reason] == SESSION_CAP means the daily cap is reached → route to the
+     * paywall; any other reason (no-fill, dismissed early, offline) → show retry/upgrade.
+     * Never grants on close/fail/offline (rule 5).
+     */
     data class NotGranted(val reason: SuppressReason?) : RewardOutcome
 }
 

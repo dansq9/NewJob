@@ -18,6 +18,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
@@ -49,7 +51,10 @@ class MonetizationManager @Inject constructor(
     private val entitlements: EntitlementRepository,
     private val profile: ProfileRepository,
     private val analytics: AnalyticsTracker,
+    private val rewards: RewardLedger,
 ) {
+    // Serializes reward cap check+increment so a double-tap can't double-spend (rule 5).
+    private val unlockMutex = Mutex()
     // The single full-screen slot. Holds the id of whatever surface is on screen.
     private val fullScreenOwner = AtomicReference<String?>(null)
 
@@ -171,20 +176,56 @@ class MonetizationManager @Inject constructor(
      */
     suspend fun showRewarded(placement: Placement): RewardOutcome {
         require(placement.format == AdFormat.REWARDED) { "showRewarded called with non-rewarded $placement" }
-        if (entitlements.isPro.first()) return RewardOutcome.ProBypass   // feature is free for Pro (rule 6)
+        if (entitlements.isPro.first()) return RewardOutcome.ProBypass   // Pro: free feature, no ad (rule 6)
+
+        // 1) Free daily allowance — unlock without an ad (serialized so a double-tap
+        //    can't double-spend it). Most placements have freePerDay = 0 (always ad-gated).
+        val freeUsed = unlockMutex.withLock {
+            val s = rewards.snapshot()
+            if (rewards.freeToday(s, placement.id) < placement.freePerDay) {
+                rewards.incrementFree(placement.id); true
+            } else false
+        }
+        if (freeUsed) return RewardOutcome.FreeGranted
+
+        // 2) Ad-backed path — gate first; never show an ad that couldn't grant.
         if (!consent.canRequestAds.value) return RewardOutcome.NotGranted(SuppressReason.CONSENT_NOT_READY)
         if (!rc.bool(RcKeys.GLOBAL_ENABLED)) return RewardOutcome.NotGranted(SuppressReason.GLOBAL_DISABLED)
         if (!rc.bool(placement.rcEnabledKey)) return RewardOutcome.NotGranted(SuppressReason.RC_DISABLED)
+        if (!withinRewardCap(placement)) return RewardOutcome.NotGranted(SuppressReason.SESSION_CAP)  // daily cap → paywall
+
+        // 3) One rewarded ad at a time: a double-tap loses the CAS → MUTEX_BUSY, no second show.
         if (!tryAcquireFullScreen(placement.id)) return RewardOutcome.NotGranted(SuppressReason.MUTEX_BUSY)
         return try {
             val timeout = rc.long(RcKeys.REWARD_LOAD_TIMEOUT_MS).takeIf { it > 0 } ?: DEFAULT_REWARD_TIMEOUT_MS
-            // withTimeoutOrNull bounds the LOAD; a real impl must not time out an in-progress watch.
-            val granted = withTimeoutOrNull(timeout) { ads.showRewarded(placement.toFeature()) } ?: false
-            if (granted) recordFullScreenShown(placement)
-            if (granted) RewardOutcome.Granted else RewardOutcome.NotGranted(null)
+            // The boolean IS the SDK earned-reward signal. NO grant on close/fail/offline/timeout (rule 5).
+            val earned = withTimeoutOrNull(timeout) { ads.showRewarded(placement.toFeature()) } ?: false
+            if (!earned) return RewardOutcome.NotGranted(null)
+
+            analytics.adRewardEarned(placement.id, placement.rewardType)   // earned — logged before granting
+            // Grant exactly once, re-checking the cap atomically before incrementing.
+            val granted = unlockMutex.withLock {
+                val s = rewards.snapshot()
+                if (rewards.rewardedToday(s, placement.id) < placement.rewardedPerDay &&
+                    rewards.totalRewardedToday(s) < rc.long(RcKeys.REWARD_DAILY_CAP)
+                ) {
+                    rewards.incrementRewarded(placement.id); true
+                } else false
+            }
+            if (!granted) return RewardOutcome.NotGranted(SuppressReason.SESSION_CAP)
+            recordFullScreenShown(placement)
+            analytics.adRewardGranted(placement.id, placement.rewardType)  // granted — exactly once
+            RewardOutcome.Granted
         } finally {
             releaseFullScreen(placement.id)
         }
+    }
+
+    /** Within both the per-placement and the global RC daily rewarded caps. */
+    private suspend fun withinRewardCap(placement: Placement): Boolean {
+        val s = rewards.snapshot()
+        return rewards.rewardedToday(s, placement.id) < placement.rewardedPerDay &&
+            rewards.totalRewardedToday(s) < rc.long(RcKeys.REWARD_DAILY_CAP)
     }
 
     // ---- Full-screen mutex (also used by paywall / permission / purchase dialogs, rule 3) ----

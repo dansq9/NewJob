@@ -109,8 +109,16 @@ class MockViewModel @Inject constructor(
     }
 
     private fun score(live: MockUi.Live) {
-        _ui.value = MockUi.Loading
         viewModelScope.launch {
+            // ad_rewarded_mock_score — unlock detailed AI scoring (Pro bypasses). Reward only
+            // on the earned callback; on no-grant keep the user on a retryable error.
+            when (monetization.showRewarded(app.ascend.monetization.Placement.REWARDED_MOCK_SCORE)) {
+                is app.ascend.monetization.RewardOutcome.NotGranted -> {
+                    _ui.value = MockUi.Error(R.string.error_mock_score_failed, MockUi.Phase.SCORE); return@launch
+                }
+                else -> Unit  // Granted / FreeGranted / ProBypass → proceed
+            }
+            _ui.value = MockUi.Loading
             _ui.value = try {
                 val answers = live.answers.map { MockAnswer(it.key, it.value) }
                 MockUi.Report(api.scoreMock(MockScoreRequest(live.sessionId, answers)))

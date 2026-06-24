@@ -44,6 +44,7 @@ import app.ascend.ui.components.SectionLabel
 import app.ascend.ui.theme.AscendColors
 import app.ascend.ui.theme.JetBrainsMono
 import app.ascend.ui.util.rememberResumePicker
+import kotlinx.coroutines.launch
 
 @Composable
 fun ResumeScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) {
@@ -183,6 +184,8 @@ private fun EmptyLibrary(onAdd: () -> Unit) {
 private fun Results(data: OptimizeResponse, resumeName: String?) {
     val uriHandler = LocalUriHandler.current
     val ctx = LocalContext.current
+    val scope = androidx.compose.runtime.rememberCoroutineScope()
+    val monetization = app.ascend.ui.monetization.rememberMonetizationManager()
     val downloadLinkError = stringResource(R.string.resume_download_link_error)
     val shareSubject = stringResource(R.string.resume_share_subject)
     val shareChooserTitle = stringResource(R.string.resume_share_chooser)
@@ -223,9 +226,17 @@ private fun Results(data: OptimizeResponse, resumeName: String?) {
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         OutlinedButton(
             onClick = {
-                data.downloadUrl?.let { url ->
-                    if (runCatching { uriHandler.openUri(url) }.isFailure) {
-                        android.widget.Toast.makeText(ctx, downloadLinkError, android.widget.Toast.LENGTH_SHORT).show()
+                val url = data.downloadUrl ?: return@OutlinedButton
+                // ad_rewarded_resume_download — gate the export behind a rewarded unlock (Pro
+                // bypasses). The reward is granted only on the earned callback; open the file
+                // only on a grant, never on no-fill/close/offline (rule 5).
+                scope.launch {
+                    when (monetization.showRewarded(app.ascend.monetization.Placement.REWARDED_RESUME_DOWNLOAD)) {
+                        is app.ascend.monetization.RewardOutcome.NotGranted ->
+                            android.widget.Toast.makeText(ctx, downloadLinkError, android.widget.Toast.LENGTH_SHORT).show()
+                        else -> if (runCatching { uriHandler.openUri(url) }.isFailure) {
+                            android.widget.Toast.makeText(ctx, downloadLinkError, android.widget.Toast.LENGTH_SHORT).show()
+                        }
                     }
                 }
             },
