@@ -46,6 +46,7 @@ class JobsViewModel @Inject constructor(
     private val selectedJob: SelectedJobStore,
     private val profileRepo: ProfileRepository,
     private val monetization: MonetizationManager,
+    private val analytics: app.ascend.analytics.AnalyticsTracker,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(JobsUiState())
@@ -110,6 +111,7 @@ class JobsViewModel @Inject constructor(
                 is Resource.Success -> {
                     val fresh = res.data.dedup()
                     _state.update { it.copy(jobs = fresh, status = Resource.Success(Unit), endReached = res.data.isEmpty()) }
+                    analytics.coreActionDone(app.ascend.analytics.CoreAction.SEARCH)   // activation (drives session-2 gate)
                     maybeShowSearchInterstitial()
                 }
                 is Resource.Error -> _state.update { it.copy(status = res) }
@@ -151,8 +153,12 @@ class JobsViewModel @Inject constructor(
 
     fun toggleSave(job: Job) {
         viewModelScope.launch {
-            if (_state.value.savedIds.contains(job.id)) tracker.remove(job.id)
-            else tracker.save(job, TrackStage.SAVED)
+            if (_state.value.savedIds.contains(job.id)) {
+                tracker.remove(job.id)
+            } else {
+                tracker.save(job, TrackStage.SAVED)
+                analytics.coreActionDone(app.ascend.analytics.CoreAction.SAVE)   // activation
+            }
         }
     }
 

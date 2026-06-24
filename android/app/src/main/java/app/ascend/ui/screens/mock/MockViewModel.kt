@@ -83,6 +83,7 @@ class MockViewModel @Inject constructor(
                 if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "mock_start"))
                 MockUi.Error(if (t.isOffline()) R.string.error_offline else R.string.error_mock_start_failed, MockUi.Phase.START)
             }
+            if (_ui.value is MockUi.Live) analytics.coreActionDone(app.ascend.analytics.CoreAction.MOCK_START)   // activation
         }
     }
 

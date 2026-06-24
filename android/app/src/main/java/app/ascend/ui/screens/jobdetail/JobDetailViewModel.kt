@@ -44,8 +44,11 @@ class JobDetailViewModel @Inject constructor(
         if (detailViewCount >= 2) monetization.requestFullScreen(app.ascend.monetization.Placement.INTER_AFTER_JOB_DETAIL_CLOSE)
     }
 
-    /** The user is leaving to the external apply page — suppress app-open on return. */
-    fun onApplyExternal() = monetization.noteExternalLinkOpened()
+    /** The user is leaving to the external apply page — suppress app-open on return + activate. */
+    fun onApplyExternal() {
+        monetization.noteExternalLinkOpened()
+        viewModelScope.launch { analytics.coreActionDone(app.ascend.analytics.CoreAction.APPLY) }   // activation
+    }
 
     /** Opening the external apply link failed (malformed URL / no browser). */
     fun onApplyFailed() = analytics.externalApplyFailed(app.ascend.analytics.ErrorType.VALIDATION)
@@ -64,7 +67,12 @@ class JobDetailViewModel @Inject constructor(
     fun toggleSave() {
         val j = job.value ?: return
         viewModelScope.launch {
-            if (saved.value) tracker.remove(j.id) else tracker.save(j, TrackStage.SAVED)
+            if (saved.value) {
+                tracker.remove(j.id)
+            } else {
+                tracker.save(j, TrackStage.SAVED)
+                analytics.coreActionDone(app.ascend.analytics.CoreAction.SAVE)   // activation
+            }
         }
     }
 

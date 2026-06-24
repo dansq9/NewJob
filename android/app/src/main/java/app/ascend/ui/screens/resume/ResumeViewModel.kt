@@ -66,7 +66,10 @@ class ResumeViewModel @Inject constructor(
     fun addResume(file: PickedFile) {
         viewModelScope.launch {
             when (val r = resumes.add(file)) {
-                is AddResumeResult.Success -> _snackbar.value = "Added ${r.record.name}"
+                is AddResumeResult.Success -> {
+                    _snackbar.value = "Added ${r.record.name}"
+                    analytics.coreActionDone(app.ascend.analytics.CoreAction.UPLOAD)   // activation
+                }
                 is AddResumeResult.Rejected -> {
                     analytics.resumeUploadFailed(app.ascend.analytics.ErrorType.UNSUPPORTED_FILE)
                     _snackbar.value = r.reason
