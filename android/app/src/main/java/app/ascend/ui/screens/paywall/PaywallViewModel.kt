@@ -32,7 +32,7 @@ class PaywallViewModel @Inject constructor(
     var plans by mutableStateOf<List<SubPlan>>(emptyList()); private set
     var selected by mutableStateOf<String?>(null); private set
     var busy by mutableStateOf(false); private set
-    @StringRes var message by mutableStateOf<Int?>(null)
+    @get:StringRes var message by mutableStateOf<Int?>(null)
 
     init {
         // Single-variant paywall for now; A/B variant comes from Remote Config later.
