@@ -18,6 +18,7 @@ class OnboardingViewModel @Inject constructor(
     private val repo: ProfileRepository,
     private val resumes: ResumeRepository,
     private val analytics: app.ascend.analytics.AnalyticsTracker,
+    private val monetization: app.ascend.monetization.MonetizationManager,
 ) : ViewModel() {
 
     /** onboarding_step — the user advanced past [step] (skipped = field left blank). */
@@ -76,6 +77,9 @@ class OnboardingViewModel @Inject constructor(
                     location = app.ascend.analytics.LocationType.UNKNOWN,   // onboarding captures a city, not remote/onsite
                     resumeUploaded = resumeName != null,
                 )
+                // After onboarding_complete is persisted+logged, before the first main screen:
+                // run the onboarding-complete interstitial (RC default OFF; fails open; never blocks nav).
+                monetization.runOnboardingInterstitial()
                 onDone()
             } else {
                 saveFailed = true

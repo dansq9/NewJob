@@ -38,6 +38,16 @@ Dual sign-off (partner check, then QA confirm). Evidence (video/screenshot) requ
 | IA15 | Interstitial | Splash interstitial UMP gate | No splash interstitial request/show before `canRequestAds()==true` | Critical |
 | IA16 | All | Format-specific full-screen dispatch | Interstitial placements use the interstitial API, App Open uses the App Open API, rewarded uses the rewarded API; native placements are never passed through the interstitial presenter; no generic presenter defaults to interstitial | Critical |
 | IA17 | All | Pure eligibility helpers | Splash suppression can check App Open eligibility without consuming caps, mutating state, marking App Open shown, or starting App Open load/show | High |
+| IA18 | Interstitial | Interstitial after onboarding complete | After `onboarding_complete` only, before the first main app screen; never during language/location/role/resume setup | High |
+| IA19 | Interstitial | Onboarding interstitial default OFF | With `ads.inter.after_onboarding_complete.enabled=false` or missing, no ad appears and the app continues normally | Critical |
+| IA20 | Interstitial | Onboarding interstitial fail-open | If ad is not ready/no-fill/offline/timeout, app goes to Home/Jobs immediately with no blank screen | Critical |
+| IA21 | Interstitial | Onboarding interstitial paid suppression | Paid users never see this placement or its transition | Critical |
+| IA22 | Interstitial | Onboarding interstitial mutex | Does not show if paywall, purchase dialog, app-open, rewarded, permission dialog, or another interstitial is active | Critical |
+| IA23 | Interstitial | Onboarding interstitial recent-ad suppression | If another full-screen onboarding ad was shown recently, suppress unless `allow_aggressive_stack=true` | High |
+| IA24 | Interstitial | Onboarding interstitial UMP gate | No request/show before UMP consent resolves and `canRequestAds()==true` | Critical |
+| IA25 | Interstitial | Forward suppression after onboarding interstitial | After it shows, App Open + regular interstitials suppressed for `suppress_next_fullscreen_seconds`; user-requested rewarded ads are NOT suppressed | High |
+| IA26 | Interstitial | Transition and timeout alignment | Transition and ad readiness run concurrently; user not delayed beyond `load_timeout_ms` if the ad is not ready | Critical |
+| IA27 | Interstitial | Honest branded transition | Transition contains no fake CTA, tap prompt, fake reward copy, or ad-like UI before the interstitial | High |
 | OA01 | App-open | Background fill under resume ad | Branded/neutral surface, no half-rendered content | Medium |
 | OA02 | App-open | Click resume ad | Redirects to landing page | Medium |
 | OA03 | App-open | Close resume ad | Returns to the resume screen | High |

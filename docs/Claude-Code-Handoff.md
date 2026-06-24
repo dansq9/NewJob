@@ -106,6 +106,27 @@ splash + App Open never both fire in one foreground cycle; QA IA08–IA15 pass.
 > - Use **format-specific** presenters: `presentInterstitial`/`requestInterstitial` (interstitial), App Open path, rewarded path. No generic `presentFullScreen()` that defaults to `showInterstitial()`. Native/paywall/permission/purchase dialogs never use the interstitial presenter.
 > - Eligibility helper calls used for cross-placement suppression must be **side-effect-free** (`isAppOpenEligibleSnapshot()` — no caps consumed, no state mutated, no load/show started). Never call another placement's full suppression/show pipeline just to infer eligibility.
 
+### Task 5b — Interstitial after onboarding complete
+```
+Implement ad_inter_after_onboarding_complete exactly from /docs/monetization-spec.md.
+MonetizationManager only; no screen-level ad SDK calls.
+- Trigger AFTER onboarding_complete is logged + persisted, BEFORE the first main
+  destination (Home/Jobs). Never during onboarding steps.
+- Default OFF (RC). Cap max once per install (persisted). Suppress for paid users,
+  inside onboarding, when a full-screen surface is active, and when another
+  full-screen onboarding ad was shown recently (unless allow_aggressive_stack).
+- Honor the UMP gate + full-screen mutex. Fail open on no-fill/offline/not-ready/timeout.
+- Run the branded transition and ad-readiness CONCURRENTLY; never hold the user past
+  load_timeout_ms for a not-ready ad. Honest branded loading only (logo/spinner) — no
+  CTA/tap-prompt/fake-reward UI.
+- On show, forward-suppress the next forced full-screen surface (App Open + forced
+  interstitials) for suppress_next_fullscreen_seconds (reason recent_onboarding_
+  interstitial); do NOT suppress user-requested rewarded ads, paywalls, or native.
+- Log via AnalyticsTracker only (ad_request/show_attempt/suppressed/show_failed/
+  load_failed/dismissed/impression); placement_id = ad_inter_after_onboarding_complete.
+Acceptance: QA IA18-IA27 pass; assembleDebug green.
+```
+
 ### Task 6 — Rewarded unlocks + Copilot gating
 ```
 Read /docs/monetization-spec.md (Rewarded caps) and CLAUDE.md rules 5-6.

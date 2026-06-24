@@ -32,7 +32,12 @@ class ProfileRepository @Inject constructor(
         val SESSION_NUMBER = intPreferencesKey("session_number")
         val ACTIVATED = booleanPreferencesKey("activated")
         val LOGGED_PURCHASES = stringSetPreferencesKey("logged_purchase_tx")
+        val ONB_INTERSTITIAL_SHOWN = booleanPreferencesKey("onboarding_interstitial_shown")
     }
+
+    /** True once the onboarding-complete interstitial has shown (per-install cap of 1). */
+    suspend fun onboardingInterstitialShown(): Boolean = dataStore.data.first()[Keys.ONB_INTERSTITIAL_SHOWN] ?: false
+    suspend fun markOnboardingInterstitialShown() { dataStore.edit { it[Keys.ONB_INTERSTITIAL_SHOWN] = true } }
 
     /**
      * Atomically records that purchase [txId] has been logged; returns true only the

@@ -81,8 +81,12 @@ class MonetizationManager @Inject constructor(
     private val splashShownThisSession = java.util.concurrent.atomic.AtomicBoolean(false)
     @Volatile private var lastSplashAtMs: Long = Long.MIN_VALUE
     private val _splashTransition = MutableStateFlow(false)
-    /** True while the branded pre-ad transition surface should be shown over the app. */
+    /** True while a branded pre-ad transition surface (splash OR onboarding-complete) should overlay the app. */
     val splashTransition: StateFlow<Boolean> = _splashTransition.asStateFlow()
+
+    // ---- Onboarding-complete interstitial state ----
+    // When it last showed (forward-suppresses the next forced full-screen for an RC window).
+    @Volatile private var lastOnboardingInterstitialAtMs: Long = Long.MIN_VALUE
 
     // App-lifetime scope so a full-screen present survives the caller's lifecycle
     // (e.g. an interstitial requested as a screen pops). The real ad shows over the
@@ -157,6 +161,8 @@ class MonetizationManager @Inject constructor(
         if (session < placement.firstEligibleSession) return AdDecision.Suppressed(placement, SuppressReason.NOT_ELIGIBLE_YET)
 
         if (placement.isFullScreen && isFullScreenBusy()) return AdDecision.Suppressed(placement, SuppressReason.MUTEX_BUSY)
+        // Forward-suppress: yield for a window after the onboarding-complete interstitial showed.
+        if (withinOnboardingForwardSuppress()) return AdDecision.Suppressed(placement, SuppressReason.RECENT_ONBOARDING_INTERSTITIAL)
         if (placement.format == AdFormat.INTERSTITIAL) {
             if (interstitialsShown.get() >= rc.long(RcKeys.INTER_MAX_PER_SESSION)) {
                 return AdDecision.Suppressed(placement, SuppressReason.SESSION_CAP)
@@ -353,6 +359,7 @@ class MonetizationManager @Inject constructor(
         }
 
         if (isFullScreenBusy()) return SuppressReason.MUTEX_BUSY                    // rule 3
+        if (withinOnboardingForwardSuppress()) return SuppressReason.RECENT_ONBOARDING_INTERSTITIAL
         if (suppressedByFlow()) return SuppressReason.SUPPRESS_ZONE                 // resume/mock/copilot/billing/legal
 
         // Post-event suppression windows (external link & ad clicks, rewarded, permission, any full-screen ad).
@@ -466,6 +473,89 @@ class MonetizationManager @Inject constructor(
         if (splashShownThisSession.get()) return SuppressReason.SESSION_CAP         // max 1 / session
         if (within(lastSplashAtMs, RcKeys.AFTER_SPLASH_COOLDOWN_SECONDS)) return SuppressReason.COOLDOWN
         return null
+    }
+
+    // ---- Onboarding-complete interstitial (after onboarding_complete, before first main screen) ----
+
+    /**
+     * Run the onboarding-complete interstitial. Call AFTER onboarding_complete is logged +
+     * persisted and BEFORE navigating to the first main destination. Caps at once per install,
+     * defaults OFF, fails open, and on show forward-suppresses the next forced full-screen.
+     *
+     * The branded transition runs CONCURRENTLY with the ad-readiness wait: the user is never
+     * held past load_timeout for a not-ready ad, and a short transition only completes its
+     * minimum once an ad is actually ready.
+     */
+    suspend fun runOnboardingInterstitial(): ShowOutcome {
+        val p = Placement.INTER_AFTER_ONBOARDING_COMPLETE
+        val fmt = p.format.schemaName
+        val reason = onboardingInterstitialSuppression()
+        if (reason != null) { logDecision(p, reason); return ShowOutcome.Skipped(reason) }
+
+        analytics.adRequest(p.id, fmt)
+        val timeout = rc.long(RcKeys.AFTER_ONB_LOAD_TIMEOUT_MS).takeIf { it > 0 } ?: DEFAULT_FULLSCREEN_TIMEOUT_MS
+        val transitionEnabled = rc.bool(RcKeys.AFTER_ONB_TRANSITION_ENABLED)
+        val transitionMin = if (transitionEnabled) rc.long(RcKeys.AFTER_ONB_TRANSITION_DURATION_MS) else 0L
+        val start = SystemClock.elapsedRealtime()
+        if (transitionEnabled) _splashTransition.value = true
+        try {
+            // Concurrent: branded transition is visible WHILE we await readiness (≤ load_timeout).
+            val ready = withTimeoutOrNull(timeout) {
+                while (!ads.isInterstitialReady()) delay(50)
+                true
+            } ?: false
+            if (!ready) {                                  // not ready by timeout → fail open, no decorative hold
+                analytics.adLoadFailed(p.id, fmt, "not_ready")
+                return ShowOutcome.Skipped(SuppressReason.NOT_READY)
+            }
+            // Ad ready → let the short branded transition reach its minimum (never beyond timeout).
+            val elapsed = SystemClock.elapsedRealtime() - start
+            if (transitionMin > elapsed) delay(transitionMin - elapsed)
+        } finally {
+            _splashTransition.value = false
+        }
+        if (!tryAcquireFullScreen(p.id)) { analytics.adShowFailed(p.id, "mutex"); return ShowOutcome.Skipped(SuppressReason.MUTEX_BUSY) }
+        return try {
+            analytics.adShowAttempt(p.id, fmt)
+            ads.showInterstitial()   // INTERSTITIAL show path
+            recordFullScreenShown(p)
+            profile.markOnboardingInterstitialShown()                        // per-install cap
+            lastOnboardingInterstitialAtMs = SystemClock.elapsedRealtime()   // forward-suppress window
+            analytics.adDismissed(p.id, fmt)
+            ShowOutcome.Shown
+        } finally {
+            releaseFullScreen(p.id)
+        }
+    }
+
+    private suspend fun onboardingInterstitialSuppression(): SuppressReason? {
+        val p = Placement.INTER_AFTER_ONBOARDING_COMPLETE
+        val ent = entitlements.entitlement.first()
+        if (ent.isUnknown) return SuppressReason.ENTITLEMENT_UNKNOWN
+        if (ent.isPro) return SuppressReason.PAID_USER                              // rule 6
+        if (!consent.canRequestAds.value) return SuppressReason.CONSENT_NOT_READY   // rule 1
+        if (!rc.bool(RcKeys.GLOBAL_ENABLED)) return SuppressReason.GLOBAL_DISABLED
+        if (!rc.bool(p.rcEnabledKey)) return SuppressReason.RC_DISABLED             // remote_config_off; missing → OFF
+        if (!profile.profile.first().onboarded) return SuppressReason.ONBOARDING_INCOMPLETE
+        // Per-install cap (max_per_install; default/missing 0 → effectively off).
+        if (profile.onboardingInterstitialShown()) return SuppressReason.ALREADY_SHOWN_THIS_INSTALL
+        if (rc.long(RcKeys.AFTER_ONB_MAX_PER_INSTALL) < 1) return SuppressReason.ALREADY_SHOWN_THIS_INSTALL
+        if (isFullScreenBusy()) return SuppressReason.MUTEX_BUSY                    // rule 3
+        if (activeFlows.isNotEmpty()) return SuppressReason.PROTECTED_FLOW
+        // Don't stack right after another full-screen onboarding ad unless RC allows it.
+        if (!rc.bool(RcKeys.AFTER_ONB_ALLOW_AGGRESSIVE_STACK) &&
+            within(lastFullScreenAtMs, RcKeys.AFTER_ONB_SUPPRESS_IF_FS_ONB_SHOWN_SECONDS)
+        ) {
+            return SuppressReason.FULLSCREEN_ONBOARDING_AD_RECENT
+        }
+        return null
+    }
+
+    /** True while the post-onboarding-interstitial forward-suppression window is active. */
+    private fun withinOnboardingForwardSuppress(): Boolean {
+        if (lastOnboardingInterstitialAtMs == Long.MIN_VALUE) return false
+        val windowMs = rc.long(RcKeys.AFTER_ONB_SUPPRESS_NEXT_FULLSCREEN_SECONDS) * 1000
+        return SystemClock.elapsedRealtime() - lastOnboardingInterstitialAtMs < windowMs
     }
 
     // ---- Full-screen mutex (also used by paywall / permission / purchase dialogs, rule 3) ----

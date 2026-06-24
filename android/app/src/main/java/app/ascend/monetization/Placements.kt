@@ -63,6 +63,8 @@ enum class Placement(
     INTER_AFTER_GAME_COMPLETE("ad_inter_after_game_complete", AdFormat.INTERSTITIAL, "ads.inter.game_complete.enabled", 2),
     // Splash/session-start interstitial — its own session gate (RC after_splash.*); never session 1.
     INTER_AFTER_SPLASH("ad_inter_after_splash", AdFormat.INTERSTITIAL, "ads.inter.after_splash.enabled", 2),
+    // Onboarding-complete interstitial — fires once per install after onboarding_complete (RC after_onboarding_complete.*).
+    INTER_AFTER_ONBOARDING_COMPLETE("ad_inter_after_onboarding_complete", AdFormat.INTERSTITIAL, "ads.inter.after_onboarding_complete.enabled", 1),
 
     // --- Rewarded (user-initiated unlock; "no ad → free" for paid; reward on callback only) ---
     // free/day + rewarded/day caps from the spec's "Rewarded unlocks" table.
@@ -110,8 +112,12 @@ enum class SuppressReason {
     FIRST_SESSION,       // splash interstitial: session 1 (or below min_session) — never show
     NOT_ACTIVATED_SESSION_2, // splash interstitial: session 2 but no session-1 core action
     APPOPEN_ELIGIBLE,    // splash interstitial: App Open is eligible this foreground cycle — yield
-    PROTECTED_FLOW,      // splash interstitial: a protected flow is active (resume/mock/copilot/billing)
-    NOT_READY,           // splash interstitial: no ad ready within the load timeout — fail open
+    PROTECTED_FLOW,      // splash/onboarding interstitial: a protected flow is active
+    NOT_READY,           // splash/onboarding interstitial: no ad ready within the load timeout — fail open
+    ONBOARDING_INCOMPLETE,            // onboarding interstitial: onboarding not finished yet
+    ALREADY_SHOWN_THIS_INSTALL,       // onboarding interstitial: per-install cap reached
+    FULLSCREEN_ONBOARDING_AD_RECENT,  // onboarding interstitial: another full-screen onboarding ad shown recently
+    RECENT_ONBOARDING_INTERSTITIAL,   // forward-suppress: onboarding interstitial shown recently → yield this full-screen
 }
 
 /** Low-cardinality token for the `ad_suppressed` diagnostic event (event-schema §8). */
@@ -135,6 +141,10 @@ val SuppressReason.diag: String
         SuppressReason.APPOPEN_ELIGIBLE -> "appopen_eligible"
         SuppressReason.PROTECTED_FLOW -> "protected_flow"
         SuppressReason.NOT_READY -> "not_ready"
+        SuppressReason.ONBOARDING_INCOMPLETE -> "onboarding_incomplete"
+        SuppressReason.ALREADY_SHOWN_THIS_INSTALL -> "already_shown_this_install"
+        SuppressReason.FULLSCREEN_ONBOARDING_AD_RECENT -> "fullscreen_onboarding_ad_recently_shown"
+        SuppressReason.RECENT_ONBOARDING_INTERSTITIAL -> "recent_onboarding_interstitial"
     }
 
 /**

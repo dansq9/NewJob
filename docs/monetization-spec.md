@@ -55,6 +55,7 @@ AdMob Mediation is the **sole** owner. **AdMob Network = waterfall** backstop; *
 | `ad_rewarded_game_hint` | Rewarded | Game | Hint / redo / extra puzzle | `ads.reward.game_hint.enabled` | — | — | any | no ad (free for Pro) | retry | gated; clear retry/upgrade |
 | `ad_appopen_resume` | App-open | App resume | Return from background | `ads.appopen.resume.enabled` | 1/sess · 2/day | 30 min | s2 if activated, else s3 | suppress | — | fail open |
 | `ad_inter_after_splash` | Interstitial | App splash / session start | After splash/profile load + UMP consent resolves, before Home/Onboarding continuation | `ads.inter.after_splash.enabled` | max 1 / session | 180s | session 2 if activated in session 1, else session 3 | suppress | skip | fail open after timeout |
+| `ad_inter_after_onboarding_complete` | Interstitial | Onboarding completion / pre-home | After `onboarding_complete`, before Home / Jobs / first main app destination | `ads.inter.after_onboarding_complete.enabled` | max 1 per install | n/a; forward-suppress next fullscreen by RC window | session 1 after onboarding_complete only | suppress | skip | fail open |
 
 **Splash vs App Open.** The splash/session-start interstitial (`ad_inter_after_splash`) is **separate** from App Open (`ad_appopen_resume`). Splash interstitial fires on **cold/session start** after splash/profile load; App Open fires on **background→foreground resume**. They must **never both show in the same foreground cycle** (`ads.inter.after_splash.suppress_if_appopen_eligible`). The 3-second branded transition is a *branded transition duration*, **not** an ad-load wait — if no ad is ready within `load_timeout_ms`, continue (fail open); never hold the user 3s for a failed ad. Never on session 1.
 
@@ -62,6 +63,11 @@ AdMob Mediation is the **sole** owner. **AdMob Network = waterfall** backstop; *
 - `ad_inter_after_splash` is a deliberate Apero-style post-splash interstitial. Keep it; do not remove unless Product asks.
 - It must **not** call App Open's show/suppression pipeline directly. To decide whether to yield to App Open, splash uses a **side-effect-free** eligibility snapshot (`isAppOpenEligibleSnapshot()`) that never marks App Open shown, consumes caps, mutates foreground/cooldown state, or starts a load/show.
 - Full-screen presentation is **format-specific**. There is no generic presenter that defaults to `showInterstitial()`: interstitial → `presentInterstitial`/`requestInterstitial` (interstitial show path), App Open → its own App Open path, rewarded → rewarded path. Native, paywall, purchase dialog, and permission dialog never share an interstitial show path. A placement may never be displayed through the wrong ad format just because it is "full-screen".
+
+**Onboarding-complete interstitial (`ad_inter_after_onboarding_complete`).** The only approved onboarding-completion interstitial. It runs **after** onboarding is complete (after `onboarding_complete` is logged + persisted), **not** during onboarding — never between language/role/location/resume steps. Defaults **OFF**. Caps at **once per install**. Suppressed for paid users; honors the UMP gate and the full-screen mutex; fails open to Home/Jobs on no-fill/offline/not-ready/timeout. It must not stack with another full-screen surface, and must not stack right after another full-screen onboarding ad within `suppress_if_fullscreen_onboarding_ad_shown_seconds` unless `allow_aggressive_stack=true`.
+- The branded transition is honest branded loading only (logo/spinner / "Preparing your jobs…") — **no** "Tap to continue", fake reward language, fake buttons, or ad-like UI that could manufacture accidental clicks.
+- `transition_duration_ms` and `load_timeout_ms` run **concurrently**: do not show the transition first and only then start waiting for the ad. If the ad is ready before the short transition minimum elapses, finish the minimum then show; if not ready by `load_timeout_ms`, fail open to Home/Jobs immediately. Never hold the user past the timeout for decorative animation.
+- **Forward suppression:** if it shows, suppress the next forced full-screen surface for `suppress_next_fullscreen_seconds` (reason `recent_onboarding_interstitial`): `ad_appopen_resume` and every forced interstitial (`ad_inter_after_search_batch`, `…_job_detail_close`, `…_resume_score`, `…_mock_report`, `…_copilot_end`, `…_game_complete`). Do **not** suppress user-requested rewarded ads, paywalls, or native/non-blocking placements.
 
 ## Remote Config keys
 
@@ -101,6 +107,14 @@ Missing full-screen key => OFF. No blank containers.
 | `ads.inter.after_splash.transition_enabled` | true | true|false | n/a | n/a | true |
 | `ads.inter.after_splash.transition_duration_ms` | 3000 | 1500–3000 | n/a | n/a | 1500 |
 | `ads.inter.after_splash.suppress_if_appopen_eligible` | true | true|false | n/a | n/a | true |
+| `ads.inter.after_onboarding_complete.enabled` | false | true|false | suppress | skip | false |
+| `ads.inter.after_onboarding_complete.max_per_install` | 1 | 0|1 | 0 | n/a | 0 |
+| `ads.inter.after_onboarding_complete.load_timeout_ms` | 1200 | 800-1500 | n/a | skip | 1200 |
+| `ads.inter.after_onboarding_complete.transition_enabled` | true | true|false | n/a | n/a | true |
+| `ads.inter.after_onboarding_complete.transition_duration_ms` | 900 | 300-1200 | n/a | n/a | 700 |
+| `ads.inter.after_onboarding_complete.suppress_if_fullscreen_onboarding_ad_shown_seconds` | 60 | 0-300 | n/a | n/a | 60 |
+| `ads.inter.after_onboarding_complete.allow_aggressive_stack` | false | true|false | false | n/a | false |
+| `ads.inter.after_onboarding_complete.suppress_next_fullscreen_seconds` | 180 | 60-600 | n/a | n/a | 180 |
 | `paywall.variant` | control | control|discount|trial|lifetime | n/a | last cached | control |
 | `paywall.suppress_if_rewarded_engaged` | true | true|false | n/a | n/a | true |
 | `push.jobs_fresh.daily_cap` | 1 | 0–2 | n/a | n/a | 1 |

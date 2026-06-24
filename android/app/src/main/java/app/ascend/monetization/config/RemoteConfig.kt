@@ -45,6 +45,15 @@ object RcKeys {
     const val AFTER_SPLASH_TRANSITION_DURATION_MS = "ads.inter.after_splash.transition_duration_ms"
     const val AFTER_SPLASH_SUPPRESS_IF_APPOPEN = "ads.inter.after_splash.suppress_if_appopen_eligible"
 
+    // Onboarding-complete interstitial (fires after onboarding_complete, before first main screen)
+    const val AFTER_ONB_MAX_PER_INSTALL = "ads.inter.after_onboarding_complete.max_per_install"
+    const val AFTER_ONB_LOAD_TIMEOUT_MS = "ads.inter.after_onboarding_complete.load_timeout_ms"
+    const val AFTER_ONB_TRANSITION_ENABLED = "ads.inter.after_onboarding_complete.transition_enabled"
+    const val AFTER_ONB_TRANSITION_DURATION_MS = "ads.inter.after_onboarding_complete.transition_duration_ms"
+    const val AFTER_ONB_SUPPRESS_IF_FS_ONB_SHOWN_SECONDS = "ads.inter.after_onboarding_complete.suppress_if_fullscreen_onboarding_ad_shown_seconds"
+    const val AFTER_ONB_ALLOW_AGGRESSIVE_STACK = "ads.inter.after_onboarding_complete.allow_aggressive_stack"
+    const val AFTER_ONB_SUPPRESS_NEXT_FULLSCREEN_SECONDS = "ads.inter.after_onboarding_complete.suppress_next_fullscreen_seconds"
+
     // Native frequency (job list)
     const val NATIVE_JOB_LIST_FREQUENCY = "ads.native.job_list.frequency"
 
@@ -101,6 +110,15 @@ private val DEFAULTS: Map<String, Any> = mapOf(
     RcKeys.AFTER_SPLASH_TRANSITION_ENABLED to true,
     RcKeys.AFTER_SPLASH_TRANSITION_DURATION_MS to 1500L,
     RcKeys.AFTER_SPLASH_SUPPRESS_IF_APPOPEN to true,
+
+    // Onboarding-complete interstitial — fail-safe (missing-key) values; OFF until configured.
+    RcKeys.AFTER_ONB_MAX_PER_INSTALL to 0L,
+    RcKeys.AFTER_ONB_LOAD_TIMEOUT_MS to 1200L,
+    RcKeys.AFTER_ONB_TRANSITION_ENABLED to true,
+    RcKeys.AFTER_ONB_TRANSITION_DURATION_MS to 700L,
+    RcKeys.AFTER_ONB_SUPPRESS_IF_FS_ONB_SHOWN_SECONDS to 60L,
+    RcKeys.AFTER_ONB_ALLOW_AGGRESSIVE_STACK to false,
+    RcKeys.AFTER_ONB_SUPPRESS_NEXT_FULLSCREEN_SECONDS to 180L,
 
     RcKeys.NATIVE_JOB_LIST_FREQUENCY to 8L,
 
