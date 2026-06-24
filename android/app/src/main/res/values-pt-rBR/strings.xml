@@ -1,0 +1,96 @@
+<resources>
+    <!-- Brazilian Portuguese (pt-BR) -->
+
+    <!-- ============ Comuns / reutilizáveis ============ -->
+    <string name="action_cancel">Cancelar</string>
+    <string name="action_save">Salvar</string>
+    <string name="action_dismiss">Dispensar</string>
+    <string name="action_remove">Remover</string>
+    <string name="action_retry">Tentar de novo</string>
+    <string name="action_continue">Continuar</string>
+    <string name="action_skip">Pular</string>
+    <string name="action_done">Concluído</string>
+    <string name="action_back">Voltar</string>
+    <string name="action_clear">Limpar</string>
+    <string name="action_set">Definir</string>
+    <string name="action_change">Alterar</string>
+
+    <!-- ============ Navegação inferior ============ -->
+    <string name="nav_home">Início</string>
+    <string name="nav_jobs">Vagas</string>
+    <string name="nav_tracker">Acompanhamento</string>
+    <string name="nav_interviews">Entrevistas</string>
+
+    <!-- ============ Início ============ -->
+    <string name="home_greeting_morning">Bom dia</string>
+    <string name="home_greeting_afternoon">Boa tarde</string>
+    <string name="home_greeting_evening">Boa noite</string>
+    <string name="home_greeting_default">Olá</string>
+    <string name="home_search_hint">Buscar vagas, cargos, empresas</string>
+    <string name="home_quick_actions">Ações rápidas</string>
+    <string name="home_qa_resume">Otimizar currículo</string>
+    <string name="home_qa_resume_sub">Supere o ATS</string>
+    <string name="home_qa_mock">Simulação de entrevista</string>
+    <string name="home_qa_mock_sub">Pratique &amp; receba sua nota</string>
+    <string name="home_qa_copilot">Copiloto ao vivo</string>
+    <string name="home_qa_copilot_sub">Respostas em tempo real</string>
+    <string name="home_qa_games">Jogos mentais</string>
+    <string name="home_qa_games_sub">Afie a mente todo dia</string>
+    <string name="home_top_matches">Melhores combinações</string>
+    <string name="home_see_all">Ver tudo</string>
+    <string name="home_matches_for">para %1$s</string>
+    <string name="home_no_matches">Ainda não há combinações para o cargo desejado. Tente uma busca mais ampla.</string>
+    <string name="home_find_jobs">Buscar vagas</string>
+
+    <!-- ============ Entrevistas ============ -->
+    <string name="interviews_title">Entrevistas</string>
+    <string name="interviews_subtitle">Prepare-se com IA e tenha ajuda em tempo real durante a chamada.</string>
+    <string name="interviews_mock_title">Simulação de entrevista</string>
+    <string name="interviews_mock_sub">Perguntas geradas por IA com feedback instantâneo e com nota.</string>
+    <string name="interviews_copilot_title">Copiloto de entrevista ao vivo</string>
+    <string name="interviews_copilot_sub">Respostas em tempo real, na sua voz, durante a chamada.</string>
+
+    <!-- ============ Integração ============ -->
+    <string name="onboarding_get_started">Começar</string>
+    <string name="onboarding_finish">Concluir</string>
+    <string name="onboarding_welcome_title">Bem-vindo ao Ascend</string>
+    <string name="onboarding_welcome_sub">Conquiste seu próximo emprego mais rápido. Vamos configurar sua busca em poucos passos.</string>
+    <string name="onboarding_name_title">Como podemos te chamar?</string>
+    <string name="onboarding_name_sub">Seu nome nos ajuda a personalizar o Ascend.</string>
+    <string name="onboarding_name_hint">ex.: Alex Morgan</string>
+    <string name="onboarding_role_title">Qual cargo você procura?</string>
+    <string name="onboarding_role_sub">Isso personaliza suas combinações, dicas de currículo &amp; simulações de entrevista.</string>
+    <string name="onboarding_role_hint">ex.: Gerente de Produto</string>
+    <string name="onboarding_location_title">Onde você está procurando?</string>
+    <string name="onboarding_location_sub">Vamos mostrar vagas perto de você e oportunidades remotas.</string>
+    <string name="onboarding_location_hint">Cidade, região ou Remoto</string>
+    <string name="onboarding_resume_title">Adicione seu currículo</string>
+    <string name="onboarding_resume_sub">Vamos usá-lo para personalizar combinações e oferecer uma reescrita gratuita pronta para ATS. Você pode pular e adicionar depois.</string>
+    <string name="onboarding_resume_upload">Enviar currículo</string>
+    <string name="onboarding_resume_formats">PDF, DOCX · até 10 MB</string>
+    <string name="onboarding_resume_replace">Toque para substituir</string>
+    <string name="onboarding_save_error">Não foi possível salvar seu perfil. Tente de novo.</string>
+
+    <!-- ============ Configurações ============ -->
+    <string name="settings_title">Configurações</string>
+    <string name="settings_section_profile">Seu perfil</string>
+    <string name="settings_field_name">Nome</string>
+    <string name="settings_field_role">Cargo desejado</string>
+    <string name="settings_field_location">Localização</string>
+    <string name="settings_save_profile">Salvar perfil</string>
+    <string name="settings_profile_saved">Perfil salvo</string>
+    <string name="settings_section_resume">Currículo</string>
+    <string name="settings_manage_resumes">Gerenciar currículos</string>
+    <string name="settings_no_resume">Nenhum currículo adicionado ainda</string>
+    <string name="settings_section_language">Idioma</string>
+    <string name="settings_app_language">Idioma do app</string>
+    <string name="settings_choose_language">Escolher idioma</string>
+    <string name="settings_section_data">Dados &amp; backup</string>
+    <string name="settings_backup_note">Seu perfil, vagas salvas e acompanhamento têm backup na sua conta Google e são restaurados em um novo aparelho. O ID anônimo deste aparelho permanece sempre local.</string>
+    <string name="settings_section_reset">Redefinir</string>
+    <string name="settings_reset_onboarding">Redefinir integração</string>
+    <string name="settings_reset_confirm_title">Redefinir integração?</string>
+    <string name="settings_reset_confirm_body">Seu nome, cargo, localização e currículo selecionado serão apagados e você passará pela configuração novamente. As vagas salvas e sua biblioteca de currículos são mantidas.</string>
+    <string name="settings_reset_confirm_action">Redefinir</string>
+    <string name="settings_version">v%1$s (%2$d)</string>
+</resources>

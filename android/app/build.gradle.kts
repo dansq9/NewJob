@@ -30,10 +30,9 @@ android {
         versionCode = 1
         versionName = "0.1.0"
         vectorDrawables { useSupportLibrary = true }
-
-        // Ship only the locales we actually translate (keeps the APK lean + the
-        // Android 13 language list honest). Add a tag here + a values-<locale>/.
-        resourceConfigurations += setOf("en", "es")
+        // Note: we intentionally do NOT restrict resourceConfigurations — it would
+        // risk silently dropping a region-qualified locale (e.g. pt-rBR) if the
+        // token form were wrong. Supported locales are declared in locales_config.xml.
 
         // --- API configuration ---
         buildConfigField("String", "RAPIDAPI_KEY", "\"${secret("RAPIDAPI_KEY")}\"")

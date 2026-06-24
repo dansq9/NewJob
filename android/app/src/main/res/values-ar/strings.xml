@@ -1,0 +1,96 @@
+<!-- Arabic (ar) -->
+<resources>
+
+    <!-- ============ Common / reusable ============ -->
+    <string name="action_cancel">إلغاء</string>
+    <string name="action_save">حفظ</string>
+    <string name="action_dismiss">تجاهل</string>
+    <string name="action_remove">إزالة</string>
+    <string name="action_retry">إعادة المحاولة</string>
+    <string name="action_continue">متابعة</string>
+    <string name="action_skip">تخطّي</string>
+    <string name="action_done">تم</string>
+    <string name="action_back">رجوع</string>
+    <string name="action_clear">مسح</string>
+    <string name="action_set">تعيين</string>
+    <string name="action_change">تغيير</string>
+
+    <!-- ============ Bottom navigation ============ -->
+    <string name="nav_home">الرئيسية</string>
+    <string name="nav_jobs">الوظائف</string>
+    <string name="nav_tracker">التتبّع</string>
+    <string name="nav_interviews">المقابلات</string>
+
+    <!-- ============ Home ============ -->
+    <string name="home_greeting_morning">صباح الخير</string>
+    <string name="home_greeting_afternoon">طاب يومك</string>
+    <string name="home_greeting_evening">مساء الخير</string>
+    <string name="home_greeting_default">مرحبًا</string>
+    <string name="home_search_hint">ابحث عن وظائف أو مسميات أو شركات</string>
+    <string name="home_quick_actions">إجراءات سريعة</string>
+    <string name="home_qa_resume">تحسين السيرة الذاتية</string>
+    <string name="home_qa_resume_sub">تغلّب على أنظمة ATS</string>
+    <string name="home_qa_mock">مقابلة تجريبية</string>
+    <string name="home_qa_mock_sub">تدرّب واحصل على تقييم</string>
+    <string name="home_qa_copilot">المساعد المباشر</string>
+    <string name="home_qa_copilot_sub">إجابات فورية</string>
+    <string name="home_qa_games">ألعاب ذهنية</string>
+    <string name="home_qa_games_sub">طوّر مهاراتك يوميًا</string>
+    <string name="home_top_matches">أفضل التطابقات</string>
+    <string name="home_see_all">عرض الكل</string>
+    <string name="home_matches_for">لـ %1$s</string>
+    <string name="home_no_matches">لا توجد تطابقات بعد للدور المستهدف. جرّب بحثًا أوسع.</string>
+    <string name="home_find_jobs">البحث عن وظائف</string>
+
+    <!-- ============ Interviews ============ -->
+    <string name="interviews_title">المقابلات</string>
+    <string name="interviews_subtitle">استعدّ بمساعدة الذكاء الاصطناعي، ثم احصل على مساعدة فورية أثناء المكالمة.</string>
+    <string name="interviews_mock_title">مقابلة تجريبية</string>
+    <string name="interviews_mock_sub">أسئلة مولّدة بالذكاء الاصطناعي مع ملاحظات فورية ومقيّمة.</string>
+    <string name="interviews_copilot_title">المساعد المباشر للمقابلة</string>
+    <string name="interviews_copilot_sub">إجابات فورية بصوتك أثناء المكالمة.</string>
+
+    <!-- ============ Onboarding ============ -->
+    <string name="onboarding_get_started">ابدأ الآن</string>
+    <string name="onboarding_finish">إنهاء</string>
+    <string name="onboarding_welcome_title">مرحبًا بك في Ascend</string>
+    <string name="onboarding_welcome_sub">احصل على وظيفتك التالية بشكل أسرع. لنُعدّ بحثك في بضع خطوات سريعة.</string>
+    <string name="onboarding_name_title">بماذا تحب أن نناديك؟</string>
+    <string name="onboarding_name_sub">اسمك يساعدنا على تخصيص Ascend لك.</string>
+    <string name="onboarding_name_hint">مثال: أليكس مورغان</string>
+    <string name="onboarding_role_title">ما الدور الذي تبحث عنه؟</string>
+    <string name="onboarding_role_sub">هذا يخصّص تطابقاتك ونصائح سيرتك الذاتية ومقابلاتك التجريبية.</string>
+    <string name="onboarding_role_hint">مثال: مدير منتج</string>
+    <string name="onboarding_location_title">أين تبحث عن عمل؟</string>
+    <string name="onboarding_location_sub">سنعرض لك الوظائف القريبة منك والأدوار عن بُعد.</string>
+    <string name="onboarding_location_hint">المدينة أو المنطقة أو عن بُعد</string>
+    <string name="onboarding_resume_title">أضف سيرتك الذاتية</string>
+    <string name="onboarding_resume_sub">سنستخدمها لتخصيص التطابقات وتقديم إعادة كتابة مجانية متوافقة مع أنظمة ATS. يمكنك التخطّي وإضافتها لاحقًا.</string>
+    <string name="onboarding_resume_upload">رفع السيرة الذاتية</string>
+    <string name="onboarding_resume_formats">PDF، DOCX · حتى 10 ميغابايت</string>
+    <string name="onboarding_resume_replace">انقر للاستبدال</string>
+    <string name="onboarding_save_error">تعذّر حفظ ملفك الشخصي. يرجى إعادة المحاولة.</string>
+
+    <!-- ============ Settings ============ -->
+    <string name="settings_title">الإعدادات</string>
+    <string name="settings_section_profile">ملفك الشخصي</string>
+    <string name="settings_field_name">الاسم</string>
+    <string name="settings_field_role">الدور المستهدف</string>
+    <string name="settings_field_location">الموقع</string>
+    <string name="settings_save_profile">حفظ الملف الشخصي</string>
+    <string name="settings_profile_saved">تم حفظ الملف الشخصي</string>
+    <string name="settings_section_resume">السيرة الذاتية</string>
+    <string name="settings_manage_resumes">إدارة السير الذاتية</string>
+    <string name="settings_no_resume">لم تتم إضافة سيرة ذاتية بعد</string>
+    <string name="settings_section_language">اللغة</string>
+    <string name="settings_app_language">لغة التطبيق</string>
+    <string name="settings_choose_language">اختر اللغة</string>
+    <string name="settings_section_data">البيانات والنسخ الاحتياطي</string>
+    <string name="settings_backup_note">يتم نسخ ملفك الشخصي والوظائف المحفوظة والتتبّع احتياطيًا إلى حساب Google الخاص بك واستعادتها على جهاز جديد. يبقى المعرّف المجهول لهذا الجهاز محليًا دائمًا.</string>
+    <string name="settings_section_reset">إعادة التعيين</string>
+    <string name="settings_reset_onboarding">إعادة تعيين الإعداد الأولي</string>
+    <string name="settings_reset_confirm_title">إعادة تعيين الإعداد الأولي؟</string>
+    <string name="settings_reset_confirm_body">سيتم مسح اسمك ودورك وموقعك واختيار سيرتك الذاتية وستمر بعملية الإعداد مجددًا. يتم الاحتفاظ بالوظائف المحفوظة ومكتبة سيرتك الذاتية.</string>
+    <string name="settings_reset_confirm_action">إعادة التعيين</string>
+    <string name="settings_version">الإصدار %1$s ‏(%2$d)</string>
+</resources>

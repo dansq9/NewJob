@@ -1,0 +1,96 @@
+<!-- German (de) -->
+<resources>
+
+    <!-- ============ Common / reusable ============ -->
+    <string name="action_cancel">Abbrechen</string>
+    <string name="action_save">Speichern</string>
+    <string name="action_dismiss">Schließen</string>
+    <string name="action_remove">Entfernen</string>
+    <string name="action_retry">Erneut versuchen</string>
+    <string name="action_continue">Weiter</string>
+    <string name="action_skip">Überspringen</string>
+    <string name="action_done">Fertig</string>
+    <string name="action_back">Zurück</string>
+    <string name="action_clear">Löschen</string>
+    <string name="action_set">Festlegen</string>
+    <string name="action_change">Ändern</string>
+
+    <!-- ============ Bottom navigation ============ -->
+    <string name="nav_home">Start</string>
+    <string name="nav_jobs">Jobs</string>
+    <string name="nav_tracker">Tracker</string>
+    <string name="nav_interviews">Interviews</string>
+
+    <!-- ============ Home ============ -->
+    <string name="home_greeting_morning">Guten Morgen</string>
+    <string name="home_greeting_afternoon">Guten Tag</string>
+    <string name="home_greeting_evening">Guten Abend</string>
+    <string name="home_greeting_default">Hallo</string>
+    <string name="home_search_hint">Jobs, Titel, Unternehmen suchen</string>
+    <string name="home_quick_actions">Schnellaktionen</string>
+    <string name="home_qa_resume">Lebenslauf optimieren</string>
+    <string name="home_qa_resume_sub">Das ATS überlisten</string>
+    <string name="home_qa_mock">Übungsinterview</string>
+    <string name="home_qa_mock_sub">Üben &amp; Bewertung erhalten</string>
+    <string name="home_qa_copilot">Live-Copilot</string>
+    <string name="home_qa_copilot_sub">Antworten in Echtzeit</string>
+    <string name="home_qa_games">Denkspiele</string>
+    <string name="home_qa_games_sub">Täglich fit bleiben</string>
+    <string name="home_top_matches">Top-Treffer</string>
+    <string name="home_see_all">Alle ansehen</string>
+    <string name="home_matches_for">für %1$s</string>
+    <string name="home_no_matches">Noch keine Treffer für deine Zielposition. Versuche eine breitere Suche.</string>
+    <string name="home_find_jobs">Jobs suchen</string>
+
+    <!-- ============ Interviews ============ -->
+    <string name="interviews_title">Interviews</string>
+    <string name="interviews_subtitle">Bereite dich mit KI vor und erhalte dann Echtzeithilfe im Gespräch.</string>
+    <string name="interviews_mock_title">Übungsinterview</string>
+    <string name="interviews_mock_sub">KI-generierte Fragen mit sofortigem, bewertetem Feedback.</string>
+    <string name="interviews_copilot_title">Live-Interview-Copilot</string>
+    <string name="interviews_copilot_sub">Antworten in Echtzeit mit deiner Stimme während des Gesprächs.</string>
+
+    <!-- ============ Onboarding ============ -->
+    <string name="onboarding_get_started">Loslegen</string>
+    <string name="onboarding_finish">Abschließen</string>
+    <string name="onboarding_welcome_title">Willkommen bei Ascend</string>
+    <string name="onboarding_welcome_sub">Finde schneller deine nächste Stelle. Richte deine Suche in wenigen schnellen Schritten ein.</string>
+    <string name="onboarding_name_title">Wie sollen wir dich nennen?</string>
+    <string name="onboarding_name_sub">Dein Name hilft uns, Ascend zu personalisieren.</string>
+    <string name="onboarding_name_hint">z. B. Alex Morgan</string>
+    <string name="onboarding_role_title">Welche Position suchst du?</string>
+    <string name="onboarding_role_sub">Das passt deine Treffer, Lebenslauf-Tipps &amp; Übungsinterviews an.</string>
+    <string name="onboarding_role_hint">z. B. Produktmanager</string>
+    <string name="onboarding_location_title">Wo suchst du?</string>
+    <string name="onboarding_location_sub">Wir zeigen dir Jobs in deiner Nähe und Remote-Stellen.</string>
+    <string name="onboarding_location_hint">Stadt, Region oder Remote</string>
+    <string name="onboarding_resume_title">Lebenslauf hinzufügen</string>
+    <string name="onboarding_resume_sub">Wir nutzen ihn, um Treffer anzupassen und bieten eine kostenlose ATS-taugliche Überarbeitung. Du kannst diesen Schritt überspringen und ihn später hinzufügen.</string>
+    <string name="onboarding_resume_upload">Lebenslauf hochladen</string>
+    <string name="onboarding_resume_formats">PDF, DOCX · bis zu 10 MB</string>
+    <string name="onboarding_resume_replace">Zum Ersetzen tippen</string>
+    <string name="onboarding_save_error">Dein Profil konnte nicht gespeichert werden. Bitte versuche es erneut.</string>
+
+    <!-- ============ Settings ============ -->
+    <string name="settings_title">Einstellungen</string>
+    <string name="settings_section_profile">Dein Profil</string>
+    <string name="settings_field_name">Name</string>
+    <string name="settings_field_role">Zielposition</string>
+    <string name="settings_field_location">Standort</string>
+    <string name="settings_save_profile">Profil speichern</string>
+    <string name="settings_profile_saved">Profil gespeichert</string>
+    <string name="settings_section_resume">Lebenslauf</string>
+    <string name="settings_manage_resumes">Lebensläufe verwalten</string>
+    <string name="settings_no_resume">Noch kein Lebenslauf hinzugefügt</string>
+    <string name="settings_section_language">Sprache</string>
+    <string name="settings_app_language">App-Sprache</string>
+    <string name="settings_choose_language">Sprache auswählen</string>
+    <string name="settings_section_data">Daten &amp; Backup</string>
+    <string name="settings_backup_note">Dein Profil, gespeicherte Jobs und Tracker werden in deinem Google-Konto gesichert und auf einem neuen Gerät wiederhergestellt. Die anonyme ID dieses Geräts bleibt immer lokal.</string>
+    <string name="settings_section_reset">Zurücksetzen</string>
+    <string name="settings_reset_onboarding">Onboarding zurücksetzen</string>
+    <string name="settings_reset_confirm_title">Onboarding zurücksetzen?</string>
+    <string name="settings_reset_confirm_body">Dein Name, deine Position, dein Standort und deine Lebenslaufauswahl werden gelöscht und du durchläufst die Einrichtung erneut. Gespeicherte Jobs und deine Lebenslauf-Bibliothek bleiben erhalten.</string>
+    <string name="settings_reset_confirm_action">Zurücksetzen</string>
+    <string name="settings_version">v%1$s (%2$d)</string>
+</resources>

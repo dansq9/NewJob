@@ -1,0 +1,96 @@
+<resources>
+    <!-- Hindi (hi) -->
+
+    <!-- ============ Common / reusable ============ -->
+    <string name="action_cancel">रद्द करें</string>
+    <string name="action_save">सहेजें</string>
+    <string name="action_dismiss">खारिज करें</string>
+    <string name="action_remove">हटाएं</string>
+    <string name="action_retry">पुनः प्रयास करें</string>
+    <string name="action_continue">जारी रखें</string>
+    <string name="action_skip">छोड़ें</string>
+    <string name="action_done">हो गया</string>
+    <string name="action_back">वापस</string>
+    <string name="action_clear">साफ़ करें</string>
+    <string name="action_set">सेट करें</string>
+    <string name="action_change">बदलें</string>
+
+    <!-- ============ Bottom navigation ============ -->
+    <string name="nav_home">होम</string>
+    <string name="nav_jobs">नौकरियां</string>
+    <string name="nav_tracker">ट्रैकर</string>
+    <string name="nav_interviews">इंटरव्यू</string>
+
+    <!-- ============ Home ============ -->
+    <string name="home_greeting_morning">सुप्रभात</string>
+    <string name="home_greeting_afternoon">नमस्कार</string>
+    <string name="home_greeting_evening">शुभ संध्या</string>
+    <string name="home_greeting_default">नमस्ते</string>
+    <string name="home_search_hint">नौकरियां, पद, कंपनियां खोजें</string>
+    <string name="home_quick_actions">त्वरित क्रियाएं</string>
+    <string name="home_qa_resume">रिज़्यूमे ऑप्टिमाइज़ करें</string>
+    <string name="home_qa_resume_sub">ATS को मात दें</string>
+    <string name="home_qa_mock">मॉक इंटरव्यू</string>
+    <string name="home_qa_mock_sub">अभ्यास करें &amp; स्कोर पाएं</string>
+    <string name="home_qa_copilot">लाइव Copilot</string>
+    <string name="home_qa_copilot_sub">रियल-टाइम जवाब</string>
+    <string name="home_qa_games">ब्रेन गेम्स</string>
+    <string name="home_qa_games_sub">रोज़ाना अपनी धार तेज़ करें</string>
+    <string name="home_top_matches">शीर्ष मैच</string>
+    <string name="home_see_all">सभी देखें</string>
+    <string name="home_matches_for">%1$s के लिए</string>
+    <string name="home_no_matches">आपकी लक्षित भूमिका के लिए अभी तक कोई मैच नहीं। व्यापक खोज आज़माएं।</string>
+    <string name="home_find_jobs">नौकरियां खोजें</string>
+
+    <!-- ============ Interviews ============ -->
+    <string name="interviews_title">इंटरव्यू</string>
+    <string name="interviews_subtitle">AI के साथ तैयारी करें, फिर कॉल पर रियल-टाइम मदद पाएं।</string>
+    <string name="interviews_mock_title">मॉक इंटरव्यू</string>
+    <string name="interviews_mock_sub">AI द्वारा बनाए गए प्रश्न, तुरंत स्कोर किए गए फ़ीडबैक के साथ।</string>
+    <string name="interviews_copilot_title">लाइव इंटरव्यू Copilot</string>
+    <string name="interviews_copilot_sub">कॉल के दौरान आपकी आवाज़ में रियल-टाइम जवाब।</string>
+
+    <!-- ============ Onboarding ============ -->
+    <string name="onboarding_get_started">शुरू करें</string>
+    <string name="onboarding_finish">समाप्त करें</string>
+    <string name="onboarding_welcome_title">Ascend में आपका स्वागत है</string>
+    <string name="onboarding_welcome_sub">अपनी अगली भूमिका जल्दी पाएं। कुछ आसान चरणों में अपनी खोज सेट करें।</string>
+    <string name="onboarding_name_title">हम आपको क्या कहकर बुलाएं?</string>
+    <string name="onboarding_name_sub">आपका नाम हमें Ascend को व्यक्तिगत बनाने में मदद करता है।</string>
+    <string name="onboarding_name_hint">जैसे एलेक्स मॉर्गन</string>
+    <string name="onboarding_role_title">आप कौन सी भूमिका चाहते हैं?</string>
+    <string name="onboarding_role_sub">यह आपके मैच, रिज़्यूमे टिप्स &amp; मॉक इंटरव्यू को अनुकूलित करता है।</string>
+    <string name="onboarding_role_hint">जैसे प्रोडक्ट मैनेजर</string>
+    <string name="onboarding_location_title">आप कहां खोज रहे हैं?</string>
+    <string name="onboarding_location_sub">हम आपके पास की और रिमोट नौकरियां दिखाएंगे।</string>
+    <string name="onboarding_location_hint">शहर, क्षेत्र, या रिमोट</string>
+    <string name="onboarding_resume_title">अपना रिज़्यूमे जोड़ें</string>
+    <string name="onboarding_resume_sub">हम इसका उपयोग मैच अनुकूलित करने और एक मुफ़्त ATS-तैयार रीराइट देने के लिए करेंगे। आप इसे छोड़कर बाद में जोड़ सकते हैं।</string>
+    <string name="onboarding_resume_upload">रिज़्यूमे अपलोड करें</string>
+    <string name="onboarding_resume_formats">PDF, DOCX · 10MB तक</string>
+    <string name="onboarding_resume_replace">बदलने के लिए टैप करें</string>
+    <string name="onboarding_save_error">आपकी प्रोफ़ाइल सहेजी नहीं जा सकी। कृपया पुनः प्रयास करें।</string>
+
+    <!-- ============ Settings ============ -->
+    <string name="settings_title">सेटिंग्स</string>
+    <string name="settings_section_profile">आपकी प्रोफ़ाइल</string>
+    <string name="settings_field_name">नाम</string>
+    <string name="settings_field_role">लक्षित भूमिका</string>
+    <string name="settings_field_location">स्थान</string>
+    <string name="settings_save_profile">प्रोफ़ाइल सहेजें</string>
+    <string name="settings_profile_saved">प्रोफ़ाइल सहेजी गई</string>
+    <string name="settings_section_resume">रिज़्यूमे</string>
+    <string name="settings_manage_resumes">रिज़्यूमे प्रबंधित करें</string>
+    <string name="settings_no_resume">अभी तक कोई रिज़्यूमे नहीं जोड़ा गया</string>
+    <string name="settings_section_language">भाषा</string>
+    <string name="settings_app_language">ऐप भाषा</string>
+    <string name="settings_choose_language">भाषा चुनें</string>
+    <string name="settings_section_data">डेटा &amp; बैकअप</string>
+    <string name="settings_backup_note">आपकी प्रोफ़ाइल, सहेजी गई नौकरियां और ट्रैकर आपके Google खाते में बैकअप होते हैं और नए डिवाइस पर रीस्टोर होते हैं। इस डिवाइस की अनाम ID हमेशा लोकल रहती है।</string>
+    <string name="settings_section_reset">रीसेट</string>
+    <string name="settings_reset_onboarding">ऑनबोर्डिंग रीसेट करें</string>
+    <string name="settings_reset_confirm_title">ऑनबोर्डिंग रीसेट करें?</string>
+    <string name="settings_reset_confirm_body">आपका नाम, भूमिका, स्थान और रिज़्यूमे चयन साफ़ हो जाएगा और आप फिर से सेटअप से गुज़रेंगे। सहेजी गई नौकरियां और आपकी रिज़्यूमे लाइब्रेरी रखी जाती हैं।</string>
+    <string name="settings_reset_confirm_action">रीसेट</string>
+    <string name="settings_version">v%1$s (%2$d)</string>
+</resources>

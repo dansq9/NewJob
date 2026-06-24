@@ -1,0 +1,96 @@
+<!-- French (fr) -->
+<resources>
+
+    <!-- ============ Common / reusable ============ -->
+    <string name="action_cancel">Annuler</string>
+    <string name="action_save">Enregistrer</string>
+    <string name="action_dismiss">Ignorer</string>
+    <string name="action_remove">Supprimer</string>
+    <string name="action_retry">Réessayer</string>
+    <string name="action_continue">Continuer</string>
+    <string name="action_skip">Passer</string>
+    <string name="action_done">Terminé</string>
+    <string name="action_back">Retour</string>
+    <string name="action_clear">Effacer</string>
+    <string name="action_set">Définir</string>
+    <string name="action_change">Modifier</string>
+
+    <!-- ============ Bottom navigation ============ -->
+    <string name="nav_home">Accueil</string>
+    <string name="nav_jobs">Emplois</string>
+    <string name="nav_tracker">Suivi</string>
+    <string name="nav_interviews">Entretiens</string>
+
+    <!-- ============ Home ============ -->
+    <string name="home_greeting_morning">Bonjour</string>
+    <string name="home_greeting_afternoon">Bon après-midi</string>
+    <string name="home_greeting_evening">Bonsoir</string>
+    <string name="home_greeting_default">Bonjour</string>
+    <string name="home_search_hint">Rechercher des emplois, des postes, des entreprises</string>
+    <string name="home_quick_actions">Actions rapides</string>
+    <string name="home_qa_resume">Optimiser le CV</string>
+    <string name="home_qa_resume_sub">Déjouer les ATS</string>
+    <string name="home_qa_mock">Entretien simulé</string>
+    <string name="home_qa_mock_sub">S\'entraîner &amp; être noté</string>
+    <string name="home_qa_copilot">Copilote en direct</string>
+    <string name="home_qa_copilot_sub">Réponses en temps réel</string>
+    <string name="home_qa_games">Jeux de réflexion</string>
+    <string name="home_qa_games_sub">Se perfectionner chaque jour</string>
+    <string name="home_top_matches">Meilleures correspondances</string>
+    <string name="home_see_all">Tout voir</string>
+    <string name="home_matches_for">pour %1$s</string>
+    <string name="home_no_matches">Aucune correspondance pour le moment pour le poste visé. Essayez une recherche plus large.</string>
+    <string name="home_find_jobs">Rechercher des emplois</string>
+
+    <!-- ============ Interviews ============ -->
+    <string name="interviews_title">Entretiens</string>
+    <string name="interviews_subtitle">Préparez-vous avec l\'IA, puis obtenez de l\'aide en temps réel pendant l\'appel.</string>
+    <string name="interviews_mock_title">Entretien simulé</string>
+    <string name="interviews_mock_sub">Questions générées par l\'IA avec un retour noté et instantané.</string>
+    <string name="interviews_copilot_title">Copilote d\'entretien en direct</string>
+    <string name="interviews_copilot_sub">Des réponses en temps réel dans votre voix pendant l\'appel.</string>
+
+    <!-- ============ Onboarding ============ -->
+    <string name="onboarding_get_started">Commencer</string>
+    <string name="onboarding_finish">Terminer</string>
+    <string name="onboarding_welcome_title">Bienvenue sur Ascend</string>
+    <string name="onboarding_welcome_sub">Décrochez votre prochain poste, plus vite. Configurons votre recherche en quelques étapes rapides.</string>
+    <string name="onboarding_name_title">Comment devons-nous vous appeler ?</string>
+    <string name="onboarding_name_sub">Votre nom nous aide à personnaliser Ascend.</string>
+    <string name="onboarding_name_hint">ex. Alex Morgan</string>
+    <string name="onboarding_role_title">Quel poste recherchez-vous ?</string>
+    <string name="onboarding_role_sub">Cela adapte vos correspondances, vos conseils de CV &amp; vos entretiens simulés.</string>
+    <string name="onboarding_role_hint">ex. Chef de produit</string>
+    <string name="onboarding_location_title">Où cherchez-vous ?</string>
+    <string name="onboarding_location_sub">Nous mettrons en avant les emplois près de chez vous et les postes en télétravail.</string>
+    <string name="onboarding_location_hint">Ville, région ou Télétravail</string>
+    <string name="onboarding_resume_title">Ajoutez votre CV</string>
+    <string name="onboarding_resume_sub">Nous l\'utiliserons pour adapter vos correspondances et vous offrir une réécriture gratuite compatible ATS. Vous pouvez passer cette étape et l\'ajouter plus tard.</string>
+    <string name="onboarding_resume_upload">Importer un CV</string>
+    <string name="onboarding_resume_formats">PDF, DOCX · jusqu\'à 10 Mo</string>
+    <string name="onboarding_resume_replace">Appuyez pour remplacer</string>
+    <string name="onboarding_save_error">Impossible d\'enregistrer votre profil. Veuillez réessayer.</string>
+
+    <!-- ============ Settings ============ -->
+    <string name="settings_title">Paramètres</string>
+    <string name="settings_section_profile">Votre profil</string>
+    <string name="settings_field_name">Nom</string>
+    <string name="settings_field_role">Poste visé</string>
+    <string name="settings_field_location">Lieu</string>
+    <string name="settings_save_profile">Enregistrer le profil</string>
+    <string name="settings_profile_saved">Profil enregistré</string>
+    <string name="settings_section_resume">CV</string>
+    <string name="settings_manage_resumes">Gérer les CV</string>
+    <string name="settings_no_resume">Aucun CV ajouté pour le moment</string>
+    <string name="settings_section_language">Langue</string>
+    <string name="settings_app_language">Langue de l\'application</string>
+    <string name="settings_choose_language">Choisir la langue</string>
+    <string name="settings_section_data">Données &amp; sauvegarde</string>
+    <string name="settings_backup_note">Votre profil, vos emplois enregistrés et votre suivi sont sauvegardés sur votre compte Google et restaurés sur un nouvel appareil. L\'identifiant anonyme de cet appareil reste toujours local.</string>
+    <string name="settings_section_reset">Réinitialiser</string>
+    <string name="settings_reset_onboarding">Réinitialiser l\'intégration</string>
+    <string name="settings_reset_confirm_title">Réinitialiser l\'intégration ?</string>
+    <string name="settings_reset_confirm_body">Votre nom, votre poste, votre lieu et votre sélection de CV seront effacés et vous referez la configuration. Les emplois enregistrés et votre bibliothèque de CV sont conservés.</string>
+    <string name="settings_reset_confirm_action">Réinitialiser</string>
+    <string name="settings_version">v%1$s (%2$d)</string>
+</resources>

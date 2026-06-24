@@ -20,11 +20,19 @@ object LocaleManager {
     private const val PREFS = "ascend_locale"
     private const val KEY = "app_locale_tag"
 
-    /** Languages the app ships translations for. First entry = follow system. */
+    /**
+     * Languages the app ships translations for. First entry = follow system.
+     * Keep in sync with res/values-<locale>/strings.xml and res/xml/locales_config.xml.
+     */
     val supported: List<AppLanguage> = listOf(
         AppLanguage(tag = "", endonym = "System default", english = "System default"),
         AppLanguage(tag = "en", endonym = "English", english = "English"),
         AppLanguage(tag = "es", endonym = "Español", english = "Spanish"),
+        AppLanguage(tag = "pt-BR", endonym = "Português (Brasil)", english = "Portuguese (Brazil)"),
+        AppLanguage(tag = "fr", endonym = "Français", english = "French"),
+        AppLanguage(tag = "de", endonym = "Deutsch", english = "German"),
+        AppLanguage(tag = "hi", endonym = "हिन्दी", english = "Hindi"),
+        AppLanguage(tag = "ar", endonym = "العربية", english = "Arabic"),
     )
 
     fun persistedTag(context: Context): String =

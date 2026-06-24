@@ -62,10 +62,11 @@ the Bearer token in `NetworkModule` (`@Named("platform")`).
 - In-app language picker: **Settings → Language** (`LocaleManager` +
   `MainActivity.attachBaseContext`), works on all API levels and is surfaced in
   Android 13+ system per-app language settings via `res/xml/locales_config.xml`.
-- Supported locales are declared in 3 places — keep them in sync: `locales_config.xml`,
-  `LocaleManager.supported`, and `build.gradle.kts` `resourceConfigurations`.
-- Debug builds enable **pseudolocales** (`en-rXA` accented/long, `ar-rXB` RTL) for
-  layout testing. RTL is enabled (`supportsRtl`); `setLayoutDirection` is applied.
+- Shipping languages (7): **English, Español, Português (Brasil), Français, Deutsch,
+  हिन्दी, العربية**. Declared in 2 places — keep in sync: `res/xml/locales_config.xml`
+  and `LocaleManager.supported`. Add a `values-<locale>/strings.xml` to add one.
+- Arabic (`ar`) is RTL; `supportsRtl` + `setLayoutDirection` are applied. Debug builds
+  enable **pseudolocales** (`en-rXA` accented/long, `ar-rXB` RTL) for layout testing.
 - Extraction is in progress — done: common, nav, Home, Interviews, Onboarding,
   Settings. Remaining screens (Jobs, JobDetail, Tracker, Resume, Mock, Copilot,
   Paywall, Games) still carry inline strings; extract them into `strings.xml` the
