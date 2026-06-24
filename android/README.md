@@ -43,6 +43,18 @@ The Ascend platform endpoints (`AscendApi`) are placeholders matching the
 prototype's flows; align the routes/field names with the real backend, and wire
 the Bearer token in `NetworkModule` (`@Named("platform")`).
 
+## Permissions & Play Data Safety
+- **RECORD_AUDIO** — only the Live Interview Copilot. Requested at runtime on
+  the first mic tap, after an in-app rationale; never on launch. Audio is sent
+  to the on-device/native `SpeechRecognizer` for transcription **only** — Ascend
+  does not record or store audio. The Mock "Speak" mode uses the system
+  `RecognizerIntent` (handles its own permission UI).
+- **Data Safety form (Play Console)** must declare: microphone/audio used for
+  app functionality (live transcription), not shared, not stored; resume files +
+  profile collected and stored locally (and in Android Auto Backup, except the
+  anonymous install id which is excluded). Update this when wiring analytics
+  (Firebase) + crash reporting (Sentry) so collected data types are declared.
+
 ## Build
 Open the `android/` folder in **Android Studio** (it provisions the Gradle
 wrapper + SDK). Or from CLI once the SDK + wrapper are present: `./gradlew :app:assembleDebug`.

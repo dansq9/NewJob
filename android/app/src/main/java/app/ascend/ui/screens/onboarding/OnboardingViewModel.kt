@@ -22,35 +22,50 @@ class OnboardingViewModel @Inject constructor(
     var role by mutableStateOf("")
     var location by mutableStateOf("")
     var resumeName by mutableStateOf<String?>(null)
+    var resumeError by mutableStateOf<String?>(null)
+        private set
     private var pickedResume: PickedFile? = null
     var saving by mutableStateOf(false)
         private set
+    var saveError by mutableStateOf<String?>(null)
+        private set
 
     fun onResumePicked(file: PickedFile) {
-        pickedResume = file
-        resumeName = file.name
+        // Validate up front so the user gets a clear rejection instead of a silent drop.
+        val reason = resumes.reasonToReject(file)
+        if (reason != null) {
+            resumeError = reason; pickedResume = null; resumeName = null
+        } else {
+            resumeError = null; pickedResume = file; resumeName = file.name
+        }
     }
 
     fun clearResume() {
         pickedResume = null
         resumeName = null
+        resumeError = null
     }
 
     fun finish(onDone: () -> Unit) {
         if (saving) return
         saving = true
+        saveError = null
         viewModelScope.launch {
-            pickedResume?.let { resumes.add(it) }
-            repo.save(
-                UserProfile(
-                    name = name.trim(),
-                    targetRole = role.trim(),
-                    location = location.trim(),
-                    resumeName = resumeName,
-                    onboarded = true,
+            val ok = runCatching {
+                pickedResume?.let { resumes.add(it) }
+                repo.save(
+                    UserProfile(
+                        name = name.trim(),
+                        targetRole = role.trim(),
+                        location = location.trim(),
+                        resumeName = resumeName,
+                        onboarded = true,
+                    )
                 )
-            )
-            onDone()
+            }.isSuccess
+            // Always clear the busy flag so the user can never get stuck on a failed save.
+            saving = false
+            if (ok) onDone() else saveError = "Couldn't save your profile. Please try again."
         }
     }
 }

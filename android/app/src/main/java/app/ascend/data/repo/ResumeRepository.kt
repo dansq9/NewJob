@@ -42,21 +42,26 @@ class ResumeRepository @Inject constructor(
 
     suspend fun get(id: String): ResumeRecord? = dao.get(id)?.toRecord()
 
+    /**
+     * Returns a user-facing rejection reason, or null if the file is acceptable.
+     * Accepts on a known resume MIME OR a known extension, so a missing/generic
+     * MIME (e.g. application/octet-stream) falls back to the extension — and
+     * casing like RESUME.PDF is handled. Shared by [add] and onboarding.
+     */
+    fun reasonToReject(file: PickedFile): String? {
+        val mimeOk = file.mime != null && file.mime in RESUME_MIME
+        val extOk = file.name.substringAfterLast('.', "").lowercase() in ALLOWED_EXTENSIONS
+        if (!mimeOk && !extOk) return "Unsupported file. Upload a PDF, DOC, or DOCX."
+        file.sizeBytes?.let { size ->
+            if (size > MAX_BYTES) return "File is too large. Max ${MAX_BYTES / 1_000_000}MB."
+            if (size <= 0L) return "That file looks empty."
+        }
+        return null
+    }
+
     /** Validates type + size, persists the file metadata, and auto-selects it. */
     suspend fun add(file: PickedFile): AddResumeResult {
-        val mime = file.mime
-        // Accept on a known resume MIME OR a known extension. This also covers a
-        // missing/generic MIME (e.g. application/octet-stream from some providers),
-        // which then falls back to the extension — and handles casing like RESUME.PDF.
-        val mimeOk = mime != null && mime in RESUME_MIME
-        val extOk = file.name.substringAfterLast('.', "").lowercase() in ALLOWED_EXTENSIONS
-        if (!mimeOk && !extOk) {
-            return AddResumeResult.Rejected("Unsupported file. Upload a PDF, DOC, or DOCX.")
-        }
-        file.sizeBytes?.let { size ->
-            if (size > MAX_BYTES) return AddResumeResult.Rejected("File is too large. Max ${MAX_BYTES / 1_000_000}MB.")
-            if (size <= 0L) return AddResumeResult.Rejected("That file looks empty.")
-        }
+        reasonToReject(file)?.let { return AddResumeResult.Rejected(it) }
         val record = ResumeEntity(
             id = UUID.randomUUID().toString(),
             name = file.name,

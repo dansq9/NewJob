@@ -67,6 +67,11 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
             }
         }
 
+        vm.saveError?.let {
+            Text(it, color = Color(0xFFB3261E), fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+                modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        }
         Button(
             onClick = { if (step < STEPS - 1) step++ else vm.finish(onDone) },
             enabled = canContinue && !vm.saving,
@@ -168,6 +173,10 @@ private fun ResumeStep(vm: OnboardingViewModel, pick: () -> Unit) {
                     Text("Tap to replace", fontSize = 12.sp, color = AscendColors.Muted2)
                 }
             }
+        }
+        vm.resumeError?.let {
+            Spacer(Modifier.height(10.dp))
+            Text(it, color = Color(0xFFB3261E), fontSize = 13.sp, fontWeight = FontWeight.SemiBold)
         }
         if (vm.resumeName != null) {
             Spacer(Modifier.height(10.dp))

@@ -15,9 +15,15 @@ import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.GraphicEq
 import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.MicOff
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -127,6 +133,28 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
         else -> "Tap the mic to transcribe"
     }
     val statusColor = if (transcriber.listening) Color(0xFF34D17F) else Color(0xFF8A8A99)
+
+    // Mic permission flow (owned here so we can show a rationale before the system prompt).
+    val context = LocalContext.current
+    val activity = context as? android.app.Activity
+    var showRationale by remember { mutableStateOf(false) }
+    var showDenied by remember { mutableStateOf(false) }
+    val micPermission = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        when {
+            granted -> transcriber.start()
+            // granted=false + no rationale after asking ⇒ "don't ask again" / permanently denied.
+            activity == null || !androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale(activity, android.Manifest.permission.RECORD_AUDIO) -> showDenied = true
+        }
+    }
+    val onMicTap = onMicTap@{
+        when {
+            transcriber.listening -> { transcriber.stop(); return@onMicTap }
+            androidx.core.content.ContextCompat.checkSelfPermission(context, android.Manifest.permission.RECORD_AUDIO) ==
+                android.content.pm.PackageManager.PERMISSION_GRANTED -> transcriber.start()
+            else -> showRationale = true
+        }
+    }
+
     Column(Modifier.fillMaxSize().background(AscendColors.Dark).verticalScroll(rememberScrollState())) {
         Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { vm.end(); nav.popBackStack() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.White) }
@@ -163,7 +191,7 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 if (transcriber.available) {
                     OutlinedButton(
-                        onClick = { transcriber.toggle() },
+                        onClick = onMicTap,
                         modifier = Modifier.height(48.dp),
                         shape = RoundedCornerShape(12.dp),
                         border = androidx.compose.foundation.BorderStroke(1.dp, if (transcriber.listening) Color(0xFF34D17F) else DarkLine),
@@ -188,6 +216,41 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
             }
         }
     }
+
+    if (showRationale) AlertDialog(
+        onDismissRequest = { showRationale = false },
+        title = { Text("Use your microphone?") },
+        text = {
+            Text("Ascend uses your microphone to transcribe the interviewer's questions in real time so it can draft answers. Audio is processed for transcription only — it isn't recorded or stored by Ascend.")
+        },
+        confirmButton = {
+            TextButton(onClick = {
+                showRationale = false
+                micPermission.launch(android.Manifest.permission.RECORD_AUDIO)
+            }) { Text("Continue") }
+        },
+        dismissButton = { TextButton(onClick = { showRationale = false }) { Text("Not now") } },
+    )
+
+    if (showDenied) AlertDialog(
+        onDismissRequest = { showDenied = false },
+        title = { Text("Microphone is off") },
+        text = { Text("To transcribe questions live, enable the Microphone permission for Ascend in Settings. You can still paste or type questions manually.") },
+        confirmButton = {
+            TextButton(onClick = {
+                showDenied = false
+                runCatching {
+                    context.startActivity(
+                        android.content.Intent(
+                            android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
+                            android.net.Uri.fromParts("package", context.packageName, null),
+                        ),
+                    )
+                }
+            }) { Text("Open settings") }
+        },
+        dismissButton = { TextButton(onClick = { showDenied = false }) { Text("Use manual entry") } },
+    )
 }
 
 @Composable
