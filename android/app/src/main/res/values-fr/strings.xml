@@ -316,4 +316,22 @@
     <string name="home_fallback_name">vous</string>
     <string name="settings_privacy_options">Options de confidentialité</string>
     <string name="settings_privacy_options_sub">Gérez vos choix de consentement publicitaire</string>
+    <string name="splash_brand_tagline">Décrochez votre prochain poste plus vite</string>
+    <string name="splash_brand_loading">Préparation de votre espace de travail</string>
+    <string name="onboarding_language_title">Quelle langue préférez-vous ?</string>
+    <string name="onboarding_language_sub">Vous pourrez la changer à tout moment dans les Réglages.</string>
+    <string name="onboarding_location_current">Utiliser ma position actuelle</string>
+    <string name="onboarding_section_popular">Populaire</string>
+    <string name="onboarding_resume_voice">Pas de CV ? Créez-en un à la voix</string>
+    <string name="onboarding_resume_voice_sub">Répondez à quelques questions, l’IA le rédige</string>
+    <string name="onboarding_resume_skip">Ignorer pour l’instant</string>
+    <string name="onboarding_resume_continue">C’est bon, continuer</string>
+    <string name="jobdetail_strong_match">Forte compatibilité pour vous</string>
+    <string name="jobdetail_strong_match_sub">Votre profil correspond bien à ce poste.</string>
+    <string name="jobdetail_tailor_title">Adapter mon CV à ce poste</string>
+    <string name="jobdetail_tailor_sub">Obtenez une version optimisée ATS pour ce poste.</string>
+    <string name="jobs_clear_filters">Effacer les filtres</string>
+    <string name="interviews_launch_copilot">Lancer Copilot</string>
+    <string name="interviews_recent">Sessions récentes</string>
+    <string name="interviews_recent_empty">Vos entretiens d’entraînement et sessions copilot apparaîtront ici.</string>
 </resources>

@@ -316,4 +316,22 @@
     <string name="home_fallback_name">lapho</string>
     <string name="settings_privacy_options">Izinketho zobumfihlo</string>
     <string name="settings_privacy_options_sub">Phatha izinketho zakho zemvume yezikhangiso</string>
+    <string name="splash_brand_tagline">Thola umsebenzi wakho olandelayo ngokushesha</string>
+    <string name="splash_brand_loading">Silungiselela indawo yakho yokusebenza</string>
+    <string name="onboarding_language_title">Uluphi ulimi oluthandayo?</string>
+    <string name="onboarding_language_sub">Ungalushintsha noma nini kuzilungiselelo.</string>
+    <string name="onboarding_location_current">Sebenzisa indawo yami yamanje</string>
+    <string name="onboarding_section_popular">Edumayo</string>
+    <string name="onboarding_resume_voice">Awunalo i-CV? Yakha ngezwi</string>
+    <string name="onboarding_resume_voice_sub">Phendula imibuzo embalwa, i-AI iyabhala</string>
+    <string name="onboarding_resume_skip">Yeqa okwamanje</string>
+    <string name="onboarding_resume_continue">Kubukeka kulungile, qhubeka</string>
+    <string name="jobdetail_strong_match">Ukufanelana okuhle kuwe</string>
+    <string name="jobdetail_strong_match_sub">Iphrofayela yakho ifanelana kahle nale ndima.</string>
+    <string name="jobdetail_tailor_title">Lungisa i-CV yami yale ndima</string>
+    <string name="jobdetail_tailor_sub">Thola inguqulo elungiselelwe i-ATS yalo msebenzi.</string>
+    <string name="jobs_clear_filters">Sula izihlungi</string>
+    <string name="interviews_launch_copilot">Qalisa i-Copilot</string>
+    <string name="interviews_recent">Amaseshini akamuva</string>
+    <string name="interviews_recent_empty">Izingxoxo zakho zokulinga nezikhathi ze-copilot zizovela lapha.</string>
 </resources>

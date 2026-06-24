@@ -109,7 +109,11 @@ private val DEFAULTS: Map<String, Any> = mapOf(
     RcKeys.AGGRESSIVENESS_TIER to "balanced",
 
     RcKeys.INTER_LOAD_TIMEOUT_MS to 1000L,
-    RcKeys.REWARD_LOAD_TIMEOUT_MS to 4000L,
+    // This bounds the WHOLE rewarded show in MonetizationManager (load + the user watching),
+    // since the earned-reward signal only arrives at the end of playback. It must comfortably
+    // exceed a full rewarded view or a real ad could never grant. AdMobAdsManager fails open
+    // fast on no-fill internally, so this large cap only matters once an ad is actually playing.
+    RcKeys.REWARD_LOAD_TIMEOUT_MS to 90_000L,
     RcKeys.NATIVE_LOAD_TIMEOUT_MS to 0L,
     RcKeys.APPOPEN_LOAD_TIMEOUT_MS to 1200L,
 
@@ -204,10 +208,40 @@ class RemoteConfig @Inject constructor(
         }.onFailure { if (BuildConfig.DEBUG) Log.w(TAG, "RC fetch failed; using cache/defaults", it) }
     }
 
-    fun bool(key: String): Boolean = remote(key)?.asBoolean() ?: (DEFAULTS[key] as? Boolean ?: false)
-    fun long(key: String): Long = remote(key)?.asLong() ?: (DEFAULTS[key] as? Long ?: 0L)
+    fun bool(key: String): Boolean = forcedBool(key) ?: (remote(key)?.asBoolean() ?: (DEFAULTS[key] as? Boolean ?: false))
+    fun long(key: String): Long = forcedLong(key) ?: (remote(key)?.asLong() ?: (DEFAULTS[key] as? Long ?: 0L))
     fun string(key: String): String =
         remote(key)?.asString()?.takeIf { it.isNotEmpty() } ?: (DEFAULTS[key] as? String ?: "")
+
+    // ---- Debug-only force-ads override (BuildConfig.DEBUG_FORCE_ADS) ----
+    // Lets a tester see Google TEST ads in Android Studio WITHOUT a Firebase Remote Config
+    // fetch (RC defaults leave every placement OFF). Strictly gated by BuildConfig.DEBUG &&
+    // DEBUG_FORCE_ADS, so release behavior is 100% unchanged — Remote Config stays the only
+    // production switch. It flips placement enables on and relaxes the early-session gates so
+    // splash/onboarding/app-open are reachable on a fresh debug install.
+    private val forceAds = BuildConfig.DEBUG && BuildConfig.DEBUG_FORCE_ADS
+
+    private fun forcedBool(key: String): Boolean? {
+        if (!forceAds) return null
+        return when {
+            key == RcKeys.GLOBAL_ENABLED -> true
+            key.endsWith(".enabled") -> true                       // every placement enable key
+            key == RcKeys.AFTER_SPLASH_REQUIRE_ACTIVATION_S2 -> false
+            key == RcKeys.APPOPEN_REQUIRE_ACTIVATION_S2 -> false
+            else -> null
+        }
+    }
+
+    private fun forcedLong(key: String): Long? {
+        if (!forceAds) return null
+        return when (key) {
+            RcKeys.AFTER_SPLASH_MIN_SESSION -> 1L          // reachable on first debug launch
+            RcKeys.APPOPEN_MIN_SESSION -> 1L
+            RcKeys.AFTER_ONB_MAX_PER_INSTALL -> 1L         // onboarding interstitial allowed once
+            RcKeys.APPOPEN_MIN_BACKGROUND_SECONDS -> 0L
+            else -> null
+        }
+    }
 
     /** The fetched remote value for [key], or null if RC hasn't delivered one (→ use default). */
     private fun remote(key: String): FirebaseRemoteConfigValue? {

@@ -1,5 +1,7 @@
 package app.ascend.ui.screens.jobdetail
 
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -7,12 +9,14 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.outlined.RecordVoiceOver
 import androidx.compose.material.icons.filled.Bookmark
 import androidx.compose.material.icons.outlined.AutoFixHigh
 import androidx.compose.material.icons.outlined.Bolt
 import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.OpenInNew
+import androidx.compose.material.icons.outlined.Share
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
@@ -25,6 +29,9 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.res.stringResource
@@ -35,7 +42,9 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import app.ascend.R
+import app.ascend.ui.components.AscendCard
 import app.ascend.ui.components.CompanyAvatar
+import app.ascend.ui.components.MatchBadge
 import app.ascend.ui.components.Pill
 import app.ascend.ui.i18n.label
 import app.ascend.ui.navigation.Routes
@@ -78,6 +87,18 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
                     }
                 },
                 actions = {
+                    IconButton(onClick = {
+                        j?.let { job ->
+                            val send = android.content.Intent(android.content.Intent.ACTION_SEND).apply {
+                                type = "text/plain"
+                                putExtra(
+                                    android.content.Intent.EXTRA_TEXT,
+                                    listOfNotNull("${job.title} · ${job.company}", job.applyUrl).joinToString("\n"),
+                                )
+                            }
+                            runCatching { ctx.startActivity(android.content.Intent.createChooser(send, null)) }
+                        }
+                    }) { Icon(Icons.Outlined.Share, stringResource(R.string.resume_share), tint = AscendColors.Muted) }
                     IconButton(onClick = vm::toggleSave) {
                         Icon(
                             if (saved) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
@@ -142,6 +163,39 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 j.employmentType?.let { Pill(it, AscendColors.Muted, AscendColors.Bg) }
                 j.salary?.let { Pill(it, AscendColors.Muted, AscendColors.Bg) }
+            }
+            // "Strong match for you" — surfaced when we have a match score.
+            j.matchPercent?.let { mp ->
+                Spacer(Modifier.height(18.dp))
+                AscendCard {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        MatchBadge(mp)
+                        Spacer(Modifier.width(14.dp))
+                        Column(Modifier.weight(1f)) {
+                            Text(stringResource(R.string.jobdetail_strong_match), fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink, fontSize = 15.sp)
+                            Text(stringResource(R.string.jobdetail_strong_match_sub), fontSize = 12.5.sp, color = AscendColors.Muted2, lineHeight = 17.sp)
+                        }
+                    }
+                }
+            }
+            // Prominent "Tailor my resume for this role" — the job is already the resume target.
+            Spacer(Modifier.height(14.dp))
+            Row(
+                Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp))
+                    .background(Brush.linearGradient(listOf(AscendColors.Indigo, AscendColors.Violet2)))
+                    .clickable { nav.navigate(Routes.RESUME) }.padding(18.dp),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                Box(Modifier.size(44.dp).clip(RoundedCornerShape(13.dp)).background(Color.White.copy(alpha = 0.18f)), Alignment.Center) {
+                    Icon(Icons.Outlined.AutoFixHigh, null, tint = Color.White)
+                }
+                Spacer(Modifier.width(14.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(stringResource(R.string.jobdetail_tailor_title), color = Color.White, fontWeight = FontWeight.ExtraBold, fontSize = 16.sp, lineHeight = 20.sp)
+                    Spacer(Modifier.height(2.dp))
+                    Text(stringResource(R.string.jobdetail_tailor_sub), color = Color.White.copy(alpha = 0.85f), fontSize = 12.5.sp, lineHeight = 17.sp)
+                }
+                Icon(Icons.AutoMirrored.Filled.ArrowForward, null, tint = Color.White)
             }
             if (stage != null) {
                 Spacer(Modifier.height(18.dp))

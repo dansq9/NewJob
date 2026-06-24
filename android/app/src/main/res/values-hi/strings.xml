@@ -316,4 +316,22 @@
     <string name="home_fallback_name">वहां</string>
     <string name="settings_privacy_options">गोपनीयता विकल्प</string>
     <string name="settings_privacy_options_sub">अपनी विज्ञापन-सहमति के विकल्प प्रबंधित करें</string>
+    <string name="splash_brand_tagline">अपनी अगली नौकरी तेज़ी से पाएँ</string>
+    <string name="splash_brand_loading">आपका वर्कस्पेस तैयार किया जा रहा है</string>
+    <string name="onboarding_language_title">आप कौन सी भाषा पसंद करते हैं?</string>
+    <string name="onboarding_language_sub">आप इसे कभी भी सेटिंग्स में बदल सकते हैं।</string>
+    <string name="onboarding_location_current">मेरा वर्तमान स्थान उपयोग करें</string>
+    <string name="onboarding_section_popular">लोकप्रिय</string>
+    <string name="onboarding_resume_voice">रिज़्यूमे नहीं है? आवाज़ से बनाएं</string>
+    <string name="onboarding_resume_voice_sub">कुछ सवालों के जवाब दें, AI लिख देगा</string>
+    <string name="onboarding_resume_skip">अभी छोड़ें</string>
+    <string name="onboarding_resume_continue">सही है, जारी रखें</string>
+    <string name="jobdetail_strong_match">आपके लिए बढ़िया मेल</string>
+    <string name="jobdetail_strong_match_sub">आपकी प्रोफ़ाइल इस भूमिका से अच्छी तरह मेल खाती है।</string>
+    <string name="jobdetail_tailor_title">इस भूमिका के लिए मेरा रिज़्यूमे तैयार करें</string>
+    <string name="jobdetail_tailor_sub">इस नौकरी के लिए ATS-अनुकूलित संस्करण पाएं।</string>
+    <string name="jobs_clear_filters">फ़िल्टर साफ़ करें</string>
+    <string name="interviews_launch_copilot">कोपायलट शुरू करें</string>
+    <string name="interviews_recent">हाल के सत्र</string>
+    <string name="interviews_recent_empty">आपके मॉक इंटरव्यू और कोपायलट सत्र यहाँ दिखेंगे।</string>
 </resources>

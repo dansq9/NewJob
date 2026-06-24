@@ -8,3 +8,15 @@ RAPIDAPI_KEY=your_rapidapi_key_here
 # Ascend web-platform API base URL (trailing slash required).
 # Powers AI resume generate/optimize, mock interview, and live copilot.
 ASCEND_API_BASE_URL=https://api.ascend.app/
+
+# --- Ads (AdMob) ---
+# Debug builds use Google TEST ad units automatically (never real ads).
+# Remote Config leaves every placement OFF by default, so to actually SEE test ads
+# in Android Studio without a Firebase fetch, leave this true (the debug default):
+#   true  → force-enable placements + relax early-session gates (debug only)
+#   false → behave like production (ads only if Remote Config enables them)
+DEBUG_FORCE_ADS=true
+# Real AdMob App ID for RELEASE builds (ca-app-pub-XXXX~YYYY). Leave unset to use
+# Google's sample/test app id. Real per-placement ad-unit IDs are wired in
+# AdUnitIds.kt by the human engineer; blank units fail open (no ad).
+# ADMOB_APP_ID=ca-app-pub-0000000000000000~0000000000

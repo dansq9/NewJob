@@ -316,4 +316,22 @@
     <string name="home_fallback_name">صديقي</string>
     <string name="settings_privacy_options">خيارات الخصوصية</string>
     <string name="settings_privacy_options_sub">إدارة خيارات موافقتك على الإعلانات</string>
+    <string name="splash_brand_tagline">احصل على وظيفتك التالية بشكل أسرع</string>
+    <string name="splash_brand_loading">جارٍ تجهيز مساحة عملك</string>
+    <string name="onboarding_language_title">ما اللغة التي تفضلها؟</string>
+    <string name="onboarding_language_sub">يمكنك تغييرها في أي وقت من الإعدادات.</string>
+    <string name="onboarding_location_current">استخدام موقعي الحالي</string>
+    <string name="onboarding_section_popular">شائع</string>
+    <string name="onboarding_resume_voice">لا سيرة ذاتية؟ أنشئها بصوتك</string>
+    <string name="onboarding_resume_voice_sub">أجب عن بعض الأسئلة وسيكتبها الذكاء الاصطناعي</string>
+    <string name="onboarding_resume_skip">تخطَّ الآن</string>
+    <string name="onboarding_resume_continue">يبدو صحيحًا، متابعة</string>
+    <string name="jobdetail_strong_match">تطابق قوي لك</string>
+    <string name="jobdetail_strong_match_sub">ملفك يتوافق جيدًا مع هذه الوظيفة.</string>
+    <string name="jobdetail_tailor_title">خصّص سيرتي الذاتية لهذه الوظيفة</string>
+    <string name="jobdetail_tailor_sub">احصل على نسخة محسّنة لأنظمة ATS لهذه الوظيفة.</string>
+    <string name="jobs_clear_filters">مسح عوامل التصفية</string>
+    <string name="interviews_launch_copilot">تشغيل المساعد</string>
+    <string name="interviews_recent">الجلسات الأخيرة</string>
+    <string name="interviews_recent_empty">ستظهر هنا مقابلاتك التجريبية وجلسات المساعد.</string>
 </resources>

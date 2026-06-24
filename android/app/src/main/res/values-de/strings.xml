@@ -316,4 +316,22 @@
     <string name="home_fallback_name">du</string>
     <string name="settings_privacy_options">Datenschutzoptionen</string>
     <string name="settings_privacy_options_sub">Verwalten Sie Ihre Einwilligung zu Werbung</string>
+    <string name="splash_brand_tagline">Erreiche deinen nächsten Job schneller</string>
+    <string name="splash_brand_loading">Arbeitsbereich wird vorbereitet</string>
+    <string name="onboarding_language_title">Welche Sprache bevorzugst du?</string>
+    <string name="onboarding_language_sub">Du kannst sie jederzeit in den Einstellungen ändern.</string>
+    <string name="onboarding_location_current">Meinen aktuellen Standort verwenden</string>
+    <string name="onboarding_section_popular">Beliebt</string>
+    <string name="onboarding_resume_voice">Kein Lebenslauf? Per Sprache erstellen</string>
+    <string name="onboarding_resume_voice_sub">Beantworte ein paar Fragen, die KI schreibt ihn</string>
+    <string name="onboarding_resume_skip">Vorerst überspringen</string>
+    <string name="onboarding_resume_continue">Sieht gut aus, weiter</string>
+    <string name="jobdetail_strong_match">Starke Übereinstimmung für dich</string>
+    <string name="jobdetail_strong_match_sub">Dein Profil passt gut zu dieser Stelle.</string>
+    <string name="jobdetail_tailor_title">Meinen Lebenslauf auf diese Stelle zuschneiden</string>
+    <string name="jobdetail_tailor_sub">Erhalte eine ATS-optimierte Version für genau diese Stelle.</string>
+    <string name="jobs_clear_filters">Filter löschen</string>
+    <string name="interviews_launch_copilot">Copilot starten</string>
+    <string name="interviews_recent">Letzte Sitzungen</string>
+    <string name="interviews_recent_empty">Deine Übungsinterviews und Copilot-Sitzungen erscheinen hier.</string>
 </resources>

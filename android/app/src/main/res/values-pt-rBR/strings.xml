@@ -316,4 +316,22 @@
     <string name="home_fallback_name">você</string>
     <string name="settings_privacy_options">Opções de privacidade</string>
     <string name="settings_privacy_options_sub">Gerencie suas opções de consentimento de anúncios</string>
+    <string name="splash_brand_tagline">Conquiste sua próxima vaga mais rápido</string>
+    <string name="splash_brand_loading">Preparando seu espaço de trabalho</string>
+    <string name="onboarding_language_title">Qual idioma você prefere?</string>
+    <string name="onboarding_language_sub">Você pode mudar isso quando quiser nas Configurações.</string>
+    <string name="onboarding_location_current">Usar minha localização atual</string>
+    <string name="onboarding_section_popular">Popular</string>
+    <string name="onboarding_resume_voice">Sem currículo? Crie um por voz</string>
+    <string name="onboarding_resume_voice_sub">Responda algumas perguntas e a IA escreve</string>
+    <string name="onboarding_resume_skip">Pular por enquanto</string>
+    <string name="onboarding_resume_continue">Está certo, continuar</string>
+    <string name="jobdetail_strong_match">Boa combinação para você</string>
+    <string name="jobdetail_strong_match_sub">Seu perfil combina bem com esta vaga.</string>
+    <string name="jobdetail_tailor_title">Adaptar meu currículo para esta vaga</string>
+    <string name="jobdetail_tailor_sub">Receba uma versão otimizada para ATS desta vaga.</string>
+    <string name="jobs_clear_filters">Limpar filtros</string>
+    <string name="interviews_launch_copilot">Iniciar Copilot</string>
+    <string name="interviews_recent">Sessões recentes</string>
+    <string name="interviews_recent_empty">Suas entrevistas simuladas e sessões do copilot aparecerão aqui.</string>
 </resources>

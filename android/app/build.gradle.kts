@@ -40,6 +40,15 @@ android {
         // Ascend web-platform API (powers resume gen/optimize, mock interview, copilot)
         buildConfigField("String", "ASCEND_API_BASE_URL",
             "\"${secret("ASCEND_API_BASE_URL", "https://api.ascend.app/")}\"")
+
+        // --- Ads configuration ---
+        // Use the real Google Mobile Ads SDK (AdMobAdsManager). Set false to fall back to
+        // NoopAdsManager for an ad-free local build.
+        buildConfigField("boolean", "USE_REAL_ADS", "true")
+        // AdMob App ID consumed by the manifest meta-data. Defaults to Google's public
+        // SAMPLE app id (serves test ads only). The release type overrides with the real id
+        // from local.properties (ADMOB_APP_ID) when present; never invent a real one here.
+        manifestPlaceholders["admobAppId"] = "ca-app-pub-3940256099942544~3347511713"
     }
 
     buildTypes {
@@ -47,11 +56,20 @@ android {
             applicationIdSuffix = ".debug"
             // Generates en-rXA (accented, longer) + ar-rXB (RTL) for i18n testing.
             isPseudoLocalesEnabled = true
+            // Debug-only escape hatch: lets a tester see Google TEST ads in Android Studio
+            // without a Firebase Remote Config fetch (RC defaults leave placements OFF).
+            // Read from local.properties (DEBUG_FORCE_ADS); defaults ON for debug builds.
+            buildConfigField("boolean", "DEBUG_FORCE_ADS", secret("DEBUG_FORCE_ADS", "true"))
         }
         release {
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+            // Never force ads on in release — Remote Config is the only switch.
+            buildConfigField("boolean", "DEBUG_FORCE_ADS", "false")
+            // Real AdMob App ID from local.properties; falls back to the sample id (test ads)
+            // so the manifest always merges and MobileAds.initialize never crashes on a blank.
+            manifestPlaceholders["admobAppId"] = secret("ADMOB_APP_ID", "ca-app-pub-3940256099942544~3347511713")
         }
     }
 
@@ -120,6 +138,9 @@ dependencies {
     // UMP consent SDK — gates all ad init/requests (CLAUDE.md rule 1). Ships
     // globally; the consent form is shown only where required (EEA/UK/CH).
     implementation(libs.user.messaging.platform)
+
+    // Google Mobile Ads (AdMob) — real ad rendering, arbitrated by MonetizationManager.
+    implementation(libs.play.services.ads)
 
     // Firebase Analytics (GA4) — the AnalyticsTracker spine. The google-services
     // plugin + google-services.json are added by the human engineer; until then
