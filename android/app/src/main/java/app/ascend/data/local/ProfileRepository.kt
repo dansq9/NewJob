@@ -24,7 +24,17 @@ class ProfileRepository @Inject constructor(
         val RESUME = stringPreferencesKey("resume_name")
         val ONBOARDED = booleanPreferencesKey("onboarded")
         val INSTALL_ID = stringPreferencesKey("anonymous_install_id")
+        val SELECTED_RESUME = stringPreferencesKey("selected_resume_id")
     }
+
+    /** Id of the resume the user has marked as active (drives optimize/generate targets). */
+    val selectedResumeId: Flow<String?> = dataStore.data.map { it[Keys.SELECTED_RESUME] }
+
+    suspend fun setSelectedResume(id: String?) {
+        dataStore.edit { p -> if (id.isNullOrBlank()) p.remove(Keys.SELECTED_RESUME) else p[Keys.SELECTED_RESUME] = id }
+    }
+
+    suspend fun selectedResumeIdOnce(): String? = dataStore.data.first()[Keys.SELECTED_RESUME]
 
     /** Stable anonymous install id (random UUID), generated once on first access. */
     suspend fun installId(): String {

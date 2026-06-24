@@ -1,5 +1,6 @@
 package app.ascend.ui.screens.jobdetail
 
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -42,6 +43,7 @@ import app.ascend.ui.theme.AscendColors
 fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()) {
     val job by vm.job.collectAsStateWithLifecycle()
     val saved by vm.saved.collectAsStateWithLifecycle()
+    val stage by vm.stage.collectAsStateWithLifecycle()
     val uri = LocalUriHandler.current
     val j = job
 
@@ -113,6 +115,20 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
             Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 j.employmentType?.let { Pill(it, AscendColors.Muted, AscendColors.Bg) }
                 j.salary?.let { Pill(it, AscendColors.Muted, AscendColors.Bg) }
+            }
+            if (stage != null) {
+                Spacer(Modifier.height(18.dp))
+                Text("Pipeline stage", fontSize = 12.sp, color = AscendColors.Muted2, fontWeight = FontWeight.SemiBold)
+                Spacer(Modifier.height(8.dp))
+                Row(horizontalArrangement = Arrangement.spacedBy(7.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
+                    app.ascend.data.model.TrackStage.entries.forEach { s ->
+                        FilterChip(
+                            selected = stage == s,
+                            onClick = { vm.setStage(s) },
+                            label = { Text(s.label, fontSize = 12.5.sp) },
+                        )
+                    }
+                }
             }
             Spacer(Modifier.height(18.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {

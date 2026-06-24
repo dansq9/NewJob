@@ -36,7 +36,7 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
         3 -> vm.location.isNotBlank()
         else -> true
     }
-    val pickResume = rememberResumePicker { vm.resumeName = it.name }
+    val pickResume = rememberResumePicker { vm.onResumePicked(it) }
 
     Column(Modifier.fillMaxSize().background(AscendColors.Bg).statusBarsPadding().padding(22.dp)) {
         // top bar: back + progress
@@ -171,7 +171,7 @@ private fun ResumeStep(vm: OnboardingViewModel, pick: () -> Unit) {
         }
         if (vm.resumeName != null) {
             Spacer(Modifier.height(10.dp))
-            TextButton(onClick = { vm.resumeName = null }) { Text("Remove", color = AscendColors.Muted) }
+            TextButton(onClick = { vm.clearResume() }) { Text("Remove", color = AscendColors.Muted) }
         }
     }
 }

@@ -16,4 +16,8 @@ data class TrackedJobEntity(
     val applyUrl: String?,
     val stage: String,          // TrackStage name
     val updatedAt: Long,
+    val notes: String? = null,
+    val interviewDate: Long? = null,    // epoch millis of next interview / follow-up
+    val reminderAt: Long? = null,       // epoch millis to remind
+    val closedReason: String? = null,   // why a Closed/lost job ended
 )

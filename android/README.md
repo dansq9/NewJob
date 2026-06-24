@@ -33,9 +33,9 @@ These are exposed as `BuildConfig.RAPIDAPI_KEY` / `BuildConfig.ASCEND_API_BASE_U
 | Analytics | `Analytics` facade + event taxonomy (`Ev`) + no-op impl; drop in Firebase + Sentry |
 | Home | greeting, quick actions, top matches (JSearch) |
 | Job detail | header, apply (opens link), save / mark applied |
-| Tracker | **Room-backed** pipeline (Saved→Applied→Interview→Offer→Closed) |
+| Tracker | **Room-backed** pipeline (Saved→Applied→Interview→Offer→Closed) — search, sort, per-job notes, interview/follow-up date, closed-reason, delete confirm; edit stage from job detail |
 | Monetization | Entitlement (DataStore) + **paywall** (prototype design) + Pro gates. Ads (interstitial after splash, native every 5 jobs, rewarded for AI features) and Play Billing are behind `AdsManager`/`BillingManager` interfaces with no-op/stub impls — swap for AdMob + Play Billing once unit/product IDs exist. Pro = no ads + Interview Navigator. |
-| Resume optimize | calls `AscendApi.optimizeResume` (platform) |
+| Resume | **Room-backed library** — add (PDF/DOC/DOCX, ≤10MB validated), select active, remove; `optimize` calls `AscendApi.optimizeResume` (rewarded-gated for free), records ATS score, download/share result |
 | Mock interview | calls `AscendApi.startMock` / `scoreMock`; **Speak** uses OS speech recognizer |
 | Live Copilot | calls `AscendApi.copilotAnswer` (Pro-gated); live transcription → `SpeechRecognizer` (TODO) |
 

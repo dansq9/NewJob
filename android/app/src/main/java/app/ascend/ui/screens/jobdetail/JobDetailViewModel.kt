@@ -22,6 +22,11 @@ class JobDetailViewModel @Inject constructor(
         j != null && list.any { it.job.id == j.id }
     }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), false)
 
+    /** Current pipeline stage for this job, or null if it isn't tracked yet. */
+    val stage: StateFlow<TrackStage?> = combine(job, tracker.tracked) { j, list ->
+        if (j == null) null else list.firstOrNull { it.job.id == j.id }?.stage
+    }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), null)
+
     fun toggleSave() {
         val j = job.value ?: return
         viewModelScope.launch {
@@ -32,5 +37,14 @@ class JobDetailViewModel @Inject constructor(
     fun markApplied() {
         val j = job.value ?: return
         viewModelScope.launch { tracker.save(j, TrackStage.APPLIED) }
+    }
+
+    /** Set the pipeline stage; saves the job into the tracker first if needed. */
+    fun setStage(stage: TrackStage) {
+        val j = job.value ?: return
+        viewModelScope.launch {
+            if (tracker.stageOf(j.id) == null) tracker.save(j, stage)
+            else tracker.setStage(j.id, stage)
+        }
     }
 }

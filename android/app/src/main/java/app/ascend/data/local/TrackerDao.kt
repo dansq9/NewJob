@@ -20,6 +20,15 @@ interface TrackerDao {
     @Query("UPDATE tracked_jobs SET stage = :stage, updatedAt = :now WHERE jobId = :id")
     suspend fun updateStage(id: String, stage: String, now: Long)
 
+    @Query("UPDATE tracked_jobs SET notes = :notes, updatedAt = :now WHERE jobId = :id")
+    suspend fun updateNotes(id: String, notes: String?, now: Long)
+
+    @Query("UPDATE tracked_jobs SET interviewDate = :interviewDate, reminderAt = :reminderAt, updatedAt = :now WHERE jobId = :id")
+    suspend fun updateSchedule(id: String, interviewDate: Long?, reminderAt: Long?, now: Long)
+
+    @Query("UPDATE tracked_jobs SET stage = :stage, closedReason = :reason, updatedAt = :now WHERE jobId = :id")
+    suspend fun updateClosed(id: String, stage: String, reason: String?, now: Long)
+
     @Query("DELETE FROM tracked_jobs WHERE jobId = :id")
     suspend fun delete(id: String)
 }

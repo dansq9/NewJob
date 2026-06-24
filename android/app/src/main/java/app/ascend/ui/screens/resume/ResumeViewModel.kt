@@ -5,11 +5,18 @@ import androidx.lifecycle.viewModelScope
 import app.ascend.data.remote.platform.AscendApi
 import app.ascend.data.remote.platform.OptimizeRequest
 import app.ascend.data.remote.platform.OptimizeResponse
+import app.ascend.data.repo.AddResumeResult
+import app.ascend.data.repo.ResumeRecord
+import app.ascend.data.repo.ResumeRepository
 import app.ascend.ui.SelectedJobStore
+import app.ascend.ui.util.PickedFile
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,26 +27,62 @@ sealed interface ResumeUi {
     data class Error(val message: String) : ResumeUi
 }
 
+/** Library + selection state for the resume screen. */
+data class ResumeLibraryState(
+    val resumes: List<ResumeRecord> = emptyList(),
+    val selectedId: String? = null,
+) {
+    val selected: ResumeRecord? get() = resumes.firstOrNull { it.id == selectedId }
+}
+
 @HiltViewModel
 class ResumeViewModel @Inject constructor(
     private val api: AscendApi,
     private val selectedJob: SelectedJobStore,
+    private val resumes: ResumeRepository,
     private val ads: app.ascend.monetization.ads.AdsManager,
 ) : ViewModel() {
 
     val targetTitle = selectedJob.selected.value?.title ?: "Senior Product Manager · Northwind"
 
+    val library: StateFlow<ResumeLibraryState> =
+        combine(resumes.library, resumes.selectedResumeId) { list, sel ->
+            ResumeLibraryState(list, sel ?: list.firstOrNull()?.id)
+        }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), ResumeLibraryState())
+
     private val _ui = MutableStateFlow<ResumeUi>(ResumeUi.Idle)
     val ui: StateFlow<ResumeUi> = _ui.asStateFlow()
 
+    /** Transient one-shot message (rejected upload, added confirmation, etc.). */
+    private val _snackbar = MutableStateFlow<String?>(null)
+    val snackbar: StateFlow<String?> = _snackbar.asStateFlow()
+
+    fun addResume(file: PickedFile) {
+        viewModelScope.launch {
+            when (val r = resumes.add(file)) {
+                is AddResumeResult.Success -> _snackbar.value = "Added ${r.record.name}"
+                is AddResumeResult.Rejected -> _snackbar.value = r.reason
+            }
+        }
+    }
+
+    fun select(id: String) { viewModelScope.launch { resumes.select(id) } }
+    fun remove(id: String) { viewModelScope.launch { resumes.remove(id) } }
+    fun clearSnackbar() { _snackbar.value = null }
+
     fun optimize() {
         val jobId = selectedJob.selected.value?.id ?: "demo"
+        val resumeId = library.value.selectedId
         viewModelScope.launch {
             // Free users watch a rewarded ad to unlock one optimization (Pro bypasses).
             if (!ads.showRewarded(app.ascend.monetization.ads.RewardedFeature.RESUME_OPTIMIZE)) return@launch
             _ui.value = ResumeUi.Loading
             _ui.value = try {
-                ResumeUi.Result(api.optimizeResume(OptimizeRequest(jobId = jobId)))
+                val res = api.optimizeResume(OptimizeRequest(resumeId = resumeId, jobId = jobId))
+                if (resumeId != null) {
+                    resumes.recordAtsScore(resumeId, res.optimizedScore ?: res.atsScore, jobId)
+                }
+                ResumeUi.Result(res)
             } catch (t: Throwable) {
                 ResumeUi.Error(t.message ?: "Optimization failed. Check the Ascend API configuration.")
             }
