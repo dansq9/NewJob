@@ -316,4 +316,6 @@
     <string name="home_fallback_name">du</string>
     <string name="settings_privacy_options">Datenschutzoptionen</string>
     <string name="settings_privacy_options_sub">Verwalten Sie Ihre Einwilligung zu Werbung</string>
+    <string name="splash_brand_tagline">Erreiche deinen nächsten Job schneller</string>
+    <string name="splash_brand_loading">Arbeitsbereich wird vorbereitet</string>
 </resources>

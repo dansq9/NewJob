@@ -316,4 +316,6 @@
     <string name="home_fallback_name">daar</string>
     <string name="settings_privacy_options">Privaatheidopsies</string>
     <string name="settings_privacy_options_sub">Bestuur jou advertensie-toestemmingskeuses</string>
+    <string name="splash_brand_tagline">Kry vinniger jou volgende pos</string>
+    <string name="splash_brand_loading">Berei jou werkruimte voor</string>
 </resources>

@@ -316,4 +316,6 @@
     <string name="home_fallback_name">there</string>
     <string name="settings_privacy_options">Privacy options</string>
     <string name="settings_privacy_options_sub">Manage your ad-consent choices</string>
+    <string name="splash_brand_tagline">Land your next role, faster</string>
+    <string name="splash_brand_loading">Preparing your workspace</string>
 </resources>

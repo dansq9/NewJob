@@ -316,4 +316,6 @@
     <string name="home_fallback_name">por aquí</string>
     <string name="settings_privacy_options">Opciones de privacidad</string>
     <string name="settings_privacy_options_sub">Gestiona tus opciones de consentimiento de anuncios</string>
+    <string name="splash_brand_tagline">Consigue tu próximo empleo más rápido</string>
+    <string name="splash_brand_loading">Preparando tu espacio de trabajo</string>
 </resources>

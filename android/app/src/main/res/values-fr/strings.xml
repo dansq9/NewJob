@@ -316,4 +316,6 @@
     <string name="home_fallback_name">vous</string>
     <string name="settings_privacy_options">Options de confidentialité</string>
     <string name="settings_privacy_options_sub">Gérez vos choix de consentement publicitaire</string>
+    <string name="splash_brand_tagline">Décrochez votre prochain poste plus vite</string>
+    <string name="splash_brand_loading">Préparation de votre espace de travail</string>
 </resources>

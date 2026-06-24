@@ -316,4 +316,6 @@
     <string name="home_fallback_name">صديقي</string>
     <string name="settings_privacy_options">خيارات الخصوصية</string>
     <string name="settings_privacy_options_sub">إدارة خيارات موافقتك على الإعلانات</string>
+    <string name="splash_brand_tagline">احصل على وظيفتك التالية بشكل أسرع</string>
+    <string name="splash_brand_loading">جارٍ تجهيز مساحة عملك</string>
 </resources>

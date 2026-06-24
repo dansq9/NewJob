@@ -316,4 +316,6 @@
     <string name="home_fallback_name">lapho</string>
     <string name="settings_privacy_options">Izinketho zobumfihlo</string>
     <string name="settings_privacy_options_sub">Phatha izinketho zakho zemvume yezikhangiso</string>
+    <string name="splash_brand_tagline">Thola umsebenzi wakho olandelayo ngokushesha</string>
+    <string name="splash_brand_loading">Silungiselela indawo yakho yokusebenza</string>
 </resources>
