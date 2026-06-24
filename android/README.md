@@ -37,8 +37,7 @@ These are exposed as `BuildConfig.RAPIDAPI_KEY` / `BuildConfig.ASCEND_API_BASE_U
 | Monetization | Entitlement (DataStore) + **paywall** (prototype design) + Pro gates. Ads (interstitial after splash, native every 5 jobs, rewarded for AI features) and Play Billing are behind `AdsManager`/`BillingManager` interfaces with no-op/stub impls — swap for AdMob + Play Billing once unit/product IDs exist. Pro = no ads + Interview Navigator. |
 | Resume optimize | calls `AscendApi.optimizeResume` (platform) |
 | Mock interview | calls `AscendApi.startMock` / `scoreMock`; **Speak** uses OS speech recognizer |
-| Live Copilot | calls `AscendApi.copilotAnswer`; live transcription → `SpeechRecognizer` (TODO) |
-| Brain Games | hub scaffold — drop in the game engines (TODO) |
+| Live Copilot | calls `AscendApi.copilotAnswer` (Pro-gated); live transcription → `SpeechRecognizer` (TODO) |
 
 The Ascend platform endpoints (`AscendApi`) are placeholders matching the
 prototype's flows; align the routes/field names with the real backend, and wire
