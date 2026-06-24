@@ -169,6 +169,42 @@ fun errorTypeOf(t: Throwable): ErrorType = when {
     t.isOffline() -> ErrorType.NETWORK
     else -> ErrorType.API_ERROR
 }
+
+// ---- PII-safe banders: map raw values to low-cardinality bands (never log the raw value) ----
+
+fun bandOf(score: Int): Band = when {
+    score >= 80 -> Band.HIGH
+    score >= 50 -> Band.MED
+    else -> Band.LOW
+}
+
+fun sizeBandOf(bytes: Long?): SizeBand = when {
+    bytes == null -> SizeBand.MED
+    bytes < 100_000 -> SizeBand.SMALL
+    bytes < 1_000_000 -> SizeBand.MED
+    else -> SizeBand.LARGE
+}
+
+fun fileTypeOf(name: String?): FileType = when {
+    name == null -> FileType.PDF
+    name.endsWith(".docx", true) -> FileType.DOCX
+    name.endsWith(".doc", true) -> FileType.DOC
+    else -> FileType.PDF
+}
+
+/** Coarse role bucket from a free-text target role (never logs the raw role string). */
+fun roleCategoryOf(role: String): RoleCategory {
+    val r = role.lowercase()
+    return when {
+        r.isBlank() -> RoleCategory.OTHER
+        listOf("product manager", "product owner", " pm", "product").any { r.contains(it) } -> RoleCategory.PRODUCT
+        listOf("engineer", "developer", "programmer", "swe", "data ", "scientist").any { r.contains(it) } -> RoleCategory.ENGINEERING
+        listOf("sales", "account exec", " ae", "business develop").any { r.contains(it) } -> RoleCategory.SALES
+        listOf("market", "growth", "seo", "content", "brand").any { r.contains(it) } -> RoleCategory.MARKETING
+        listOf("operations", "ops", "logistics", "supply").any { r.contains(it) } -> RoleCategory.OPS
+        else -> RoleCategory.OTHER
+    }
+}
 enum class PaywallVariant(val v: String) { CONTROL("control"), DISCOUNT("discount"), TRIAL("trial"), LIFETIME("lifetime") }
 enum class TriggerPlacement(val v: String) { COPILOT("copilot"), RESUME_DOWNLOAD("resume_download"), MOCK_SCORE("mock_score") }
 enum class PushChannel(val v: String) {

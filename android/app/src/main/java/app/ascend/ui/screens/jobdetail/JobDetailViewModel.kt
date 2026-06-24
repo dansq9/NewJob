@@ -30,9 +30,23 @@ class JobDetailViewModel @Inject constructor(
 
     init {
         detailViewCount++   // session-scoped count of job-detail opens (drives close interstitial)
-        if (_job.value == null && jobId != null) {
-            viewModelScope.launch { _job.value = tracker.get(jobId)?.job }
+        viewModelScope.launch {
+            if (_job.value == null && jobId != null) _job.value = tracker.get(jobId)?.job
+            _job.value?.let { j ->
+                analytics.jobDetailView(
+                    matchBand = null,                       // JSearch jobs carry no match score
+                    employment = j.employmentType,
+                    remote = remoteTypeOf(j.workType),
+                )
+            }
         }
+    }
+
+    private fun remoteTypeOf(w: app.ascend.data.model.WorkType): app.ascend.analytics.LocationType = when (w) {
+        app.ascend.data.model.WorkType.REMOTE -> app.ascend.analytics.LocationType.REMOTE
+        app.ascend.data.model.WorkType.HYBRID -> app.ascend.analytics.LocationType.HYBRID
+        app.ascend.data.model.WorkType.ONSITE -> app.ascend.analytics.LocationType.ONSITE
+        app.ascend.data.model.WorkType.UNKNOWN -> app.ascend.analytics.LocationType.UNKNOWN
     }
 
     /**
@@ -47,6 +61,7 @@ class JobDetailViewModel @Inject constructor(
     /** The user is leaving to the external apply page — suppress app-open on return + activate. */
     fun onApplyExternal() {
         monetization.noteExternalLinkOpened()
+        analytics.jobApplyClick(app.ascend.analytics.ApplyType.EXTERNAL)
         viewModelScope.launch { analytics.coreActionDone(app.ascend.analytics.CoreAction.APPLY) }   // activation
     }
 
@@ -71,6 +86,7 @@ class JobDetailViewModel @Inject constructor(
                 tracker.remove(j.id)
             } else {
                 tracker.save(j, TrackStage.SAVED)
+                analytics.jobSave(app.ascend.analytics.SaveFrom.DETAIL)
                 analytics.coreActionDone(app.ascend.analytics.CoreAction.SAVE)   // activation
             }
         }
@@ -88,9 +104,11 @@ class JobDetailViewModel @Inject constructor(
     /** Set the pipeline stage; saves the job into the tracker first if needed. */
     fun setStage(stage: TrackStage) {
         val j = job.value ?: return
+        val from = this.stage.value?.name ?: "untracked"
         viewModelScope.launch {
             if (tracker.stageOf(j.id) == null) tracker.save(j, stage)
             else tracker.setStage(j.id, stage)
+            analytics.trackerStageChange(from = from, to = stage.name)
         }
     }
 }

@@ -68,6 +68,10 @@ class ResumeViewModel @Inject constructor(
             when (val r = resumes.add(file)) {
                 is AddResumeResult.Success -> {
                     _snackbar.value = "Added ${r.record.name}"
+                    analytics.resumeUpload(
+                        type = app.ascend.analytics.fileTypeOf(r.record.name),
+                        sizeBand = app.ascend.analytics.sizeBandOf(r.record.sizeBytes),
+                    )
                     analytics.coreActionDone(app.ascend.analytics.CoreAction.UPLOAD)   // activation
                 }
                 is AddResumeResult.Rejected -> {
@@ -89,16 +93,20 @@ class ResumeViewModel @Inject constructor(
         viewModelScope.launch {
             // Free users watch a rewarded ad to unlock one optimization; Pro bypasses.
             // The reward is granted only on the earned-reward callback (rule 5).
-            when (monetization.showRewarded(app.ascend.monetization.Placement.REWARDED_RESUME_OPTIMIZE)) {
-                is app.ascend.monetization.RewardOutcome.NotGranted -> return@launch  // no reward → keep current screen
-                else -> Unit  // Granted or ProBypass → proceed
-            }
+            val outcome = monetization.showRewarded(app.ascend.monetization.Placement.REWARDED_RESUME_OPTIMIZE)
+            if (outcome is app.ascend.monetization.RewardOutcome.NotGranted) return@launch  // no reward → keep screen
+            val gatedBy = app.ascend.monetization.gatedByOf(outcome)
+            analytics.resumeOptimizeStart(hasTargetJob = jobId != null)
             _ui.value = ResumeUi.Loading
             _ui.value = try {
                 val res = api.optimizeResume(OptimizeRequest(resumeId = resumeId, jobId = jobId))
                 if (resumeId != null) {
                     resumes.recordAtsScore(resumeId, res.optimizedScore ?: res.atsScore, jobId)
                 }
+                analytics.resumeOptimizeComplete(
+                    scoreBand = app.ascend.analytics.bandOf(res.optimizedScore ?: res.atsScore),
+                    gatedBy = gatedBy,
+                )
                 ResumeUi.Result(res)
             } catch (t: Throwable) {
                 analytics.resumeOptimizeFailed(app.ascend.analytics.errorTypeOf(t))

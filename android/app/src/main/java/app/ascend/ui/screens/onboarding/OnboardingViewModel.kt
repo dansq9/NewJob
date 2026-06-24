@@ -17,7 +17,11 @@ import javax.inject.Inject
 class OnboardingViewModel @Inject constructor(
     private val repo: ProfileRepository,
     private val resumes: ResumeRepository,
+    private val analytics: app.ascend.analytics.AnalyticsTracker,
 ) : ViewModel() {
+
+    /** onboarding_step — the user advanced past [step] (skipped = field left blank). */
+    fun logStep(step: app.ascend.analytics.OnboardingStep, skipped: Boolean) = analytics.onboardingStep(step, skipped)
     var name by mutableStateOf("")
     var role by mutableStateOf("")
     var location by mutableStateOf("")
@@ -65,7 +69,17 @@ class OnboardingViewModel @Inject constructor(
             }.isSuccess
             // Always clear the busy flag so the user can never get stuck on a failed save.
             saving = false
-            if (ok) onDone() else saveFailed = true
+            if (ok) {
+                analytics.onboardingComplete(
+                    rolePresent = role.isNotBlank(),
+                    roleCategory = app.ascend.analytics.roleCategoryOf(role),
+                    location = app.ascend.analytics.LocationType.UNKNOWN,   // onboarding captures a city, not remote/onsite
+                    resumeUploaded = resumeName != null,
+                )
+                onDone()
+            } else {
+                saveFailed = true
+            }
         }
     }
 }

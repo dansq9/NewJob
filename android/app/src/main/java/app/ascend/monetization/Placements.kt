@@ -176,3 +176,11 @@ sealed interface RewardOutcome {
 
 /** Non-ad full-screen surfaces that also share the mutex (rule 3). */
 enum class FullScreenSurface { PAYWALL, PURCHASE_DIALOG, PERMISSION_DIALOG }
+
+/** How an unlock was gated, for the *_complete/start analytics events (gated_by). */
+fun gatedByOf(outcome: RewardOutcome): app.ascend.analytics.GatedBy = when (outcome) {
+    RewardOutcome.ProBypass -> app.ascend.analytics.GatedBy.PRO
+    RewardOutcome.FreeGranted -> app.ascend.analytics.GatedBy.FREE
+    RewardOutcome.Granted -> app.ascend.analytics.GatedBy.REWARDED
+    is RewardOutcome.NotGranted -> app.ascend.analytics.GatedBy.FREE   // unreached; callers return on NotGranted
+}

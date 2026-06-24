@@ -44,7 +44,10 @@ class CopilotViewModel @Inject constructor(
     fun setRole(r: String) = _state.update { it.copy(role = r) }
     fun setCompany(c: String) = _state.update { it.copy(company = c) }
     fun setQuestion(q: String) = _state.update { it.copy(question = q) }
-    fun launch() = _state.update { it.copy(live = true) }
+    fun launch() {
+        analytics.copilotSessionStart()   // copilot_session_start (Pro-gated feature)
+        _state.update { it.copy(live = true) }
+    }
     fun end() {
         // ad_inter_after_copilot_end — on tapping Done after a live session. Copilot is Pro-only,
         // so the manager suppresses this for paid users (it effectively never shows); wired per spec.

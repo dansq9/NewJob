@@ -70,10 +70,8 @@ class MockViewModel @Inject constructor(
         viewModelScope.launch {
             // Free users watch a rewarded ad to start a mock interview; Pro bypasses.
             // Reward granted only on the earned-reward callback (rule 5).
-            when (monetization.showRewarded(app.ascend.monetization.Placement.REWARDED_MOCK_START)) {
-                is app.ascend.monetization.RewardOutcome.NotGranted -> return@launch
-                else -> Unit  // Granted or ProBypass → proceed
-            }
+            val outcome = monetization.showRewarded(app.ascend.monetization.Placement.REWARDED_MOCK_START)
+            if (outcome is app.ascend.monetization.RewardOutcome.NotGranted) return@launch
             _ui.value = MockUi.Loading
             _ui.value = try {
                 val r = api.startMock(MockStartRequest(role = setup.role, count = setup.count))
@@ -83,7 +81,13 @@ class MockViewModel @Inject constructor(
                 if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "mock_start"))
                 MockUi.Error(if (t.isOffline()) R.string.error_offline else R.string.error_mock_start_failed, MockUi.Phase.START)
             }
-            if (_ui.value is MockUi.Live) analytics.coreActionDone(app.ascend.analytics.CoreAction.MOCK_START)   // activation
+            if (_ui.value is MockUi.Live) {
+                analytics.mockInterviewStart(
+                    gatedBy = app.ascend.monetization.gatedByOf(outcome),
+                    roleSource = app.ascend.analytics.RoleSource.TARGET_ROLE,
+                )
+                analytics.coreActionDone(app.ascend.analytics.CoreAction.MOCK_START)   // activation
+            }
         }
     }
 
@@ -114,16 +118,19 @@ class MockViewModel @Inject constructor(
         viewModelScope.launch {
             // ad_rewarded_mock_score — unlock detailed AI scoring (Pro bypasses). Reward only
             // on the earned callback; on no-grant keep the user on a retryable error.
-            when (monetization.showRewarded(app.ascend.monetization.Placement.REWARDED_MOCK_SCORE)) {
-                is app.ascend.monetization.RewardOutcome.NotGranted -> {
-                    _ui.value = MockUi.Error(R.string.error_mock_score_failed, MockUi.Phase.SCORE); return@launch
-                }
-                else -> Unit  // Granted / FreeGranted / ProBypass → proceed
+            val outcome = monetization.showRewarded(app.ascend.monetization.Placement.REWARDED_MOCK_SCORE)
+            if (outcome is app.ascend.monetization.RewardOutcome.NotGranted) {
+                _ui.value = MockUi.Error(R.string.error_mock_score_failed, MockUi.Phase.SCORE); return@launch
             }
             _ui.value = MockUi.Loading
             _ui.value = try {
                 val answers = live.answers.map { MockAnswer(it.key, it.value) }
-                MockUi.Report(api.scoreMock(MockScoreRequest(live.sessionId, answers)))
+                val report = MockUi.Report(api.scoreMock(MockScoreRequest(live.sessionId, answers)))
+                analytics.mockInterviewComplete(
+                    questionsAnswered = live.answers.size,
+                    gatedBy = app.ascend.monetization.gatedByOf(outcome),
+                )
+                report
             } catch (t: Throwable) {
                 analytics.mockInterviewFailed(app.ascend.analytics.errorTypeOf(t))
                 // Metadata only — never the answer text.

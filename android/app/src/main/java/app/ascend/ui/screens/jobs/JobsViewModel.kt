@@ -111,6 +111,13 @@ class JobsViewModel @Inject constructor(
                 is Resource.Success -> {
                     val fresh = res.data.dedup()
                     _state.update { it.copy(jobs = fresh, status = Resource.Success(Unit), endReached = res.data.isEmpty()) }
+                    val st = _state.value
+                    analytics.jobSearch(
+                        queryPresent = st.query.isNotBlank(),
+                        filtersUsed = st.filters.activeCount > 0,
+                        resultsCount = fresh.size,
+                        source = app.ascend.analytics.SearchSource.JOBS_TAB,
+                    )
                     analytics.coreActionDone(app.ascend.analytics.CoreAction.SEARCH)   // activation (drives session-2 gate)
                     maybeShowSearchInterstitial()
                 }
@@ -157,6 +164,7 @@ class JobsViewModel @Inject constructor(
                 tracker.remove(job.id)
             } else {
                 tracker.save(job, TrackStage.SAVED)
+                analytics.jobSave(app.ascend.analytics.SaveFrom.SEARCH)
                 analytics.coreActionDone(app.ascend.analytics.CoreAction.SAVE)   // activation
             }
         }

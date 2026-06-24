@@ -77,7 +77,15 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         }
         Button(
-            onClick = { if (step < STEPS - 1) step++ else vm.finish(onDone) },
+            onClick = {
+                // onboarding_step for the schema-mapped steps (role/location/resume).
+                when (step) {
+                    2 -> vm.logStep(app.ascend.analytics.OnboardingStep.ROLE, vm.role.isBlank())
+                    3 -> vm.logStep(app.ascend.analytics.OnboardingStep.LOCATION, vm.location.isBlank())
+                    STEPS - 1 -> vm.logStep(app.ascend.analytics.OnboardingStep.RESUME, vm.resumeName == null)
+                }
+                if (step < STEPS - 1) step++ else vm.finish(onDone)
+            },
             enabled = canContinue && !vm.saving,
             modifier = Modifier.fillMaxWidth().height(54.dp).navigationBarsPadding(),
             shape = RoundedCornerShape(16.dp),
