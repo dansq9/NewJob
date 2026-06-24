@@ -145,6 +145,6 @@ class MockViewModel @Inject constructor(
         // rewarded played within the cooldown window, i.e. "no rewarded <180s", + paid/RC/cap).
         val wasReport = _ui.value is MockUi.Report
         _ui.value = MockUi.Setup()
-        if (wasReport) monetization.requestFullScreen(app.ascend.monetization.Placement.INTER_AFTER_MOCK_REPORT)
+        if (wasReport) monetization.requestInterstitial(app.ascend.monetization.Placement.INTER_AFTER_MOCK_REPORT)
     }
 }

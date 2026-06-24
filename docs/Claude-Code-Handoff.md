@@ -100,6 +100,12 @@ transition before an eligible ad; fail open on not-ready; paid users see nothing
 splash + App Open never both fire in one foreground cycle; QA IA08–IA15 pass.
 ```
 
+> **Durable note — do not regress (architecture):**
+> - `ad_inter_after_splash` is a **live, intentional** placement. Do NOT remove it unless Product explicitly asks.
+> - Keep splash interstitial and App Open **separate** (`ad_inter_after_splash` ≠ `ad_appopen_resume`); they never both show in one foreground cycle.
+> - Use **format-specific** presenters: `presentInterstitial`/`requestInterstitial` (interstitial), App Open path, rewarded path. No generic `presentFullScreen()` that defaults to `showInterstitial()`. Native/paywall/permission/purchase dialogs never use the interstitial presenter.
+> - Eligibility helper calls used for cross-placement suppression must be **side-effect-free** (`isAppOpenEligibleSnapshot()` — no caps consumed, no state mutated, no load/show started). Never call another placement's full suppression/show pipeline just to infer eligibility.
+
 ### Task 6 — Rewarded unlocks + Copilot gating
 ```
 Read /docs/monetization-spec.md (Rewarded caps) and CLAUDE.md rules 5-6.

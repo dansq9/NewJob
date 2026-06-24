@@ -137,7 +137,7 @@ private fun AscendRoot(startOnboarding: Boolean) {
                     onBack = {
                         gamesExited += 1
                         if (gamesExited % 2 == 0) {
-                            monetization.requestFullScreen(app.ascend.monetization.Placement.INTER_AFTER_GAME_COMPLETE)
+                            monetization.requestInterstitial(app.ascend.monetization.Placement.INTER_AFTER_GAME_COMPLETE)
                         }
                         nav.popBackStack()
                     },

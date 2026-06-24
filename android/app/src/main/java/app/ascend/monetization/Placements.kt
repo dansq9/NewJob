@@ -120,7 +120,7 @@ val SuppressReason.diag: String
         SuppressReason.PAID_USER -> "paid"
         SuppressReason.CONSENT_NOT_READY -> "consent"
         SuppressReason.GLOBAL_DISABLED -> "global_off"
-        SuppressReason.RC_DISABLED -> "rc_off"
+        SuppressReason.RC_DISABLED -> "remote_config_off"
         SuppressReason.NOT_ELIGIBLE_YET -> "not_eligible"
         SuppressReason.MUTEX_BUSY -> "mutex"
         SuppressReason.COOLDOWN -> "cooldown"

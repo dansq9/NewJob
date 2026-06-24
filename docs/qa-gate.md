@@ -36,6 +36,8 @@ Dual sign-off (partner check, then QA confirm). Evidence (video/screenshot) requ
 | IA13 | Interstitial | Splash interstitial vs App Open mutex | `ad_inter_after_splash` and `ad_appopen_resume` never both show in the same foreground cycle | Critical |
 | IA14 | Interstitial | Splash interstitial paid-user suppression | Paid users never see the splash interstitial or its transition | Critical |
 | IA15 | Interstitial | Splash interstitial UMP gate | No splash interstitial request/show before `canRequestAds()==true` | Critical |
+| IA16 | All | Format-specific full-screen dispatch | Interstitial placements use the interstitial API, App Open uses the App Open API, rewarded uses the rewarded API; native placements are never passed through the interstitial presenter; no generic presenter defaults to interstitial | Critical |
+| IA17 | All | Pure eligibility helpers | Splash suppression can check App Open eligibility without consuming caps, mutating state, marking App Open shown, or starting App Open load/show | High |
 | OA01 | App-open | Background fill under resume ad | Branded/neutral surface, no half-rendered content | Medium |
 | OA02 | App-open | Click resume ad | Redirects to landing page | Medium |
 | OA03 | App-open | Close resume ad | Returns to the resume screen | High |

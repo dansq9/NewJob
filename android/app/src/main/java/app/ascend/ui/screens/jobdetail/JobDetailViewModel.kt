@@ -55,7 +55,7 @@ class JobDetailViewModel @Inject constructor(
      * manager still owns the real gate (paid/consent/RC/cap/cooldown/session 2).
      */
     fun onClose() {
-        if (detailViewCount >= 2) monetization.requestFullScreen(app.ascend.monetization.Placement.INTER_AFTER_JOB_DETAIL_CLOSE)
+        if (detailViewCount >= 2) monetization.requestInterstitial(app.ascend.monetization.Placement.INTER_AFTER_JOB_DETAIL_CLOSE)
     }
 
     /** The user is leaving to the external apply page — suppress app-open on return + activate. */

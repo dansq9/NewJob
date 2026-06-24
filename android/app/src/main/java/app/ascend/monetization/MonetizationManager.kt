@@ -89,9 +89,9 @@ class MonetizationManager @Inject constructor(
     // Activity, independent of any ViewModel scope.
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
 
-    /** Fire-and-forget full-screen present on the manager's own scope (for close/exit triggers). */
-    fun requestFullScreen(placement: Placement) {
-        scope.launch { presentFullScreen(placement) }
+    /** Fire-and-forget interstitial present on the manager's own scope (for close/exit triggers). */
+    fun requestInterstitial(placement: Placement) {
+        scope.launch { presentInterstitial(placement) }
     }
 
     init {
@@ -167,12 +167,15 @@ class MonetizationManager @Inject constructor(
     }
 
     /**
-     * Try to present a full-screen interstitial / app-open. Acquires the mutex,
-     * bounds the SDK load by the per-format timeout, FAILS OPEN (returns Skipped,
-     * never throws or blocks) on suppression, no-fill, or timeout.
+     * Present an INTERSTITIAL placement only (format-specific — App Open and rewarded
+     * have their own show paths; never route those or native here). Acquires the mutex,
+     * bounds the SDK load by the per-format timeout, FAILS OPEN (returns Skipped, never
+     * throws or blocks) on suppression, no-fill, or timeout.
      */
-    suspend fun presentFullScreen(placement: Placement): ShowOutcome {
-        require(placement.isFullScreen) { "presentFullScreen called with native placement $placement" }
+    suspend fun presentInterstitial(placement: Placement): ShowOutcome {
+        require(placement.format == AdFormat.INTERSTITIAL) {
+            "presentInterstitial requires an INTERSTITIAL placement, got ${placement.format} ($placement)"
+        }
         when (val d = decide(placement)) {
             is AdDecision.Suppressed -> { logDecision(placement, d.reason); return ShowOutcome.Skipped(d.reason) }
             is AdDecision.Show -> Unit
@@ -311,7 +314,19 @@ class MonetizationManager @Inject constructor(
         }
     }
 
-    /** All app-open gates; returns the blocking reason, or null if eligible to show. */
+    /**
+     * Pure, SIDE-EFFECT-FREE snapshot: would App Open run in this foreground cycle?
+     * Used by the splash interstitial to yield priority WITHOUT touching App Open's
+     * show pipeline — it never marks App Open shown, consumes caps, mutates
+     * foreground/cooldown state, or starts a load (CLAUDE.md "pure eligibility helpers").
+     */
+    suspend fun isAppOpenEligibleSnapshot(): Boolean = appOpenSuppression() == null
+
+    /**
+     * All app-open gates; returns the blocking reason, or null if eligible. READ-ONLY:
+     * this only evaluates state (entitlement/consent/RC/session/timestamps/caps) and
+     * never mutates anything — the mutation happens in [maybeShowAppOpen] after the show.
+     */
     private suspend fun appOpenSuppression(): SuppressReason? {
         val p = Placement.APPOPEN_RESUME
         val ent = entitlements.entitlement.first()
@@ -413,7 +428,7 @@ class MonetizationManager @Inject constructor(
         if (!tryAcquireFullScreen(p.id)) { analytics.adShowFailed(p.id, "mutex"); return ShowOutcome.Skipped(SuppressReason.MUTEX_BUSY) }
         return try {
             analytics.adShowAttempt(p.id, fmt)
-            ads.showInterstitial()
+            ads.showInterstitial()   // INTERSTITIAL show path (ad_inter_after_splash is an interstitial)
             recordFullScreenShown(p)
             splashShownThisSession.set(true)
             lastSplashAtMs = SystemClock.elapsedRealtime()
@@ -441,8 +456,9 @@ class MonetizationManager @Inject constructor(
             return SuppressReason.NOT_ACTIVATED_SESSION_2
         }
 
-        // Never both splash + App Open in the same foreground cycle.
-        if (rc.bool(RcKeys.AFTER_SPLASH_SUPPRESS_IF_APPOPEN) && appOpenSuppression() == null) {
+        // Never both splash + App Open in the same foreground cycle. Uses a pure,
+        // side-effect-free snapshot — splash must NOT run App Open's show pipeline.
+        if (rc.bool(RcKeys.AFTER_SPLASH_SUPPRESS_IF_APPOPEN) && isAppOpenEligibleSnapshot()) {
             return SuppressReason.APPOPEN_ELIGIBLE
         }
         if (activeFlows.isNotEmpty()) return SuppressReason.PROTECTED_FLOW          // resume/mock/copilot/billing/legal

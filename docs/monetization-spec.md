@@ -58,6 +58,11 @@ AdMob Mediation is the **sole** owner. **AdMob Network = waterfall** backstop; *
 
 **Splash vs App Open.** The splash/session-start interstitial (`ad_inter_after_splash`) is **separate** from App Open (`ad_appopen_resume`). Splash interstitial fires on **cold/session start** after splash/profile load; App Open fires on **background→foreground resume**. They must **never both show in the same foreground cycle** (`ads.inter.after_splash.suppress_if_appopen_eligible`). The 3-second branded transition is a *branded transition duration*, **not** an ad-load wait — if no ad is ready within `load_timeout_ms`, continue (fail open); never hold the user 3s for a failed ad. Never on session 1.
 
+**Implementation notes (architecture).**
+- `ad_inter_after_splash` is a deliberate Apero-style post-splash interstitial. Keep it; do not remove unless Product asks.
+- It must **not** call App Open's show/suppression pipeline directly. To decide whether to yield to App Open, splash uses a **side-effect-free** eligibility snapshot (`isAppOpenEligibleSnapshot()`) that never marks App Open shown, consumes caps, mutates foreground/cooldown state, or starts a load/show.
+- Full-screen presentation is **format-specific**. There is no generic presenter that defaults to `showInterstitial()`: interstitial → `presentInterstitial`/`requestInterstitial` (interstitial show path), App Open → its own App Open path, rewarded → rewarded path. Native, paywall, purchase dialog, and permission dialog never share an interstitial show path. A placement may never be displayed through the wrong ad format just because it is "full-screen".
+
 ## Remote Config keys
 
 Missing full-screen key => OFF. No blank containers.

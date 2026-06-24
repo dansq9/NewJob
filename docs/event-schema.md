@@ -214,7 +214,7 @@ Tracking contract. GA4/Firebase is the source of truth (tROAS-ARO + Remote Confi
 
 **`ad_suppressed`** — Suppressed by a rule.
 - `placement_id` (String)
-- `reason` (String) — mutex/paid/cooldown/segment/consent
+- `reason` (String) — low-cardinality only: first_session / not_activated_session_2 / paid / consent / appopen_eligible / mutex / cooldown / not_ready / remote_config_off / global_off / not_eligible / entitlement_unknown / bg_too_short / suppress_zone / not_preloaded
 
 **`ad_dismissed`** — Full-screen ad closed.
 - `placement_id` (String)

@@ -33,6 +33,8 @@ If a request conflicts with these specs, stop and ask. Do not improvise monetiza
 7. **Revenue values are real, never hardcoded.** `ad_impression` logs ILRD `value`+`currency` on every format. `purchase` logs the **actual local** `value`+`currency` from Play Billing `ProductDetails` — never a hardcoded USD figure (pricing is localized worldwide).
 8. **All analytics go through one `AnalyticsTracker` wrapper** using typed event/param constants generated from `event-schema`. No ad-hoc string events scattered in screens. Never log PII, raw search queries, resume text, email, name, or file names — use booleans/bands.
 9. **`placement_id` = canonical snake_case** from the Ad Script (e.g. `ad_native_job_list`). The same string is used in code, Remote Config, and analytics.
+10. **Format-specific ad dispatch.** Interstitial, App Open, rewarded, native, paywall, purchase dialog, and permission dialog must NOT share a generic show path that defaults to interstitial. Use format-specific load/show paths (`presentInterstitial`, the App Open path, the rewarded path). A placement must never be displayed through the wrong ad format just because it is "full-screen".
+11. **Pure eligibility helpers.** An ad eligibility check used by another placement as a suppression helper must be side-effect-free (no caps consumed, no state mutated, no ad marked shown, no load/show started). Never call a placement's full suppression/show pipeline from another placement just to infer eligibility — use a read-only snapshot (e.g. `isAppOpenEligibleSnapshot()`).
 
 State a rule as "prefer X over Y" when guiding implementation; phrase suppressions positively.
 

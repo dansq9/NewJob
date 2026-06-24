@@ -117,7 +117,7 @@ class ResumeViewModel @Inject constructor(
             // ad_inter_after_resume_score — after the value moment (result shown). The manager
             // gates it (paid/consent/RC/cap 1·session/cooldown/first-eligible session 2).
             if (_ui.value is ResumeUi.Result) {
-                monetization.requestFullScreen(app.ascend.monetization.Placement.INTER_AFTER_RESUME_SCORE)
+                monetization.requestInterstitial(app.ascend.monetization.Placement.INTER_AFTER_RESUME_SCORE)
             }
         }
     }

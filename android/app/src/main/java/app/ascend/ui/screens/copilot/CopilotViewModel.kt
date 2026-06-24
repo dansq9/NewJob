@@ -53,7 +53,7 @@ class CopilotViewModel @Inject constructor(
         // so the manager suppresses this for paid users (it effectively never shows); wired per spec.
         val wasLive = _state.value.live
         _state.value = State()
-        if (wasLive) monetization.requestFullScreen(app.ascend.monetization.Placement.INTER_AFTER_COPILOT_END)
+        if (wasLive) monetization.requestInterstitial(app.ascend.monetization.Placement.INTER_AFTER_COPILOT_END)
     }
 
     // Live transcription: wire android.speech.SpeechRecognizer in continuous mode

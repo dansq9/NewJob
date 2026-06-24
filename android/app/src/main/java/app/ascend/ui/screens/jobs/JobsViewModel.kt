@@ -64,7 +64,7 @@ class JobsViewModel @Inject constructor(
     private fun maybeShowSearchInterstitial() {
         searchBatches++
         if (searchBatches >= 2 && searchBatches % 2 == 0) {
-            monetization.requestFullScreen(Placement.INTER_AFTER_SEARCH_BATCH)
+            monetization.requestInterstitial(Placement.INTER_AFTER_SEARCH_BATCH)
         }
     }
 
