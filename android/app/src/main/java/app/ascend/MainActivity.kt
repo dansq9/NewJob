@@ -93,6 +93,12 @@ private fun AscendRoot(startOnboarding: Boolean) {
             composable(Routes.MOCK) { MockScreen(nav) }
             composable(Routes.COPILOT) { CopilotScreen(nav) }
             composable(Routes.GAMES) { GamesScreen(nav) }
+            composable("game/{gameId}") { entry ->
+                com.gamestest.games.games.host.GameHost(
+                    gameId = entry.arguments?.getString("gameId").orEmpty(),
+                    onBack = { nav.popBackStack() },
+                )
+            }
             composable(Routes.PAYWALL) { PaywallScreen(onClose = { nav.popBackStack() }) }
         }
     }

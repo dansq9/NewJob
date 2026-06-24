@@ -2,39 +2,49 @@ package app.ascend.ui.screens.games
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.PlayArrow
-import androidx.compose.material.icons.outlined.Extension
+import androidx.compose.material.icons.outlined.Apps
+import androidx.compose.material.icons.outlined.BubbleChart
+import androidx.compose.material.icons.outlined.DarkMode
+import androidx.compose.material.icons.outlined.Dashboard
+import androidx.compose.material.icons.outlined.GridOn
+import androidx.compose.material.icons.outlined.Image
+import androidx.compose.material.icons.outlined.Lightbulb
+import androidx.compose.material.icons.outlined.Route
+import androidx.compose.material.icons.outlined.Star
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.ascend.ui.components.AscendTopBar
 import app.ascend.ui.theme.AscendColors
+import com.gamestest.games.games.GameId
 
-private data class Puzzle(val name: String, val blurb: String)
-
-private val PUZZLES = listOf(
-    Puzzle("Patches", "Reveal the hidden picture"),
-    Puzzle("Mini Sudoku", "Fill the 6×6 grid"),
-    Puzzle("Trail", "Trace 1 to 7 in one path"),
-    Puzzle("Stars", "One per row, column, colour"),
-    Puzzle("Eclipse", "Balance suns and moons"),
-    Puzzle("2048", "Merge tiles up to 2048"),
-    Puzzle("Clusters", "Group the matching set"),
-    Puzzle("Mini Cross", "A bite-size crossword"),
-    Puzzle("Lights Out", "Switch every light off"),
-)
+private fun iconFor(id: GameId): ImageVector = when (id) {
+    GameId.PATCHES -> Icons.Outlined.Image
+    GameId.SUDOKU -> Icons.Outlined.GridOn
+    GameId.ZIP -> Icons.Outlined.Route
+    GameId.QUEENS -> Icons.Outlined.Star
+    GameId.TANGO -> Icons.Outlined.DarkMode
+    GameId.G2048 -> Icons.Outlined.Apps
+    GameId.CLUSTERS -> Icons.Outlined.BubbleChart
+    GameId.CROSSWORD -> Icons.Outlined.Dashboard
+    GameId.LIGHTSOUT -> Icons.Outlined.Lightbulb
+}
 
 @Composable
 fun GamesScreen(nav: NavController) {
@@ -49,28 +59,33 @@ fun GamesScreen(nav: NavController) {
             horizontalArrangement = Arrangement.spacedBy(12.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
-            item(span = { androidx.compose.foundation.lazy.grid.GridItemSpan(2) }) {
+            item(span = { GridItemSpan(2) }) {
                 Text("A daily puzzle to keep your mind sharp between applications.",
                     color = AscendColors.Muted, fontSize = 14.sp)
             }
-            items(PUZZLES) { p -> PuzzleCard(p) }
+            items(GameId.all) { game ->
+                PuzzleCard(game) { nav.navigate("game/${game.id}") }
+            }
         }
     }
 }
 
 @Composable
-private fun PuzzleCard(p: Puzzle) {
-    Surface(shape = RoundedCornerShape(18.dp), color = AscendColors.Card, border = BorderStroke(1.5.dp, AscendColors.Line)) {
+private fun PuzzleCard(game: GameId, onClick: () -> Unit) {
+    Surface(
+        onClick = onClick,
+        shape = RoundedCornerShape(18.dp), color = AscendColors.Card,
+        border = BorderStroke(1.5.dp, AscendColors.Line),
+    ) {
         Column(Modifier.padding(15.dp)) {
             Box(Modifier.size(40.dp).clip(RoundedCornerShape(12.dp)).background(AscendColors.ChipIndigo), contentAlignment = Alignment.Center) {
-                Icon(Icons.Outlined.Extension, null, tint = AscendColors.Indigo)
+                Icon(iconFor(game), null, tint = AscendColors.Indigo)
             }
             Spacer(Modifier.height(12.dp))
-            Text(p.name, fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
-            Text(p.blurb, fontSize = 12.sp, color = AscendColors.Muted2, lineHeight = 16.sp)
+            Text(game.title, fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
+            Text(game.blurb, fontSize = 12.sp, color = AscendColors.Muted2, lineHeight = 16.sp)
             Spacer(Modifier.height(10.dp))
-            // TODO: wire each puzzle to its game engine (out of scope for this scaffold).
-            Row(verticalAlignment = Alignment.CenterVertically) {
+            Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable(onClick = onClick)) {
                 Icon(Icons.Filled.PlayArrow, null, tint = AscendColors.Indigo, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(4.dp))
                 Text("Play", color = AscendColors.Indigo, fontWeight = FontWeight.Bold, fontSize = 13.sp)

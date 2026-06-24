@@ -51,6 +51,7 @@ android {
     }
 
     compileOptions {
+        isCoreLibraryDesugaringEnabled = true   // java.time in the games engine on minSdk 24
         sourceCompatibility = JavaVersion.VERSION_17
         targetCompatibility = JavaVersion.VERSION_17
     }
@@ -99,4 +100,7 @@ dependencies {
     ksp(libs.room.compiler)
 
     implementation(libs.androidx.datastore.preferences)
+
+    // Games engine uses java.time (LocalDate) — desugared for minSdk 24
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 }
