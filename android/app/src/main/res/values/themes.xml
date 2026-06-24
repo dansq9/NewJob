@@ -1,0 +1,15 @@
+<resources>
+    <!-- Base theme; Compose drives all real styling. -->
+    <style name="Theme.Ascend" parent="android:Theme.Material.Light.NoActionBar">
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/ascend_bg</item>
+    </style>
+
+    <!-- Splash screen (AndroidX core-splashscreen). -->
+    <style name="Theme.Ascend.Splash" parent="Theme.SplashScreen">
+        <item name="windowSplashScreenBackground">@color/ascend_indigo</item>
+        <item name="windowSplashScreenAnimatedIcon">@drawable/ic_launcher_foreground</item>
+        <item name="postSplashScreenTheme">@style/Theme.Ascend</item>
+    </style>
+</resources>

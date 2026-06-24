@@ -1,0 +1,10 @@
+# Copy to local.properties (which is git-ignored) and fill in.
+# Android Studio writes sdk.dir automatically; set it if building from CLI.
+# sdk.dir=/Users/you/Library/Android/sdk
+
+# RapidAPI key for JSearch (https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch)
+RAPIDAPI_KEY=your_rapidapi_key_here
+
+# Ascend web-platform API base URL (trailing slash required).
+# Powers AI resume generate/optimize, mock interview, and live copilot.
+ASCEND_API_BASE_URL=https://api.ascend.app/

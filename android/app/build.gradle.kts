@@ -1,0 +1,135 @@
+import java.util.Properties
+
+plugins {
+    alias(libs.plugins.android.application)
+    alias(libs.plugins.kotlin.android)
+    alias(libs.plugins.kotlin.compose)
+    alias(libs.plugins.kotlin.serialization)
+    alias(libs.plugins.hilt)
+    alias(libs.plugins.ksp)
+}
+
+// Secrets are read from local.properties (never committed). See local.properties.sample.
+val localProps = Properties().apply {
+    val f = rootProject.file("local.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+fun secret(key: String, default: String = ""): String {
+    val v = localProps.getProperty(key) ?: System.getenv(key)
+    return if (v.isNullOrBlank()) default else v
+}
+
+android {
+    namespace = "app.ascend"
+    compileSdk = 35
+
+    defaultConfig {
+        applicationId = "app.ascend"
+        minSdk = 24
+        targetSdk = 35
+        versionCode = 1
+        versionName = "0.1.0"
+        vectorDrawables { useSupportLibrary = true }
+        // Note: we intentionally do NOT restrict resourceConfigurations — it would
+        // risk silently dropping a region-qualified locale (e.g. pt-rBR) if the
+        // token form were wrong. Supported locales are declared in locales_config.xml.
+
+        // --- API configuration ---
+        buildConfigField("String", "RAPIDAPI_KEY", "\"${secret("RAPIDAPI_KEY")}\"")
+        buildConfigField("String", "JSEARCH_HOST", "\"jsearch.p.rapidapi.com\"")
+        // Ascend web-platform API (powers resume gen/optimize, mock interview, copilot)
+        buildConfigField("String", "ASCEND_API_BASE_URL",
+            "\"${secret("ASCEND_API_BASE_URL", "https://api.ascend.app/")}\"")
+    }
+
+    buildTypes {
+        debug {
+            applicationIdSuffix = ".debug"
+            // Generates en-rXA (accented, longer) + ar-rXB (RTL) for i18n testing.
+            isPseudoLocalesEnabled = true
+        }
+        release {
+            isMinifyEnabled = true
+            isShrinkResources = true
+            proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
+        }
+    }
+
+    compileOptions {
+        isCoreLibraryDesugaringEnabled = true   // java.time in the games engine on minSdk 24
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
+    }
+    kotlinOptions { jvmTarget = "17" }
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
+    packaging {
+        resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
+    }
+
+    lint {
+        // Blocking quality gate (see CI lintRelease step): fail on errors, not warnings.
+        abortOnError = true
+        warningsAsErrors = false
+        checkReleaseBuilds = true
+        // If pre-existing issues need staged triage, generate a baseline:
+        // baseline = file("lint-baseline.xml")
+    }
+}
+
+dependencies {
+    implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.lifecycle.runtime.ktx)
+    implementation(libs.androidx.lifecycle.process)
+    implementation(libs.androidx.lifecycle.viewmodel.compose)
+    implementation(libs.androidx.lifecycle.runtime.compose)
+    implementation(libs.androidx.activity.compose)
+    implementation(libs.androidx.splashscreen)
+
+    implementation(platform(libs.androidx.compose.bom))
+    implementation(libs.androidx.ui)
+    implementation(libs.androidx.ui.graphics)
+    implementation(libs.androidx.ui.tooling.preview)
+    implementation(libs.androidx.material3)
+    implementation(libs.androidx.material.icons.extended)
+    implementation(libs.androidx.navigation.compose)
+    debugImplementation(libs.androidx.ui.tooling)
+
+    implementation(libs.hilt.android)
+    ksp(libs.hilt.compiler)
+    implementation(libs.hilt.navigation.compose)
+
+    implementation(libs.retrofit)
+    implementation(libs.retrofit.kotlinx.converter)
+    implementation(libs.okhttp)
+    implementation(libs.okhttp.logging)
+    implementation(libs.kotlinx.serialization.json)
+    implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
+
+    implementation(libs.coil.compose)
+
+    implementation(libs.room.runtime)
+    implementation(libs.room.ktx)
+    ksp(libs.room.compiler)
+
+    implementation(libs.androidx.datastore.preferences)
+
+    // UMP consent SDK — gates all ad init/requests (CLAUDE.md rule 1). Ships
+    // globally; the consent form is shown only where required (EEA/UK/CH).
+    implementation(libs.user.messaging.platform)
+
+    // Firebase Analytics (GA4) — the AnalyticsTracker spine. The google-services
+    // plugin + google-services.json are added by the human engineer; until then
+    // FirebaseApp won't initialize and AnalyticsTracker degrades to Logcat-only.
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    // Remote Config — all ad behavior (caps/cooldowns/toggles) is RC-controlled.
+    // Degrades to the in-app spec defaults until google-services.json lands.
+    implementation(libs.firebase.config)
+
+    // Games engine uses java.time (LocalDate) — desugared for minSdk 24
+    coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
+}

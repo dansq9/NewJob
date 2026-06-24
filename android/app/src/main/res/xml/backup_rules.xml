@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Pre-Android 12 (API < 31) Auto Backup rules. Back up app data EXCEPT the
+  device-scoped DataStore holding the anonymous install id (regenerated on a
+  fresh install rather than restored from the cloud).
+-->
+<full-backup-content>
+    <exclude domain="file" path="datastore/ascend_device.preferences_pb" />
+</full-backup-content>

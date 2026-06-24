@@ -1,0 +1,319 @@
+<!-- Hindi (hi) -->
+<resources>
+
+    <!-- ============ Common / reusable ============ -->
+    <string name="action_cancel">रद्द करें</string>
+    <string name="action_save">सहेजें</string>
+    <string name="action_dismiss">खारिज करें</string>
+    <string name="action_remove">हटाएं</string>
+    <string name="action_retry">फिर से कोशिश करें</string>
+    <string name="action_continue">जारी रखें</string>
+    <string name="action_skip">छोड़ें</string>
+    <string name="action_done">हो गया</string>
+    <string name="action_back">वापस</string>
+    <string name="action_clear">साफ़ करें</string>
+    <string name="action_set">सेट करें</string>
+    <string name="action_change">बदलें</string>
+
+    <!-- ============ Bottom navigation ============ -->
+    <string name="nav_home">होम</string>
+    <string name="nav_jobs">नौकरियां</string>
+    <string name="nav_tracker">ट्रैकर</string>
+    <string name="nav_interviews">इंटरव्यू</string>
+
+    <!-- ============ Home ============ -->
+    <string name="home_greeting_morning">सुप्रभात</string>
+    <string name="home_greeting_afternoon">नमस्ते</string>
+    <string name="home_greeting_evening">शुभ संध्या</string>
+    <string name="home_greeting_default">नमस्ते</string>
+    <string name="home_search_hint">नौकरियां, पद, कंपनियां खोजें</string>
+    <string name="home_quick_actions">त्वरित क्रियाएं</string>
+    <string name="home_qa_resume">रिज़्यूमे ऑप्टिमाइज़ करें</string>
+    <string name="home_qa_resume_sub">ATS को मात दें</string>
+    <string name="home_qa_mock">मॉक इंटरव्यू</string>
+    <string name="home_qa_mock_sub">अभ्यास करें &amp; स्कोर पाएं</string>
+    <string name="home_qa_copilot">लाइव Copilot</string>
+    <string name="home_qa_copilot_sub">रीयल-टाइम जवाब</string>
+    <string name="home_qa_games">ब्रेन गेम्स</string>
+    <string name="home_qa_games_sub">रोज़ दिमाग तेज़ करें</string>
+    <string name="home_top_matches">शीर्ष मैच</string>
+    <string name="home_see_all">सभी देखें</string>
+    <string name="home_matches_for">%1$s के लिए</string>
+    <string name="home_no_matches">आपके लक्षित पद के लिए अभी कोई मैच नहीं। व्यापक खोज आज़माएं।</string>
+    <string name="home_find_jobs">नौकरियां खोजें</string>
+
+    <!-- ============ Interviews ============ -->
+    <string name="interviews_title">इंटरव्यू</string>
+    <string name="interviews_subtitle">AI के साथ तैयारी करें, फिर कॉल पर रीयल-टाइम मदद पाएं।</string>
+    <string name="interviews_mock_title">मॉक इंटरव्यू</string>
+    <string name="interviews_mock_sub">तुरंत, स्कोर किए गए फ़ीडबैक के साथ AI-जनरेटेड सवाल।</string>
+    <string name="interviews_copilot_title">लाइव इंटरव्यू Copilot</string>
+    <string name="interviews_copilot_sub">कॉल के दौरान आपकी आवाज़ में रीयल-टाइम जवाब।</string>
+
+    <!-- ============ Onboarding ============ -->
+    <string name="onboarding_get_started">शुरू करें</string>
+    <string name="onboarding_finish">समाप्त करें</string>
+    <string name="onboarding_welcome_title">Ascend में आपका स्वागत है</string>
+    <string name="onboarding_welcome_sub">अपनी अगली भूमिका तेज़ी से पाएं। चलिए कुछ त्वरित चरणों में आपकी खोज सेट करते हैं।</string>
+    <string name="onboarding_name_title">हम आपको क्या कहकर बुलाएं?</string>
+    <string name="onboarding_name_sub">आपका नाम Ascend को निजीकृत करने में मदद करता है।</string>
+    <string name="onboarding_name_hint">जैसे, एलेक्स मॉर्गन</string>
+    <string name="onboarding_role_title">आप किस पद की तलाश में हैं?</string>
+    <string name="onboarding_role_sub">यह आपके मैच, रिज़्यूमे टिप्स &amp; मॉक इंटरव्यू को अनुकूलित करता है।</string>
+    <string name="onboarding_role_hint">जैसे, प्रोडक्ट मैनेजर</string>
+    <string name="onboarding_location_title">आप कहां तलाश कर रहे हैं?</string>
+    <string name="onboarding_location_sub">हम आपके पास की और रिमोट नौकरियां दिखाएंगे।</string>
+    <string name="onboarding_location_hint">शहर, क्षेत्र, या रिमोट</string>
+    <string name="onboarding_resume_title">अपना रिज़्यूमे जोड़ें</string>
+    <string name="onboarding_resume_sub">हम इसका उपयोग मैच अनुकूलित करने और मुफ़्त ATS-तैयार रीराइट देने के लिए करेंगे। आप इसे छोड़कर बाद में जोड़ सकते हैं।</string>
+    <string name="onboarding_resume_upload">रिज़्यूमे अपलोड करें</string>
+    <string name="onboarding_resume_formats">PDF, DOCX · 10MB तक</string>
+    <string name="onboarding_resume_replace">बदलने के लिए टैप करें</string>
+    <string name="onboarding_save_error">आपकी प्रोफ़ाइल सहेजी नहीं जा सकी। कृपया फिर से कोशिश करें।</string>
+
+    <!-- ============ Settings ============ -->
+    <string name="settings_title">सेटिंग्स</string>
+    <string name="settings_section_profile">आपकी प्रोफ़ाइल</string>
+    <string name="settings_field_name">नाम</string>
+    <string name="settings_field_role">लक्षित पद</string>
+    <string name="settings_field_location">स्थान</string>
+    <string name="settings_save_profile">प्रोफ़ाइल सहेजें</string>
+    <string name="settings_profile_saved">प्रोफ़ाइल सहेजी गई</string>
+    <string name="settings_section_resume">रिज़्यूमे</string>
+    <string name="settings_manage_resumes">रिज़्यूमे प्रबंधित करें</string>
+    <string name="settings_no_resume">अभी कोई रिज़्यूमे नहीं जोड़ा गया</string>
+    <string name="settings_section_language">भाषा</string>
+    <string name="settings_app_language">ऐप भाषा</string>
+    <string name="settings_choose_language">भाषा चुनें</string>
+    <string name="settings_section_data">डेटा &amp; बैकअप</string>
+    <string name="settings_backup_note">आपकी प्रोफ़ाइल, सहेजी गई नौकरियां और ट्रैकर आपके Google खाते में बैकअप होते हैं और नए डिवाइस पर रीस्टोर होते हैं। इस डिवाइस की अनाम ID हमेशा लोकल रहती है।</string>
+    <string name="settings_section_reset">रीसेट</string>
+    <string name="settings_reset_onboarding">ऑनबोर्डिंग रीसेट करें</string>
+    <string name="settings_reset_confirm_title">ऑनबोर्डिंग रीसेट करें?</string>
+    <string name="settings_reset_confirm_body">आपका नाम, पद, स्थान और रिज़्यूमे चयन साफ़ हो जाएगा और आप फिर से सेटअप से गुज़रेंगे। सहेजी गई नौकरियां और आपकी रिज़्यूमे लाइब्रेरी रखी जाती हैं।</string>
+    <string name="settings_reset_confirm_action">रीसेट करें</string>
+    <string name="settings_version">v%1$s (%2$d)</string>
+
+    <!-- ============ Jobs ============ -->
+    <string name="jobs_title">अपनी अगली भूमिका खोजें</string>
+    <string name="jobs_search_hint">पद, कंपनी या कीवर्ड</string>
+    <string name="jobs_location_anywhere">कहीं भी</string>
+    <string name="jobs_filters">फ़िल्टर</string>
+    <string name="jobs_reset">रीसेट</string>
+    <string name="jobs_remote_only">केवल रिमोट</string>
+    <string name="jobs_date_posted">पोस्ट करने की तारीख</string>
+    <string name="jobs_date_any">कोई भी</string>
+    <string name="jobs_date_today">आज</string>
+    <string name="jobs_date_3days">3 दिन</string>
+    <string name="jobs_date_week">सप्ताह</string>
+    <string name="jobs_date_month">महीना</string>
+    <string name="jobs_employment_type">रोज़गार प्रकार</string>
+    <string name="jobs_emp_fulltime">पूर्णकालिक</string>
+    <string name="jobs_emp_parttime">अंशकालिक</string>
+    <string name="jobs_emp_contract">कॉन्ट्रैक्ट</string>
+    <string name="jobs_emp_internship">इंटर्नशिप</string>
+    <string name="jobs_show_results">परिणाम दिखाएं</string>
+    <string name="jobs_end_reached">आप अंत तक पहुंच गए · %1$d नौकरियां</string>
+    <string name="jobs_rate_limit_title">दैनिक खोज सीमा पूरी हुई</string>
+    <string name="jobs_error_title">नौकरियां लोड नहीं हो सकीं</string>
+    <string name="jobs_empty">आपकी खोज से कोई नौकरी मेल नहीं खाती</string>
+    <string name="jobs_empty_hint">कोई अलग कीवर्ड आज़माएं या अपने फ़िल्टर व्यापक करें।</string>
+    <string name="jobs_ad_sponsored">प्रायोजित</string>
+    <string name="jobs_ad_placeholder">यहां आपका नेटिव विज्ञापन</string>
+    <string name="jobs_ad_badge">विज्ञापन</string>
+
+    <!-- ============ Job detail ============ -->
+    <string name="jobdetail_apply">आवेदन करें</string>
+    <string name="jobdetail_apply_site">कंपनी साइट पर आवेदन करें</string>
+    <string name="jobdetail_opens_browser">ब्राउज़र में खुलता है</string>
+    <string name="jobdetail_pipeline_stage">पाइपलाइन चरण</string>
+    <string name="jobdetail_about">भूमिका के बारे में</string>
+    <string name="jobdetail_no_description">कोई विवरण नहीं दिया गया।</string>
+    <string name="jobdetail_applied_q_title">क्या आपने आवेदन किया?</string>
+    <string name="jobdetail_applied_q_body">%2$s में %1$s को अपने ट्रैकर में आवेदित के रूप में जोड़ें?</string>
+    <string name="jobdetail_applied_q_yes">हां, आवेदित चिह्नित करें</string>
+    <string name="jobdetail_applied_q_no">अभी नहीं</string>
+    <string name="jobdetail_unavailable_title">यह नौकरी उपलब्ध नहीं है</string>
+    <string name="jobdetail_unavailable_body">हो सकता है यह समाप्त हो गई हो, या ऐप फिर से खोला गया हो। इसके बजाय मौजूदा रिक्तियां ब्राउज़ करें।</string>
+    <string name="jobdetail_browse">नौकरियां ब्राउज़ करें</string>
+    <!-- ============ Resume ============ -->
+    <string name="resume_title">रिज़्यूमे ऑप्टिमाइज़र</string>
+    <string name="resume_hero_eyebrow">नौकरी के लिए अनुकूलित करें</string>
+    <string name="resume_hero_title">आप जो चाहते हैं, उसी पद के लिए ATS को मात दें</string>
+    <string name="resume_hero_subtitle">Ascend का AI इस भूमिका के कीवर्ड और स्कोरिंग से मेल खाने के लिए आपका रिज़्यूमे फिर से लिखता है।</string>
+    <string name="resume_library_label">आपके रिज़्यूमे</string>
+    <string name="resume_add">जोड़ें</string>
+    <string name="resume_target_role">लक्षित पद</string>
+    <string name="resume_optimization_mode">ऑप्टिमाइज़ेशन मोड</string>
+    <string name="resume_general_optimization">सामान्य ATS ऑप्टिमाइज़ेशन</string>
+    <string name="resume_open_job_hint">उस विशिष्ट भूमिका के लिए अनुकूलित करने हेतु पहले कोई नौकरी खोलें।</string>
+    <string name="resume_add_to_start">शुरू करने के लिए एक रिज़्यूमे जोड़ें</string>
+    <string name="resume_analyze">विश्लेषण करें &amp; ऑप्टिमाइज़ करें</string>
+    <string name="resume_selected">चयनित</string>
+    <string name="resume_select">चुनें</string>
+    <string name="resume_ats_label">ATS</string>
+    <string name="resume_document">दस्तावेज़</string>
+    <string name="resume_remove">हटाएं</string>
+    <string name="resume_upload_title">अपना रिज़्यूमे अपलोड करें</string>
+    <string name="resume_upload_subtitle">PDF, DOC, या DOCX · 10MB तक</string>
+    <string name="resume_download_link_error">डाउनलोड लिंक नहीं खुल सका।</string>
+    <string name="resume_share_subject">ऑप्टिमाइज़्ड रिज़्यूमे</string>
+    <string name="resume_share_chooser">रिज़्यूमे साझा करें</string>
+    <string name="resume_download">डाउनलोड करें</string>
+    <string name="resume_share">साझा करें</string>
+    <string name="resume_error_title">कुछ गलत हो गया</string>
+
+    <!-- ============ Mock interview ============ -->
+    <string name="mock_title">मॉक इंटरव्यू</string>
+    <string name="mock_setup_intro">AI-जनरेटेड सवालों के साथ अभ्यास करें और तुरंत फ़ीडबैक पाएं।</string>
+    <string name="mock_role_label">तैयारी के लिए पद</string>
+    <string name="mock_count_label">सवालों की संख्या</string>
+    <string name="mock_start">मॉक इंटरव्यू शुरू करें</string>
+    <string name="mock_question_progress">सवाल %1$d / %2$d</string>
+    <string name="mock_type">टाइप करें</string>
+    <string name="mock_speak">बोलें</string>
+    <string name="mock_answer_placeholder">अपना जवाब यहां टाइप करें…</string>
+    <string name="mock_finish_score">समाप्त करें &amp; स्कोर करें</string>
+    <string name="mock_next_question">अगला सवाल</string>
+    <string name="mock_report_title">सत्र रिपोर्ट</string>
+    <string name="mock_average_score">औसत स्कोर</string>
+    <string name="mock_practice_again">फिर से अभ्यास करें</string>
+
+    <!-- ============ Job detail action tiles ============ -->
+    <string name="jobdetail_action_resume">रिज़्यूमे अनुकूलित करें</string>
+    <string name="jobdetail_action_copilot">इंटरव्यू Copilot</string>
+    <string name="jobdetail_action_mock">मॉक इंटरव्यू</string>
+    <!-- ============ Copilot ============ -->
+    <string name="copilot_title">AI इंटरव्यू Copilot</string>
+    <string name="copilot_prolock_title">लाइव इंटरव्यू नेविगेटर</string>
+    <string name="copilot_prolock_desc">इंटरव्यू के दौरान रीयल-टाइम, आपकी आवाज़ में जवाब पाएं। लाइव copilot एक Ascend Pro सुविधा है।</string>
+    <string name="copilot_unlock_pro">Pro के साथ अनलॉक करें</string>
+    <string name="copilot_setup_eyebrow">इंटरव्यू COPILOT</string>
+    <string name="copilot_setup_intro">संदर्भ एक बार सेट करें। आपकी कॉल के दौरान हम आपके माइक से हर सवाल को ट्रांसक्राइब करते हैं — या उसे मैन्युअली पेस्ट करें — और आपकी आवाज़ में जवाब का मसौदा तैयार करते हैं।</string>
+    <string name="copilot_job_title">नौकरी का पद</string>
+    <string name="copilot_company_optional">कंपनी · वैकल्पिक</string>
+    <string name="copilot_launch">Copilot लॉन्च करें</string>
+    <string name="copilot_split_screen_hint">अपनी वीडियो कॉल के दौरान इसे स्प्लिट-स्क्रीन में खुला रखें।</string>
+    <string name="copilot_status_manual">मैन्युअल मोड · हर सवाल पेस्ट करें</string>
+    <string name="copilot_status_listening">लाइव · सुन रहा है</string>
+    <string name="copilot_status_tap_mic">ट्रांसक्राइब करने के लिए माइक टैप करें</string>
+    <string name="copilot_back">वापस</string>
+    <string name="copilot_role_at_company">%1$s @ %2$s</string>
+    <string name="copilot_end">समाप्त करें</string>
+    <string name="copilot_question_placeholder">इंटरव्यूअर का सवाल पेस्ट करें या टाइप करें…</string>
+    <string name="copilot_clear_question">सवाल साफ़ करें</string>
+    <string name="copilot_listen">सुनें</string>
+    <string name="copilot_stop">रोकें</string>
+    <string name="copilot_draft_answer">जवाब का मसौदा</string>
+    <string name="copilot_tip">सुझाव: अपना फ़ोन कंप्यूटर स्पीकर के पास रखें।</string>
+    <string name="copilot_answer_eyebrow">COPILOT जवाब</string>
+    <string name="copilot_mic_rationale_title">अपना माइक्रोफ़ोन उपयोग करें?</string>
+    <string name="copilot_mic_rationale_body">Ascend आपके माइक्रोफ़ोन का उपयोग इंटरव्यूअर के सवालों को रीयल टाइम में ट्रांसक्राइब करने के लिए करता है ताकि वह जवाब का मसौदा तैयार कर सके। ऑडियो केवल ट्रांसक्रिप्शन के लिए प्रोसेस होता है — इसे Ascend द्वारा रिकॉर्ड या संग्रहीत नहीं किया जाता।</string>
+    <string name="copilot_mic_not_now">अभी नहीं</string>
+    <string name="copilot_mic_denied_title">माइक्रोफ़ोन बंद है</string>
+    <string name="copilot_mic_denied_body">सवालों को लाइव ट्रांसक्राइब करने के लिए, सेटिंग्स में Ascend हेतु माइक्रोफ़ोन अनुमति सक्षम करें। आप अभी भी सवाल मैन्युअली पेस्ट या टाइप कर सकते हैं।</string>
+    <string name="copilot_mic_open_settings">सेटिंग्स खोलें</string>
+    <string name="copilot_mic_manual_entry">मैन्युअल प्रविष्टि उपयोग करें</string>
+
+    <!-- ============ Paywall ============ -->
+    <string name="paywall_close">बंद करें</string>
+    <string name="paywall_headline">प्रो की तरह नौकरी पाएं</string>
+    <string name="paywall_subhead">सभी सुविधाएं अनलॉक करें</string>
+    <string name="paywall_col_premium">प्रीमियम</string>
+    <string name="paywall_col_basic">बेसिक</string>
+    <string name="paywall_feature_find_jobs">नौकरियां खोजें &amp; आवेदन करें</string>
+    <string name="paywall_feature_resume">AI रिज़्यूमे ऑप्टिमाइज़र</string>
+    <string name="paywall_feature_mock">मॉक इंटरव्यू</string>
+    <string name="paywall_feature_navigator">लाइव इंटरव्यू नेविगेटर</string>
+    <string name="paywall_feature_ad_free">विज्ञापन-मुक्त अनुभव</string>
+    <string name="paywall_feature_support">प्राथमिकता समर्थन</string>
+    <string name="paywall_basic_ads">विज्ञापन</string>
+    <string name="paywall_price_line">%1$s/%2$s, मुफ़्त 3-दिन ट्रायल के बाद</string>
+    <string name="paywall_price_fallback">अपना मुफ़्त ट्रायल शुरू करें</string>
+    <string name="paywall_start_trial">मुफ़्त ट्रायल शुरू करें</string>
+    <string name="paywall_billing_disclosure">ट्रायल समाप्त होने के बाद सब्सक्रिप्शन के लिए बिल किया जाता है और यह स्वतः नवीनीकृत होगा। शुल्क से बचने के लिए ट्रायल समाप्त होने से पहले कभी भी रद्द करें।</string>
+    <string name="paywall_restore">रीस्टोर करें</string>
+    <string name="paywall_terms">शर्तें</string>
+    <string name="paywall_privacy">गोपनीयता</string>
+    <string name="paywall_purchase_failed">खरीद पूरी नहीं हुई। कृपया फिर से कोशिश करें।</string>
+    <string name="paywall_restore_success">Pro रीस्टोर किया गया।</string>
+    <string name="paywall_restore_none">कोई पिछली खरीद नहीं मिली।</string>
+    <!-- ============ Tracker ============ -->
+    <string name="tracker_header">नौकरी ट्रैकर</string>
+    <string name="tracker_count">%1$d नौकरियां · %2$d सक्रिय</string>
+    <string name="tracker_search_hint">पद, कंपनी, स्थान खोजें</string>
+    <string name="tracker_sort_recent">हाल का</string>
+    <string name="tracker_sort_company">कंपनी</string>
+    <string name="tracker_sort_stage">चरण</string>
+    <string name="tracker_interview_followup">इंटरव्यू / फ़ॉलो-अप</string>
+    <string name="tracker_not_set">सेट नहीं</string>
+    <string name="tracker_notes">नोट्स</string>
+    <string name="tracker_notes_placeholder">भर्तीकर्ता का नाम, वेतन सीमा, अगले चरण…</string>
+    <string name="tracker_save_notes">नोट्स सहेजें</string>
+    <string name="tracker_mark_closed_lost">बंद / खोया हुआ चिह्नित करें</string>
+    <string name="tracker_close_why">यह क्यों बंद हुआ?</string>
+    <string name="tracker_close_reason_rejected">अस्वीकृत</string>
+    <string name="tracker_close_reason_withdrew">वापस लिया</string>
+    <string name="tracker_close_reason_filled">पद भर गया</string>
+    <string name="tracker_close_reason_placeholder">कारण (वैकल्पिक)</string>
+    <string name="tracker_mark_closed">बंद चिह्नित करें</string>
+    <string name="tracker_closed_reason">बंद: %1$s</string>
+    <string name="tracker_remove">ट्रैकर से हटाएं</string>
+    <string name="tracker_remove_confirm_title">ट्रैकर से हटाएं?</string>
+    <string name="tracker_remove_confirm_body">%2$s में \"%1$s\" हटा दिया जाएगा। इसे पूर्ववत नहीं किया जा सकता।</string>
+    <string name="tracker_demote">डिमोट करें</string>
+    <string name="tracker_promote">प्रमोट करें</string>
+    <string name="tracker_no_matches">कोई मैच नहीं</string>
+    <string name="tracker_no_matches_hint">कोई अलग खोज आज़माएं।</string>
+    <string name="tracker_empty_title">अभी कोई नौकरी ट्रैक नहीं की गई</string>
+    <string name="tracker_empty_body">नौकरियां सहेजें या आवेदन करें और वे यहां दिखेंगी।</string>
+    <string name="tracker_find_jobs">नौकरियां खोजें</string>
+
+    <!-- ============ Games ============ -->
+    <string name="games_header_blurb">आवेदनों के बीच आपके दिमाग को तेज़ रखने के लिए एक दैनिक पहेली।</string>
+    <string name="games_play">खेलें</string>
+    <string name="games_patches_title">पैचेज़</string>
+    <string name="games_patches_blurb">छिपी हुई तस्वीर प्रकट करें</string>
+    <string name="games_sudoku_title">मिनी सुडोकू</string>
+    <string name="games_sudoku_blurb">6 बाय 6 ग्रिड भरें</string>
+    <string name="games_zip_title">ट्रेल</string>
+    <string name="games_zip_blurb">एक ही पथ में 1 से 7 तक ट्रेस करें</string>
+    <string name="games_queens_title">स्टार्स</string>
+    <string name="games_queens_blurb">हर पंक्ति, स्तंभ, रंग में एक</string>
+    <string name="games_tango_title">एक्लिप्स</string>
+    <string name="games_tango_blurb">सूरज और चांद को संतुलित करें</string>
+    <string name="games_g2048_title">2048</string>
+    <string name="games_g2048_blurb">टाइल्स को 2048 तक मर्ज करें</string>
+    <string name="games_clusters_title">क्लस्टर्स</string>
+    <string name="games_clusters_blurb">सोलह शब्दों को समूहित करें</string>
+    <string name="games_crossword_title">मिनी क्रॉस</string>
+    <string name="games_crossword_blurb">एक पांच बाय पांच क्रॉसवर्ड</string>
+    <string name="games_lightsout_title">लाइट्स आउट</string>
+    <string name="games_lightsout_blurb">हर लाइट बंद करें</string>
+
+    <!-- ============ Shared: work type / pipeline stage labels ============ -->
+    <string name="worktype_remote">रिमोट</string>
+    <string name="worktype_hybrid">हाइब्रिड</string>
+    <string name="worktype_onsite">ऑन-साइट</string>
+    <string name="stage_saved">सहेजा गया</string>
+    <string name="stage_applied">आवेदित</string>
+    <string name="stage_interview">इंटरव्यू</string>
+    <string name="stage_offer">ऑफ़र</string>
+    <string name="stage_closed">बंद</string>
+
+    <!-- ============ Shared: errors / network ============ -->
+    <string name="error_offline">आप ऑफ़लाइन हैं। अपना कनेक्शन जांचें और फिर से कोशिश करें।</string>
+    <string name="error_generic">कुछ गलत हो गया। कृपया फिर से कोशिश करें।</string>
+    <string name="error_rate_limited">आप दैनिक खोज सीमा तक पहुंच गए हैं। बाद में फिर से कोशिश करें।</string>
+    <string name="error_load_jobs">नौकरियां लोड नहीं हो सकीं। कृपया फिर से कोशिश करें।</string>
+    <string name="error_optimize_failed">ऑप्टिमाइज़ेशन विफल रहा। अपना कनेक्शन जांचें और फिर से कोशिश करें।</string>
+    <string name="error_mock_start_failed">इंटरव्यू शुरू नहीं हो सका। कृपया फिर से कोशिश करें।</string>
+    <string name="error_mock_score_failed">सत्र को स्कोर नहीं किया जा सका। कृपया फिर से कोशिश करें।</string>
+    <string name="error_copilot_failed">Copilot तक नहीं पहुंचा जा सका। कृपया फिर से कोशिश करें।</string>
+    <string name="error_open_link">लिंक नहीं खुल सका।</string>
+
+    <!-- ============ Misc fallbacks ============ -->
+    <string name="home_fallback_name">वहां</string>
+    <string name="settings_privacy_options">गोपनीयता विकल्प</string>
+    <string name="settings_privacy_options_sub">अपनी विज्ञापन-सहमति के विकल्प प्रबंधित करें</string>
+</resources>

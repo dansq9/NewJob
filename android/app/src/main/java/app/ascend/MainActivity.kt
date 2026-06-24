@@ -1,0 +1,187 @@
+package app.ascend
+
+import android.content.Context
+import android.os.Bundle
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
+import androidx.activity.viewModels
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.*
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
+import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
+import androidx.navigation.compose.rememberNavController
+import app.ascend.ui.AppStart
+import app.ascend.ui.AppViewModel
+import app.ascend.ui.navigation.Routes
+import app.ascend.ui.navigation.Tab
+import app.ascend.ui.screens.copilot.CopilotScreen
+import app.ascend.ui.screens.games.GamesScreen
+import app.ascend.ui.screens.home.HomeScreen
+import app.ascend.ui.screens.interviews.InterviewsScreen
+import app.ascend.ui.screens.jobdetail.JobDetailScreen
+import app.ascend.ui.screens.jobs.JobsScreen
+import app.ascend.ui.screens.mock.MockScreen
+import app.ascend.ui.screens.onboarding.OnboardingScreen
+import app.ascend.ui.screens.paywall.PaywallScreen
+import app.ascend.ui.screens.resume.ResumeScreen
+import app.ascend.ui.screens.tracker.TrackerScreen
+import app.ascend.ui.theme.AscendColors
+import app.ascend.ui.theme.AscendTheme
+import dagger.hilt.android.AndroidEntryPoint
+
+/** Session-scoped count of game exits (drives ad_inter_after_game_complete cadence). */
+private var gamesExited = 0
+
+@AndroidEntryPoint
+class MainActivity : ComponentActivity() {
+    private val appViewModel: AppViewModel by viewModels()
+
+    @javax.inject.Inject lateinit var consentManager: app.ascend.monetization.consent.ConsentManager
+    @javax.inject.Inject lateinit var ads: app.ascend.monetization.ads.AdsManager
+
+    // Apply the user's chosen language before resources are resolved.
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(app.ascend.i18n.LocaleManager.wrap(newBase))
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        val splash = installSplashScreen()
+        splash.setKeepOnScreenCondition { appViewModel.start.value is AppStart.Loading }
+        enableEdgeToEdge()
+        super.onCreate(savedInstanceState)
+
+        // UMP consent gate (CLAUDE.md rule 1): gather on every launch; the ad SDK
+        // is initialized ONLY once consent resolves and ads are permitted. Nothing
+        // requests an ad before this.
+        consentManager.gather(this)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                consentManager.canRequestAds.collect { allowed -> if (allowed) ads.initialize() }
+            }
+        }
+
+        setContent {
+            AscendTheme {
+                val state by appViewModel.start.collectAsStateWithLifecycle()
+                val brandedAdTransition by appViewModel.brandedAdTransition.collectAsStateWithLifecycle()
+                androidx.compose.foundation.layout.Box(Modifier.fillMaxSize()) {
+                    when (val s = state) {
+                        AppStart.Loading -> Unit // splash stays
+                        is AppStart.Ready -> AscendRoot(startOnboarding = !s.onboarded)
+                    }
+                    // Branded pre-ad transition overlays everything while a full-screen
+                    // interstitial (splash or onboarding-complete) is about to show
+                    // (MonetizationManager-driven).
+                    if (brandedAdTransition) app.ascend.ui.monetization.BrandedAdTransition()
+                }
+            }
+        }
+    }
+}
+
+@Composable
+private fun AscendRoot(startOnboarding: Boolean) {
+    val nav = rememberNavController()
+    val backStack by nav.currentBackStackEntryAsState()
+    val currentRoute = backStack?.destination?.route
+    val showBars = currentRoute in Tab.entries.map { it.route }
+
+    Scaffold(
+        containerColor = AscendColors.Bg,
+        // Tab screens add their own status-bar padding; full-screen routes manage
+        // their own insets via their Scaffold. So the outer Scaffold only contributes
+        // the bottom-nav height (when shown) and doesn't double-inset content.
+        contentWindowInsets = WindowInsets(0, 0, 0, 0),
+        bottomBar = { if (showBars) AscendBottomBar(nav, currentRoute) },
+    ) { padding ->
+        NavHost(
+            navController = nav,
+            startDestination = if (startOnboarding) Routes.ONBOARDING else Routes.HOME,
+            modifier = Modifier.padding(padding),
+        ) {
+            composable(Routes.ONBOARDING) {
+                OnboardingScreen(onDone = {
+                    nav.navigate(Routes.HOME) { popUpTo(Routes.ONBOARDING) { inclusive = true } }
+                })
+            }
+            composable(Routes.HOME) { HomeScreen(nav) }
+            composable(Routes.JOBS) { JobsScreen(nav) }
+            composable(Routes.TRACKER) { TrackerScreen(nav) }
+            composable(Routes.INTERVIEWS) { InterviewsScreen(nav) }
+            composable(Routes.JOB_DETAIL) { JobDetailScreen(nav) }
+            composable(Routes.RESUME) { ResumeScreen(nav) }
+            composable(Routes.MOCK) { MockScreen(nav) }
+            composable(Routes.COPILOT) { CopilotScreen(nav) }
+            composable(Routes.GAMES) { GamesScreen(nav) }
+            composable("game/{gameId}") { entry ->
+                // ad_inter_after_game_complete — fired on leaving a game, capped to ~1 per 2 games.
+                // (The vendored engine exposes only onBack, not a per-game win callback, so exit
+                // approximates completion; a true completion hook is a follow-up in the engine.)
+                val monetization = app.ascend.ui.monetization.rememberMonetizationManager()
+                app.ascend.games.engine.games.host.GameHost(
+                    gameId = entry.arguments?.getString("gameId").orEmpty(),
+                    onBack = {
+                        gamesExited += 1
+                        if (gamesExited % 2 == 0) {
+                            monetization.requestInterstitial(app.ascend.monetization.Placement.INTER_AFTER_GAME_COMPLETE)
+                        }
+                        nav.popBackStack()
+                    },
+                )
+            }
+            composable(Routes.PAYWALL) { PaywallScreen(onClose = { nav.popBackStack() }) }
+            composable(Routes.SETTINGS) { app.ascend.ui.screens.settings.SettingsScreen(nav) }
+        }
+    }
+}
+
+@Composable
+private fun AscendBottomBar(nav: androidx.navigation.NavController, currentRoute: String?) {
+    NavigationBar(containerColor = AscendColors.Card, tonalElevation = 0.dp) {
+        Tab.entries.forEach { tab ->
+            val selected = currentRoute == tab.route
+            val label = androidx.compose.ui.res.stringResource(
+                when (tab) {
+                    Tab.HOME -> R.string.nav_home
+                    Tab.JOBS -> R.string.nav_jobs
+                    Tab.TRACKER -> R.string.nav_tracker
+                    Tab.INTERVIEWS -> R.string.nav_interviews
+                }
+            )
+            NavigationBarItem(
+                selected = selected,
+                onClick = {
+                    nav.navigate(tab.route) {
+                        popUpTo(nav.graph.findStartDestination().id) { saveState = true }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
+                icon = { Icon(if (selected) tab.selectedIcon else tab.icon, label) },
+                label = { Text(label) },
+                colors = NavigationBarItemDefaults.colors(
+                    selectedIconColor = AscendColors.Indigo,
+                    selectedTextColor = AscendColors.Indigo,
+                    indicatorColor = AscendColors.ChipIndigo,
+                    unselectedIconColor = AscendColors.Muted2,
+                    unselectedTextColor = AscendColors.Muted2,
+                ),
+            )
+        }
+    }
+}

@@ -1,0 +1,319 @@
+<resources>
+    <!-- isiZulu (zu) -->
+
+    <!-- ============ Common / reusable ============ -->
+    <string name="action_cancel">Khansela</string>
+    <string name="action_save">Gcina</string>
+    <string name="action_dismiss">Cashisa</string>
+    <string name="action_remove">Susa</string>
+    <string name="action_retry">Zama futhi</string>
+    <string name="action_continue">Qhubeka</string>
+    <string name="action_skip">Yeqa</string>
+    <string name="action_done">Kwenziwe</string>
+    <string name="action_back">Emuva</string>
+    <string name="action_clear">Sula</string>
+    <string name="action_set">Setha</string>
+    <string name="action_change">Shintsha</string>
+
+    <!-- ============ Bottom navigation ============ -->
+    <string name="nav_home">Ikhaya</string>
+    <string name="nav_jobs">Imisebenzi</string>
+    <string name="nav_tracker">Isilandeli</string>
+    <string name="nav_interviews">Izingxoxo</string>
+
+    <!-- ============ Home ============ -->
+    <string name="home_greeting_morning">Sawubona ekuseni</string>
+    <string name="home_greeting_afternoon">Sawubona emini</string>
+    <string name="home_greeting_evening">Sawubona kusihlwa</string>
+    <string name="home_greeting_default">Sawubona</string>
+    <string name="home_search_hint">Sesha imisebenzi, izihloko, izinkampani</string>
+    <string name="home_quick_actions">Izenzo ezisheshayo</string>
+    <string name="home_qa_resume">Lungisa i-resume</string>
+    <string name="home_qa_resume_sub">Hlula i-ATS</string>
+    <string name="home_qa_mock">Ingxoxo yokuzilolonga</string>
+    <string name="home_qa_mock_sub">Zilolonge &amp; uthole amaphuzu</string>
+    <string name="home_qa_copilot">I-Copilot ebukhoma</string>
+    <string name="home_qa_copilot_sub">Izimpendulo ngesikhathi sangempela</string>
+    <string name="home_qa_games">Imidlalo Yengqondo</string>
+    <string name="home_qa_games_sub">Lola ingqondo nsuku zonke</string>
+    <string name="home_top_matches">Okufanele kakhulu</string>
+    <string name="home_see_all">Bona konke</string>
+    <string name="home_matches_for">kwe-%1$s</string>
+    <string name="home_no_matches">Akukho okufanelene nendima oyifunayo okwamanje. Zama ukusesha okubanzi.</string>
+    <string name="home_find_jobs">Sesha imisebenzi</string>
+
+    <!-- ============ Interviews ============ -->
+    <string name="interviews_title">Izingxoxo</string>
+    <string name="interviews_subtitle">Zilungiselele nge-AI, bese uthola usizo ngesikhathi sangempela ekucingweni.</string>
+    <string name="interviews_mock_title">Ingxoxo Yokuzilolonga</string>
+    <string name="interviews_mock_sub">Imibuzo eyenziwe yi-AI nempendulo enikezwe amaphuzu masinyane.</string>
+    <string name="interviews_copilot_title">I-Copilot Yengxoxo Ebukhoma</string>
+    <string name="interviews_copilot_sub">Izimpendulo ngesikhathi sangempela ngezwi lakho ngesikhathi socingo.</string>
+
+    <!-- ============ Onboarding ============ -->
+    <string name="onboarding_get_started">Qalisa</string>
+    <string name="onboarding_finish">Qeda</string>
+    <string name="onboarding_welcome_title">Wamukelekile ku-Ascend</string>
+    <string name="onboarding_welcome_sub">Thola indima yakho elandelayo, ngokushesha. Ake sisethe ukusesha kwakho ngezinyathelo ezimbalwa ezisheshayo.</string>
+    <string name="onboarding_name_title">Sikubize ngokuthini?</string>
+    <string name="onboarding_name_sub">Igama lakho lisisiza senze i-Ascend ikuhambelane.</string>
+    <string name="onboarding_name_hint">isb. u-Alex Morgan</string>
+    <string name="onboarding_role_title">Iyiphi indima oyifunayo?</string>
+    <string name="onboarding_role_sub">Lokhu kulungisa okufanelene nawe, amathiphu e-resume &amp; izingxoxo zokuzilolonga.</string>
+    <string name="onboarding_role_hint">isb. uMphathi Womkhiqizo</string>
+    <string name="onboarding_location_title">Uzingela kuphi?</string>
+    <string name="onboarding_location_sub">Sizoveza imisebenzi eseduze kwakho nezindima zokusebenzela ekude.</string>
+    <string name="onboarding_location_hint">Idolobha, isifunda, noma Ekude</string>
+    <string name="onboarding_resume_title">Engeza i-resume yakho</string>
+    <string name="onboarding_resume_sub">Sizoyisebenzisa ukulungisa okufanelene nawe futhi sikunikeze ukubhalwa kabusha okukulungele i-ATS mahhala. Ungayeqa uyengeze kamuva.</string>
+    <string name="onboarding_resume_upload">Layisha i-resume</string>
+    <string name="onboarding_resume_formats">PDF, DOCX · kuze kube ngu-10MB</string>
+    <string name="onboarding_resume_replace">Thepha ukushintsha</string>
+    <string name="onboarding_save_error">Asikwazanga ukugcina iphrofayela yakho. Sicela uzame futhi.</string>
+
+    <!-- ============ Settings ============ -->
+    <string name="settings_title">Izilungiselelo</string>
+    <string name="settings_section_profile">Iphrofayela yakho</string>
+    <string name="settings_field_name">Igama</string>
+    <string name="settings_field_role">Indima oyifunayo</string>
+    <string name="settings_field_location">Indawo</string>
+    <string name="settings_save_profile">Gcina iphrofayela</string>
+    <string name="settings_profile_saved">Iphrofayela igciniwe</string>
+    <string name="settings_section_resume">I-resume</string>
+    <string name="settings_manage_resumes">Phatha ama-resume</string>
+    <string name="settings_no_resume">Ayikho i-resume eyengeziwe okwamanje</string>
+    <string name="settings_section_language">Ulimi</string>
+    <string name="settings_app_language">Ulimi lohlelo lokusebenza</string>
+    <string name="settings_choose_language">Khetha ulimi</string>
+    <string name="settings_section_data">Idatha &amp; isipele</string>
+    <string name="settings_backup_note">Iphrofayela yakho, imisebenzi egciniwe nesilandeli kuyagcinwa esipeleni ku-akhawunti yakho ye-Google futhi kubuyiselwa kudivayisi entsha. I-ID engaziwa yale divayisi ihlala ikuyo njalo.</string>
+    <string name="settings_section_reset">Setha kabusha</string>
+    <string name="settings_reset_onboarding">Setha kabusha ukungena</string>
+    <string name="settings_reset_confirm_title">Setha kabusha ukungena?</string>
+    <string name="settings_reset_confirm_body">Igama lakho, indima, indawo nokukhethwa kwe-resume kuzosulwa futhi uzophinde udlule ekusetheni. Imisebenzi egciniwe nomtapo wakho we-resume kuyagcinwa.</string>
+    <string name="settings_reset_confirm_action">Setha kabusha</string>
+    <string name="settings_version">v%1$s (%2$d)</string>
+
+    <!-- ============ Jobs ============ -->
+    <string name="jobs_title">Thola indima yakho elandelayo</string>
+    <string name="jobs_search_hint">Isihloko, inkampani noma igama elibalulekile</string>
+    <string name="jobs_location_anywhere">Noma kuphi</string>
+    <string name="jobs_filters">Izihlungi</string>
+    <string name="jobs_reset">Setha kabusha</string>
+    <string name="jobs_remote_only">Okusebenzela ekude kuphela</string>
+    <string name="jobs_date_posted">Usuku lokuthunyelwa</string>
+    <string name="jobs_date_any">Noma yiluphi</string>
+    <string name="jobs_date_today">Namuhla</string>
+    <string name="jobs_date_3days">Izinsuku ezi-3</string>
+    <string name="jobs_date_week">Iviki</string>
+    <string name="jobs_date_month">Inyanga</string>
+    <string name="jobs_employment_type">Uhlobo lomsebenzi</string>
+    <string name="jobs_emp_fulltime">Isikhathi esigcwele</string>
+    <string name="jobs_emp_parttime">Ingxenye yesikhathi</string>
+    <string name="jobs_emp_contract">Ikhontileka</string>
+    <string name="jobs_emp_internship">Ubufundisi</string>
+    <string name="jobs_show_results">Bonisa imiphumela</string>
+    <string name="jobs_end_reached">Usufike ekugcineni · imisebenzi engu-%1$d</string>
+    <string name="jobs_rate_limit_title">Umkhawulo wokusesha wansuku zonke ufinyelelwe</string>
+    <string name="jobs_error_title">Asikwazanga ukulayisha imisebenzi</string>
+    <string name="jobs_empty">Ayikho imisebenzi efanelene nokusesha kwakho</string>
+    <string name="jobs_empty_hint">Zama igama elahlukile noma wandise izihlungi zakho.</string>
+    <string name="jobs_ad_sponsored">Ixhaswe ngezimali</string>
+    <string name="jobs_ad_placeholder">Isikhangiso sakho sangempela lapha</string>
+    <string name="jobs_ad_badge">Isikhangiso</string>
+
+    <!-- ============ Job detail ============ -->
+    <string name="jobdetail_apply">Faka isicelo</string>
+    <string name="jobdetail_apply_site">Faka isicelo kuwebhusayithi yenkampani</string>
+    <string name="jobdetail_opens_browser">Kuvuleka kusiphequluli</string>
+    <string name="jobdetail_pipeline_stage">Isigaba sohlelo</string>
+    <string name="jobdetail_about">Mayelana nendima</string>
+    <string name="jobdetail_no_description">Ayikho incazelo enikeziwe.</string>
+    <string name="jobdetail_applied_q_title">Ufakile isicelo?</string>
+    <string name="jobdetail_applied_q_body">Engeza u-%1$s e-%2$s kusilandeli sakho njengoFakile?</string>
+    <string name="jobdetail_applied_q_yes">Yebo, maka njengoFakile</string>
+    <string name="jobdetail_applied_q_no">Hhayi okwamanje</string>
+    <string name="jobdetail_unavailable_title">Lo msebenzi awutholakali</string>
+    <string name="jobdetail_unavailable_body">Mhlawumbe usuphelelwe yisikhathi, noma uhlelo lokusebenza luvuliwe futhi. Esikhundleni salokho phequlula amathuba akhona.</string>
+    <string name="jobdetail_browse">Phequlula imisebenzi</string>
+    <!-- ============ Resume ============ -->
+    <string name="resume_title">Isilungisi se-Resume</string>
+    <string name="resume_hero_eyebrow">LUNGISELA UMSEBENZI</string>
+    <string name="resume_hero_title">Hlula i-ATS kuyona kanye indima oyifunayo</string>
+    <string name="resume_hero_subtitle">I-AI ye-Ascend ibhala kabusha i-resume yakho ukuze ihambelane namagama abalulekile nokunikeza amaphuzu kwale ndima.</string>
+    <string name="resume_library_label">Ama-resume akho</string>
+    <string name="resume_add">Engeza</string>
+    <string name="resume_target_role">Indima oyifunayo</string>
+    <string name="resume_optimization_mode">Imodi yokulungisa</string>
+    <string name="resume_general_optimization">Ukulungiswa kwe-ATS okuvamile</string>
+    <string name="resume_open_job_hint">Vula umsebenzi kuqala ukuze ulungisele leyo ndima ethile.</string>
+    <string name="resume_add_to_start">Engeza i-resume ukuze uqale</string>
+    <string name="resume_analyze">Hlaziya &amp; lungisa</string>
+    <string name="resume_selected">Okukhethiwe</string>
+    <string name="resume_select">Khetha</string>
+    <string name="resume_ats_label">ATS</string>
+    <string name="resume_document">Idokhumenti</string>
+    <string name="resume_remove">Susa</string>
+    <string name="resume_upload_title">Layisha i-resume yakho</string>
+    <string name="resume_upload_subtitle">PDF, DOC, noma DOCX · kuze kube ngu-10MB</string>
+    <string name="resume_download_link_error">Asikwazanga ukuvula isixhumanisi sokulanda.</string>
+    <string name="resume_share_subject">I-resume elungisiwe</string>
+    <string name="resume_share_chooser">Yabelana nge-resume</string>
+    <string name="resume_download">Landa</string>
+    <string name="resume_share">Yabelana</string>
+    <string name="resume_error_title">Kukhona okuhambe kabi</string>
+
+    <!-- ============ Mock interview ============ -->
+    <string name="mock_title">Ingxoxo Yokuzilolonga</string>
+    <string name="mock_setup_intro">Zilolonge ngemibuzo eyenziwe yi-AI futhi uthole impendulo masinyane.</string>
+    <string name="mock_role_label">Indima ozilungiselela yona</string>
+    <string name="mock_count_label">Inombolo yemibuzo</string>
+    <string name="mock_start">Qala Ingxoxo Yokuzilolonga</string>
+    <string name="mock_question_progress">Umbuzo %1$d kwengu-%2$d</string>
+    <string name="mock_type">Thayipha</string>
+    <string name="mock_speak">Khuluma</string>
+    <string name="mock_answer_placeholder">Thayipha impendulo yakho lapha…</string>
+    <string name="mock_finish_score">Qeda &amp; unikeze amaphuzu</string>
+    <string name="mock_next_question">Umbuzo olandelayo</string>
+    <string name="mock_report_title">Umbiko weseshini</string>
+    <string name="mock_average_score">Amaphuzu amaphakathi</string>
+    <string name="mock_practice_again">Zilolonge futhi</string>
+
+    <!-- ============ Job detail action tiles ============ -->
+    <string name="jobdetail_action_resume">Lungisela i-resume</string>
+    <string name="jobdetail_action_copilot">I-Copilot Yengxoxo</string>
+    <string name="jobdetail_action_mock">Ingxoxo yokuzilolonga</string>
+    <!-- ============ Copilot ============ -->
+    <string name="copilot_title">I-AI Copilot Yengxoxo</string>
+    <string name="copilot_prolock_title">Isiqondisi Sengxoxo Ebukhoma</string>
+    <string name="copilot_prolock_desc">Thola izimpendulo zesikhathi sangempela, ngezwi lakho, ngesikhathi sezingxoxo. I-copilot ebukhoma iyisici se-Ascend Pro.</string>
+    <string name="copilot_unlock_pro">Vula nge-Pro</string>
+    <string name="copilot_setup_eyebrow">I-COPILOT YENGXOXO</string>
+    <string name="copilot_setup_intro">Setha umongo kanye. Ngesikhathi socingo lwakho siloba umbuzo ngamunye umakhalekhukhwini wakho — noma uwunamathisele ngesandla — futhi sidwebe impendulo ngezwi lakho.</string>
+    <string name="copilot_job_title">Isihloko somsebenzi</string>
+    <string name="copilot_company_optional">Inkampani · ngokukhetha</string>
+    <string name="copilot_launch">Qalisa i-Copilot</string>
+    <string name="copilot_split_screen_hint">Gcina lokhu kuvuliwe esikrineni esihlukanisiwe ngesikhathi socingo lwakho lwevidiyo.</string>
+    <string name="copilot_status_manual">Imodi yesandla · namathisela umbuzo ngamunye</string>
+    <string name="copilot_status_listening">Ebukhoma · iyalalela</string>
+    <string name="copilot_status_tap_mic">Thepha imakrofoni ukuze uloba</string>
+    <string name="copilot_back">Emuva</string>
+    <string name="copilot_role_at_company">%1$s @ %2$s</string>
+    <string name="copilot_end">Qeda</string>
+    <string name="copilot_question_placeholder">Namathisela noma thayipha umbuzo womxoxisani…</string>
+    <string name="copilot_clear_question">Sula umbuzo</string>
+    <string name="copilot_listen">Lalela</string>
+    <string name="copilot_stop">Misa</string>
+    <string name="copilot_draft_answer">Dwebe impendulo</string>
+    <string name="copilot_tip">Ithiphu: gcina ifoni yakho eduze nesipikha sekhompuyutha.</string>
+    <string name="copilot_answer_eyebrow">IMPENDULO YE-COPILOT</string>
+    <string name="copilot_mic_rationale_title">Sebenzisa imakrofoni yakho?</string>
+    <string name="copilot_mic_rationale_body">I-Ascend isebenzisa imakrofoni yakho ukuloba imibuzo yomxoxisani ngesikhathi sangempela ukuze ikwazi ukudweba izimpendulo. Umsindo ucutshungulwa ukulobeka kuphela — awurekhodwa noma ugcinwe yi-Ascend.</string>
+    <string name="copilot_mic_not_now">Hhayi manje</string>
+    <string name="copilot_mic_denied_title">Imakrofoni icimile</string>
+    <string name="copilot_mic_denied_body">Ukuze uloba imibuzo ebukhoma, nika imvume yeMakrofoni ku-Ascend kuzilungiselelo. Ungasanamathisela noma uthayiphe imibuzo ngesandla.</string>
+    <string name="copilot_mic_open_settings">Vula izilungiselelo</string>
+    <string name="copilot_mic_manual_entry">Sebenzisa ukufaka ngesandla</string>
+
+    <!-- ============ Paywall ============ -->
+    <string name="paywall_close">Vala</string>
+    <string name="paywall_headline">QASHWA NJENGOCHWEPHESHE</string>
+    <string name="paywall_subhead">Vula Zonke Izici</string>
+    <string name="paywall_col_premium">I-PREMIUM</string>
+    <string name="paywall_col_basic">EYISISEKELO</string>
+    <string name="paywall_feature_find_jobs">Thola &amp; ufake izicelo zemisebenzi</string>
+    <string name="paywall_feature_resume">Isilungisi se-resume se-AI</string>
+    <string name="paywall_feature_mock">Izingxoxo zokuzilolonga</string>
+    <string name="paywall_feature_navigator">Isiqondisi Sengxoxo Ebukhoma</string>
+    <string name="paywall_feature_ad_free">Ulwazi olungenazikhangiso</string>
+    <string name="paywall_feature_support">Usekelo oluphambili</string>
+    <string name="paywall_basic_ads">Izikhangiso</string>
+    <string name="paywall_price_line">%1$s/%2$s ngemva kokulinga kwamahhala kwezinsuku ezi-3</string>
+    <string name="paywall_price_fallback">Qala ukulinga kwakho kwamahhala</string>
+    <string name="paywall_start_trial">QALA UKULINGA KWAMAHHALA</string>
+    <string name="paywall_billing_disclosure">Ukubhalisa kukhokhiswa ngemva kokuphela kokulinga futhi kuzozivuselela ngokuzenzakalelayo. Khansela noma nini ngaphambi kokuphela kokulinga ukuze ugweme izindleko.</string>
+    <string name="paywall_restore">Buyisela</string>
+    <string name="paywall_terms">Imigomo</string>
+    <string name="paywall_privacy">Ubumfihlo</string>
+    <string name="paywall_purchase_failed">Ukuthenga akuqedelekanga. Sicela uzame futhi.</string>
+    <string name="paywall_restore_success">I-Pro ibuyiselwe.</string>
+    <string name="paywall_restore_none">Akukho ukuthenga kwangaphambili okutholakele.</string>
+    <!-- ============ Tracker ============ -->
+    <string name="tracker_header">Isilandeli Somsebenzi</string>
+    <string name="tracker_count">imisebenzi engu-%1$d · esebenzayo engu-%2$d</string>
+    <string name="tracker_search_hint">Sesha isihloko, inkampani, indawo</string>
+    <string name="tracker_sort_recent">Kwakamuva</string>
+    <string name="tracker_sort_company">Inkampani</string>
+    <string name="tracker_sort_stage">Isigaba</string>
+    <string name="tracker_interview_followup">Ingxoxo / ukulandela</string>
+    <string name="tracker_not_set">Akusethiwe</string>
+    <string name="tracker_notes">Amanothi</string>
+    <string name="tracker_notes_placeholder">Igama lomqashi, ububanzi bomholo, izinyathelo ezilandelayo…</string>
+    <string name="tracker_save_notes">Gcina amanothi</string>
+    <string name="tracker_mark_closed_lost">Maka njengevaliwe / elahliwe</string>
+    <string name="tracker_close_why">Kungani lokhu kuvaliwe?</string>
+    <string name="tracker_close_reason_rejected">Kwaliwe</string>
+    <string name="tracker_close_reason_withdrew">Kuhoxisiwe</string>
+    <string name="tracker_close_reason_filled">Isikhundla sigcwalisiwe</string>
+    <string name="tracker_close_reason_placeholder">Isizathu (ngokukhetha)</string>
+    <string name="tracker_mark_closed">Maka njengevaliwe</string>
+    <string name="tracker_closed_reason">Kuvaliwe: %1$s</string>
+    <string name="tracker_remove">Susa kusilandeli</string>
+    <string name="tracker_remove_confirm_title">Susa kusilandeli?</string>
+    <string name="tracker_remove_confirm_body">\"%1$s\" e-%2$s izosuswa. Lokhu akukwazi ukuhlehliswa.</string>
+    <string name="tracker_demote">Yehlisa</string>
+    <string name="tracker_promote">Khuphula</string>
+    <string name="tracker_no_matches">Akukho okufanelene</string>
+    <string name="tracker_no_matches_hint">Zama ukusesha okwehlukile.</string>
+    <string name="tracker_empty_title">Ayikho imisebenzi elandelelwayo okwamanje</string>
+    <string name="tracker_empty_body">Gcina noma ufake izicelo zemisebenzi futhi izovela lapha.</string>
+    <string name="tracker_find_jobs">Thola imisebenzi</string>
+
+    <!-- ============ Games ============ -->
+    <string name="games_header_blurb">Iphazili yansuku zonke yokugcina ingqondo yakho ibukhali phakathi kwezicelo.</string>
+    <string name="games_play">Dlala</string>
+    <string name="games_patches_title">Izichibi</string>
+    <string name="games_patches_blurb">Veza isithombe esifihliwe</string>
+    <string name="games_sudoku_title">I-Mini Sudoku</string>
+    <string name="games_sudoku_blurb">Gcwalisa igridi engu-6 nge-6</string>
+    <string name="games_zip_title">Umkhondo</string>
+    <string name="games_zip_blurb">Landela u-1 kuya ku-7 ngendlela eyodwa</string>
+    <string name="games_queens_title">Izinkanyezi</string>
+    <string name="games_queens_blurb">Eyodwa kumugqa, ikholomu, umbala</string>
+    <string name="games_tango_title">Ukusitheka</string>
+    <string name="games_tango_blurb">Linganisa amalanga nezinyanga</string>
+    <string name="games_g2048_title">2048</string>
+    <string name="games_g2048_blurb">Hlanganisa amathayili kuze kube ngu-2048</string>
+    <string name="games_clusters_title">Amaqoqo</string>
+    <string name="games_clusters_blurb">Hlanganisa amagama ayishumi nesithupha</string>
+    <string name="games_crossword_title">I-Mini Cross</string>
+    <string name="games_crossword_blurb">Iphazili yamagama engu-five nge-five</string>
+    <string name="games_lightsout_title">Cima Izibani</string>
+    <string name="games_lightsout_blurb">Cima zonke izibani</string>
+
+    <!-- ============ Shared: work type / pipeline stage labels ============ -->
+    <string name="worktype_remote">Ekude</string>
+    <string name="worktype_hybrid">Okuxubile</string>
+    <string name="worktype_onsite">Endaweni</string>
+    <string name="stage_saved">Kugciniwe</string>
+    <string name="stage_applied">Kufakiwe</string>
+    <string name="stage_interview">Ingxoxo</string>
+    <string name="stage_offer">Umnikelo</string>
+    <string name="stage_closed">Kuvaliwe</string>
+
+    <!-- ============ Shared: errors / network ============ -->
+    <string name="error_offline">Awukho ku-inthanethi. Hlola uxhumano lwakho bese uzama futhi.</string>
+    <string name="error_generic">Kukhona okuhambe kabi. Sicela uzame futhi.</string>
+    <string name="error_rate_limited">Usufike emkhawulweni wokusesha wansuku zonke. Zama futhi kamuva.</string>
+    <string name="error_load_jobs">Asikwazanga ukulayisha imisebenzi. Sicela uzame futhi.</string>
+    <string name="error_optimize_failed">Ukulungisa kuhlulekile. Hlola uxhumano lwakho bese uzama futhi.</string>
+    <string name="error_mock_start_failed">Asikwazanga ukuqala ingxoxo. Sicela uzame futhi.</string>
+    <string name="error_mock_score_failed">Asikwazanga ukunikeza iseshini amaphuzu. Sicela uzame futhi.</string>
+    <string name="error_copilot_failed">Asikwazanga ukufinyelela i-Copilot. Sicela uzame futhi.</string>
+    <string name="error_open_link">Asikwazanga ukuvula isixhumanisi.</string>
+
+    <!-- ============ Misc fallbacks ============ -->
+    <string name="home_fallback_name">lapho</string>
+    <string name="settings_privacy_options">Izinketho zobumfihlo</string>
+    <string name="settings_privacy_options_sub">Phatha izinketho zakho zemvume yezikhangiso</string>
+</resources>

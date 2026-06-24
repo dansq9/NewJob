@@ -1,0 +1,319 @@
+<!-- Afrikaans (af) -->
+<resources>
+
+    <!-- ============ Common / reusable ============ -->
+    <string name="action_cancel">Kanselleer</string>
+    <string name="action_save">Stoor</string>
+    <string name="action_dismiss">Maak toe</string>
+    <string name="action_remove">Verwyder</string>
+    <string name="action_retry">Probeer weer</string>
+    <string name="action_continue">Gaan voort</string>
+    <string name="action_skip">Slaan oor</string>
+    <string name="action_done">Klaar</string>
+    <string name="action_back">Terug</string>
+    <string name="action_clear">Maak skoon</string>
+    <string name="action_set">Stel</string>
+    <string name="action_change">Verander</string>
+
+    <!-- ============ Bottom navigation ============ -->
+    <string name="nav_home">Tuis</string>
+    <string name="nav_jobs">Werk</string>
+    <string name="nav_tracker">Sporing</string>
+    <string name="nav_interviews">Onderhoude</string>
+
+    <!-- ============ Home ============ -->
+    <string name="home_greeting_morning">Goeiemôre</string>
+    <string name="home_greeting_afternoon">Goeiemiddag</string>
+    <string name="home_greeting_evening">Goeienaand</string>
+    <string name="home_greeting_default">Hallo</string>
+    <string name="home_search_hint">Soek werk, titels, maatskappye</string>
+    <string name="home_quick_actions">Vinnige aksies</string>
+    <string name="home_qa_resume">Optimaliseer CV</string>
+    <string name="home_qa_resume_sub">Klop die ATS</string>
+    <string name="home_qa_mock">Oefenonderhoud</string>
+    <string name="home_qa_mock_sub">Oefen &amp; kry \'n telling</string>
+    <string name="home_qa_copilot">Lewendige Copilot</string>
+    <string name="home_qa_copilot_sub">Intydse antwoorde</string>
+    <string name="home_qa_games">Breinspeletjies</string>
+    <string name="home_qa_games_sub">Skerp jou daagliks op</string>
+    <string name="home_top_matches">Beste passings</string>
+    <string name="home_see_all">Sien alles</string>
+    <string name="home_matches_for">vir %1$s</string>
+    <string name="home_no_matches">Nog geen passings vir jou teikenrol nie. Probeer \'n breër soektog.</string>
+    <string name="home_find_jobs">Soek werk</string>
+
+    <!-- ============ Interviews ============ -->
+    <string name="interviews_title">Onderhoude</string>
+    <string name="interviews_subtitle">Berei voor met KI, kry dan intydse hulp tydens die oproep.</string>
+    <string name="interviews_mock_title">Oefenonderhoud</string>
+    <string name="interviews_mock_sub">KI-gegenereerde vrae met onmiddellike, getelde terugvoer.</string>
+    <string name="interviews_copilot_title">Lewendige Onderhoud-Copilot</string>
+    <string name="interviews_copilot_sub">Intydse antwoorde in jou eie stem tydens die oproep.</string>
+
+    <!-- ============ Onboarding ============ -->
+    <string name="onboarding_get_started">Kom ons begin</string>
+    <string name="onboarding_finish">Voltooi</string>
+    <string name="onboarding_welcome_title">Welkom by Ascend</string>
+    <string name="onboarding_welcome_sub">Kry jou volgende rol vinniger. Kom ons stel jou soektog op in \'n paar vinnige stappe.</string>
+    <string name="onboarding_name_title">Wat moet ons jou noem?</string>
+    <string name="onboarding_name_sub">Jou naam help ons om Ascend te verpersoonlik.</string>
+    <string name="onboarding_name_hint">bv. Alex Morgan</string>
+    <string name="onboarding_role_title">Watter rol soek jy?</string>
+    <string name="onboarding_role_sub">Dit pas jou passings, CV-wenke &amp; oefenonderhoude aan.</string>
+    <string name="onboarding_role_hint">bv. Produkbestuurder</string>
+    <string name="onboarding_location_title">Waar soek jy?</string>
+    <string name="onboarding_location_sub">Ons sal werk naby jou en afgeleë rolle wys.</string>
+    <string name="onboarding_location_hint">Stad, streek, of Afgeleë</string>
+    <string name="onboarding_resume_title">Voeg jou CV by</string>
+    <string name="onboarding_resume_sub">Ons sal dit gebruik om passings aan te pas en \'n gratis ATS-gereed herskryf aan te bied. Jy kan oorslaan en dit later byvoeg.</string>
+    <string name="onboarding_resume_upload">Laai CV op</string>
+    <string name="onboarding_resume_formats">PDF, DOCX · tot 10MB</string>
+    <string name="onboarding_resume_replace">Tik om te vervang</string>
+    <string name="onboarding_save_error">Kon nie jou profiel stoor nie. Probeer asseblief weer.</string>
+
+    <!-- ============ Settings ============ -->
+    <string name="settings_title">Instellings</string>
+    <string name="settings_section_profile">Jou profiel</string>
+    <string name="settings_field_name">Naam</string>
+    <string name="settings_field_role">Teikenrol</string>
+    <string name="settings_field_location">Ligging</string>
+    <string name="settings_save_profile">Stoor profiel</string>
+    <string name="settings_profile_saved">Profiel gestoor</string>
+    <string name="settings_section_resume">CV</string>
+    <string name="settings_manage_resumes">Bestuur CV\'s</string>
+    <string name="settings_no_resume">Nog geen CV bygevoeg nie</string>
+    <string name="settings_section_language">Taal</string>
+    <string name="settings_app_language">Toepassingstaal</string>
+    <string name="settings_choose_language">Kies taal</string>
+    <string name="settings_section_data">Data &amp; rugsteun</string>
+    <string name="settings_backup_note">Jou profiel, gestoorde werk en sporing word na jou Google-rekening gerugsteun en op \'n nuwe toestel herstel. Hierdie toestel se anonieme ID bly altyd plaaslik.</string>
+    <string name="settings_section_reset">Herstel</string>
+    <string name="settings_reset_onboarding">Herstel aanboording</string>
+    <string name="settings_reset_confirm_title">Herstel aanboording?</string>
+    <string name="settings_reset_confirm_body">Jou naam, rol, ligging en CV-keuse sal uitgevee word en jy sal weer deur die opstelling gaan. Gestoorde werk en jou CV-biblioteek word behou.</string>
+    <string name="settings_reset_confirm_action">Herstel</string>
+    <string name="settings_version">v%1$s (%2$d)</string>
+
+    <!-- ============ Jobs ============ -->
+    <string name="jobs_title">Vind jou volgende rol</string>
+    <string name="jobs_search_hint">Titel, maatskappy of sleutelwoord</string>
+    <string name="jobs_location_anywhere">Enige plek</string>
+    <string name="jobs_filters">Filters</string>
+    <string name="jobs_reset">Herstel</string>
+    <string name="jobs_remote_only">Slegs afgeleë</string>
+    <string name="jobs_date_posted">Datum geplaas</string>
+    <string name="jobs_date_any">Enige</string>
+    <string name="jobs_date_today">Vandag</string>
+    <string name="jobs_date_3days">3 dae</string>
+    <string name="jobs_date_week">Week</string>
+    <string name="jobs_date_month">Maand</string>
+    <string name="jobs_employment_type">Soort indiensneming</string>
+    <string name="jobs_emp_fulltime">Voltyds</string>
+    <string name="jobs_emp_parttime">Deeltyds</string>
+    <string name="jobs_emp_contract">Kontrak</string>
+    <string name="jobs_emp_internship">Internskap</string>
+    <string name="jobs_show_results">Wys resultate</string>
+    <string name="jobs_end_reached">Jy het die einde bereik · %1$d poste</string>
+    <string name="jobs_rate_limit_title">Daaglikse soeklimiet bereik</string>
+    <string name="jobs_error_title">Kon nie werk laai nie</string>
+    <string name="jobs_empty">Geen werk pas by jou soektog nie</string>
+    <string name="jobs_empty_hint">Probeer \'n ander sleutelwoord of verbreed jou filters.</string>
+    <string name="jobs_ad_sponsored">Geborg</string>
+    <string name="jobs_ad_placeholder">Jou inheemse advertensie hier</string>
+    <string name="jobs_ad_badge">Advertensie</string>
+
+    <!-- ============ Job detail ============ -->
+    <string name="jobdetail_apply">Doen aansoek</string>
+    <string name="jobdetail_apply_site">Doen aansoek op maatskappy se webwerf</string>
+    <string name="jobdetail_opens_browser">Maak in blaaier oop</string>
+    <string name="jobdetail_pipeline_stage">Pyplynfase</string>
+    <string name="jobdetail_about">Oor die rol</string>
+    <string name="jobdetail_no_description">Geen beskrywing verskaf nie.</string>
+    <string name="jobdetail_applied_q_title">Het jy aansoek gedoen?</string>
+    <string name="jobdetail_applied_q_body">Voeg %1$s by %2$s by jou sporing as Aansoek gedoen?</string>
+    <string name="jobdetail_applied_q_yes">Ja, merk Aansoek gedoen</string>
+    <string name="jobdetail_applied_q_no">Nog nie</string>
+    <string name="jobdetail_unavailable_title">Hierdie werk is nie beskikbaar nie</string>
+    <string name="jobdetail_unavailable_body">Dit het dalk verval, of die toepassing is weer oopgemaak. Blaai eerder deur huidige vakatures.</string>
+    <string name="jobdetail_browse">Blaai deur werk</string>
+    <!-- ============ Resume ============ -->
+    <string name="resume_title">CV-optimaliseerder</string>
+    <string name="resume_hero_eyebrow">PAS AAN VIR \'N WERK</string>
+    <string name="resume_hero_title">Klop die ATS vir die presiese rol wat jy wil hê</string>
+    <string name="resume_hero_subtitle">Ascend se KI herskryf jou CV om by hierdie rol se sleutelwoorde en telling te pas.</string>
+    <string name="resume_library_label">Jou CV\'s</string>
+    <string name="resume_add">Voeg by</string>
+    <string name="resume_target_role">Teikenrol</string>
+    <string name="resume_optimization_mode">Optimaliseringsmodus</string>
+    <string name="resume_general_optimization">Algemene ATS-optimalisering</string>
+    <string name="resume_open_job_hint">Maak eers \'n werk oop om vir daardie spesifieke rol aan te pas.</string>
+    <string name="resume_add_to_start">Voeg \'n CV by om te begin</string>
+    <string name="resume_analyze">Ontleed &amp; optimaliseer</string>
+    <string name="resume_selected">Gekies</string>
+    <string name="resume_select">Kies</string>
+    <string name="resume_ats_label">ATS</string>
+    <string name="resume_document">Dokument</string>
+    <string name="resume_remove">Verwyder</string>
+    <string name="resume_upload_title">Laai jou CV op</string>
+    <string name="resume_upload_subtitle">PDF, DOC, of DOCX · tot 10MB</string>
+    <string name="resume_download_link_error">Kon nie die aflaaiskakel oopmaak nie.</string>
+    <string name="resume_share_subject">Geoptimaliseerde CV</string>
+    <string name="resume_share_chooser">Deel CV</string>
+    <string name="resume_download">Laai af</string>
+    <string name="resume_share">Deel</string>
+    <string name="resume_error_title">Iets het verkeerd geloop</string>
+
+    <!-- ============ Mock interview ============ -->
+    <string name="mock_title">Oefenonderhoud</string>
+    <string name="mock_setup_intro">Oefen met KI-gegenereerde vrae en kry onmiddellike terugvoer.</string>
+    <string name="mock_role_label">Rol om voor voor te berei</string>
+    <string name="mock_count_label">Aantal vrae</string>
+    <string name="mock_start">Begin oefenonderhoud</string>
+    <string name="mock_question_progress">Vraag %1$d van %2$d</string>
+    <string name="mock_type">Tik</string>
+    <string name="mock_speak">Praat</string>
+    <string name="mock_answer_placeholder">Tik jou antwoord hier…</string>
+    <string name="mock_finish_score">Voltooi &amp; tel</string>
+    <string name="mock_next_question">Volgende vraag</string>
+    <string name="mock_report_title">Sessieverslag</string>
+    <string name="mock_average_score">Gemiddelde telling</string>
+    <string name="mock_practice_again">Oefen weer</string>
+
+    <!-- ============ Job detail action tiles ============ -->
+    <string name="jobdetail_action_resume">Pas CV aan</string>
+    <string name="jobdetail_action_copilot">Onderhoud-Copilot</string>
+    <string name="jobdetail_action_mock">Oefenonderhoud</string>
+    <!-- ============ Copilot ============ -->
+    <string name="copilot_title">KI Onderhoud-Copilot</string>
+    <string name="copilot_prolock_title">Lewendige Onderhoud-Navigator</string>
+    <string name="copilot_prolock_desc">Kry intydse antwoorde in jou eie stem tydens onderhoude. Die lewendige copilot is \'n Ascend Pro-kenmerk.</string>
+    <string name="copilot_unlock_pro">Ontsluit met Pro</string>
+    <string name="copilot_setup_eyebrow">ONDERHOUD-COPILOT</string>
+    <string name="copilot_setup_intro">Stel die konteks een keer. Tydens jou oproep transkribeer ons elke vraag van jou mikrofoon af — of plak dit handmatig — en stel \'n antwoord in jou eie stem op.</string>
+    <string name="copilot_job_title">Postitel</string>
+    <string name="copilot_company_optional">Maatskappy · opsioneel</string>
+    <string name="copilot_launch">Begin Copilot</string>
+    <string name="copilot_split_screen_hint">Hou hierdie oop in geskeurde skerm tydens jou video-oproep.</string>
+    <string name="copilot_status_manual">Handmatige modus · plak elke vraag</string>
+    <string name="copilot_status_listening">Lewendig · luister</string>
+    <string name="copilot_status_tap_mic">Tik die mikrofoon om te transkribeer</string>
+    <string name="copilot_back">Terug</string>
+    <string name="copilot_role_at_company">%1$s @ %2$s</string>
+    <string name="copilot_end">Beëindig</string>
+    <string name="copilot_question_placeholder">Plak of tik die onderhoudvoerder se vraag…</string>
+    <string name="copilot_clear_question">Maak vraag skoon</string>
+    <string name="copilot_listen">Luister</string>
+    <string name="copilot_stop">Stop</string>
+    <string name="copilot_draft_answer">Stel antwoord op</string>
+    <string name="copilot_tip">Wenk: hou jou foon naby die rekenaar se luidspreker.</string>
+    <string name="copilot_answer_eyebrow">COPILOT-ANTWOORD</string>
+    <string name="copilot_mic_rationale_title">Gebruik jou mikrofoon?</string>
+    <string name="copilot_mic_rationale_body">Ascend gebruik jou mikrofoon om die onderhoudvoerder se vrae intyds te transkribeer sodat dit antwoorde kan opstel. Klank word slegs vir transkripsie verwerk — dit word nie deur Ascend opgeneem of gestoor nie.</string>
+    <string name="copilot_mic_not_now">Nie nou nie</string>
+    <string name="copilot_mic_denied_title">Mikrofoon is af</string>
+    <string name="copilot_mic_denied_body">Om vrae lewendig te transkribeer, aktiveer die Mikrofoon-toestemming vir Ascend in Instellings. Jy kan steeds vrae handmatig plak of tik.</string>
+    <string name="copilot_mic_open_settings">Maak instellings oop</string>
+    <string name="copilot_mic_manual_entry">Gebruik handmatige invoer</string>
+
+    <!-- ============ Paywall ============ -->
+    <string name="paywall_close">Maak toe</string>
+    <string name="paywall_headline">WORD AANGESTEL SOOS \'N PRO</string>
+    <string name="paywall_subhead">Ontsluit alle kenmerke</string>
+    <string name="paywall_col_premium">PREMIUM</string>
+    <string name="paywall_col_basic">BASIES</string>
+    <string name="paywall_feature_find_jobs">Vind &amp; doen aansoek vir werk</string>
+    <string name="paywall_feature_resume">KI CV-optimaliseerder</string>
+    <string name="paywall_feature_mock">Oefenonderhoude</string>
+    <string name="paywall_feature_navigator">Lewendige Onderhoud-Navigator</string>
+    <string name="paywall_feature_ad_free">Advertensievrye ervaring</string>
+    <string name="paywall_feature_support">Prioriteitsondersteuning</string>
+    <string name="paywall_basic_ads">Advertensies</string>
+    <string name="paywall_price_line">%1$s/%2$s na \'n GRATIS 3-dag proeftydperk</string>
+    <string name="paywall_price_fallback">Begin jou gratis proeftydperk</string>
+    <string name="paywall_start_trial">BEGIN GRATIS PROEFTYDPERK</string>
+    <string name="paywall_billing_disclosure">Die intekening word gefaktureer nadat die proeftydperk eindig en sal outomaties hernu. Kanselleer enige tyd voor die proeftydperk eindig om koste te vermy.</string>
+    <string name="paywall_restore">Herstel</string>
+    <string name="paywall_terms">Bepalings</string>
+    <string name="paywall_privacy">Privaatheid</string>
+    <string name="paywall_purchase_failed">Aankoop is nie voltooi nie. Probeer asseblief weer.</string>
+    <string name="paywall_restore_success">Pro herstel.</string>
+    <string name="paywall_restore_none">Geen vorige aankope gevind nie.</string>
+    <!-- ============ Tracker ============ -->
+    <string name="tracker_header">Werksporing</string>
+    <string name="tracker_count">%1$d poste · %2$d aktief</string>
+    <string name="tracker_search_hint">Soek titel, maatskappy, ligging</string>
+    <string name="tracker_sort_recent">Onlangs</string>
+    <string name="tracker_sort_company">Maatskappy</string>
+    <string name="tracker_sort_stage">Fase</string>
+    <string name="tracker_interview_followup">Onderhoud / opvolg</string>
+    <string name="tracker_not_set">Nie gestel nie</string>
+    <string name="tracker_notes">Notas</string>
+    <string name="tracker_notes_placeholder">Werwer se naam, salarisreeks, volgende stappe…</string>
+    <string name="tracker_save_notes">Stoor notas</string>
+    <string name="tracker_mark_closed_lost">Merk as gesluit / verloor</string>
+    <string name="tracker_close_why">Waarom het dit gesluit?</string>
+    <string name="tracker_close_reason_rejected">Afgewys</string>
+    <string name="tracker_close_reason_withdrew">Onttrek</string>
+    <string name="tracker_close_reason_filled">Pos gevul</string>
+    <string name="tracker_close_reason_placeholder">Rede (opsioneel)</string>
+    <string name="tracker_mark_closed">Merk gesluit</string>
+    <string name="tracker_closed_reason">Gesluit: %1$s</string>
+    <string name="tracker_remove">Verwyder uit sporing</string>
+    <string name="tracker_remove_confirm_title">Verwyder uit sporing?</string>
+    <string name="tracker_remove_confirm_body">\"%1$s\" by %2$s sal verwyder word. Dit kan nie ongedaan gemaak word nie.</string>
+    <string name="tracker_demote">Verlaag</string>
+    <string name="tracker_promote">Bevorder</string>
+    <string name="tracker_no_matches">Geen passings nie</string>
+    <string name="tracker_no_matches_hint">Probeer \'n ander soektog.</string>
+    <string name="tracker_empty_title">Nog geen werk gespoor nie</string>
+    <string name="tracker_empty_body">Stoor of doen aansoek vir werk en dit sal hier verskyn.</string>
+    <string name="tracker_find_jobs">Soek werk</string>
+
+    <!-- ============ Games ============ -->
+    <string name="games_header_blurb">\'n Daaglikse legkaart om jou gedagtes skerp te hou tussen aansoeke.</string>
+    <string name="games_play">Speel</string>
+    <string name="games_patches_title">Lappies</string>
+    <string name="games_patches_blurb">Onthul die verborge prentjie</string>
+    <string name="games_sudoku_title">Mini-Sudoku</string>
+    <string name="games_sudoku_blurb">Vul die 6 by 6 rooster</string>
+    <string name="games_zip_title">Spoor</string>
+    <string name="games_zip_blurb">Trek 1 tot 7 in een pad</string>
+    <string name="games_queens_title">Sterre</string>
+    <string name="games_queens_blurb">Een per ry, kolom, kleur</string>
+    <string name="games_tango_title">Verduistering</string>
+    <string name="games_tango_blurb">Balanseer sonne en mane</string>
+    <string name="games_g2048_title">2048</string>
+    <string name="games_g2048_blurb">Smelt teëls saam tot 2048</string>
+    <string name="games_clusters_title">Trosse</string>
+    <string name="games_clusters_blurb">Groepeer die sestien woorde</string>
+    <string name="games_crossword_title">Mini-Kruis</string>
+    <string name="games_crossword_blurb">\'n Vyf by vyf blokkiesraaisel</string>
+    <string name="games_lightsout_title">Ligte Af</string>
+    <string name="games_lightsout_blurb">Skakel elke lig af</string>
+
+    <!-- ============ Shared: work type / pipeline stage labels ============ -->
+    <string name="worktype_remote">Afgeleë</string>
+    <string name="worktype_hybrid">Hibried</string>
+    <string name="worktype_onsite">Op die perseel</string>
+    <string name="stage_saved">Gestoor</string>
+    <string name="stage_applied">Aansoek gedoen</string>
+    <string name="stage_interview">Onderhoud</string>
+    <string name="stage_offer">Aanbod</string>
+    <string name="stage_closed">Gesluit</string>
+
+    <!-- ============ Shared: errors / network ============ -->
+    <string name="error_offline">Jy is vanlyn. Kontroleer jou verbinding en probeer weer.</string>
+    <string name="error_generic">Iets het verkeerd geloop. Probeer asseblief weer.</string>
+    <string name="error_rate_limited">Jy het die daaglikse soeklimiet bereik. Probeer later weer.</string>
+    <string name="error_load_jobs">Kon nie werk laai nie. Probeer asseblief weer.</string>
+    <string name="error_optimize_failed">Optimalisering het misluk. Kontroleer jou verbinding en probeer weer.</string>
+    <string name="error_mock_start_failed">Kon nie die onderhoud begin nie. Probeer asseblief weer.</string>
+    <string name="error_mock_score_failed">Kon nie die sessie tel nie. Probeer asseblief weer.</string>
+    <string name="error_copilot_failed">Kon nie die Copilot bereik nie. Probeer asseblief weer.</string>
+    <string name="error_open_link">Kon nie die skakel oopmaak nie.</string>
+
+    <!-- ============ Misc fallbacks ============ -->
+    <string name="home_fallback_name">daar</string>
+    <string name="settings_privacy_options">Privaatheidopsies</string>
+    <string name="settings_privacy_options_sub">Bestuur jou advertensie-toestemmingskeuses</string>
+</resources>

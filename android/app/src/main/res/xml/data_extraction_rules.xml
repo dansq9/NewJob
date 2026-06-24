@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Android 12+ (API 31+) backup/transfer rules. We back up app data (profile,
+  tracker, resume library) EXCEPT the device-scoped DataStore, so the anonymous
+  install id is regenerated on a fresh install / new device.
+-->
+<data-extraction-rules>
+    <cloud-backup>
+        <exclude domain="file" path="datastore/ascend_device.preferences_pb" />
+    </cloud-backup>
+    <device-transfer>
+        <exclude domain="file" path="datastore/ascend_device.preferences_pb" />
+    </device-transfer>
+</data-extraction-rules>

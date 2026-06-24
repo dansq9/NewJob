@@ -1,0 +1,11 @@
+# Normalize text
+* text=auto eol=lf
+*.bat text eol=crlf
+
+# Treat large binary deliverables as binary (and easy to migrate to Git LFS later:
+#   git lfs track "feature-video/*.mp4" "feature-video/store/*.png")
+*.mp4 binary
+*.png binary
+*.jpg binary
+*.ttf binary
+*.jar binary
