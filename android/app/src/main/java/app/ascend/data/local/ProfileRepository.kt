@@ -4,6 +4,7 @@ import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
 import app.ascend.data.model.UserProfile
 import kotlinx.coroutines.flow.Flow
@@ -27,7 +28,20 @@ class ProfileRepository @Inject constructor(
         val ONBOARDED = booleanPreferencesKey("onboarded")
         val INSTALL_ID = stringPreferencesKey("anonymous_install_id")
         val SELECTED_RESUME = stringPreferencesKey("selected_resume_id")
+        val SESSION_NUMBER = intPreferencesKey("session_number")
+        val ACTIVATED = booleanPreferencesKey("activated")
     }
+
+    /** Local session counter — incremented once per cold start (analytics session_number). */
+    suspend fun nextSessionNumber(): Int {
+        var n = 1
+        dataStore.edit { p -> n = (p[Keys.SESSION_NUMBER] ?: 0) + 1; p[Keys.SESSION_NUMBER] = n }
+        return n
+    }
+
+    /** True once the user has completed a core action (drives user_ad_segment). */
+    suspend fun activatedOnce(): Boolean = dataStore.data.first()[Keys.ACTIVATED] ?: false
+    suspend fun markActivated() { dataStore.edit { it[Keys.ACTIVATED] = true } }
 
     /** Id of the resume the user has marked as active (drives optimize/generate targets). */
     val selectedResumeId: Flow<String?> = dataStore.data.map { it[Keys.SELECTED_RESUME] }

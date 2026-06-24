@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.ascend.R
-import app.ascend.analytics.Analytics
+import app.ascend.analytics.AnalyticsTracker
 import app.ascend.core.isOffline
 import app.ascend.data.remote.platform.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -19,7 +19,7 @@ import javax.inject.Inject
 @HiltViewModel
 class CopilotViewModel @Inject constructor(
     private val api: AscendApi,
-    private val analytics: Analytics,
+    private val analytics: AnalyticsTracker,
     entitlements: app.ascend.data.billing.EntitlementRepository,
 ) : ViewModel() {
 

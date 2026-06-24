@@ -1,7 +1,5 @@
 package app.ascend.di
 
-import app.ascend.analytics.Analytics
-import app.ascend.analytics.NoopAnalytics
 import app.ascend.monetization.ads.AdsManager
 import app.ascend.monetization.ads.NoopAdsManager
 import app.ascend.monetization.billing.BillingManager
@@ -24,7 +22,4 @@ abstract class MonetizationModule {
 
     @Binds @Singleton
     abstract fun adsManager(impl: NoopAdsManager): AdsManager
-
-    @Binds @Singleton
-    abstract fun analytics(impl: NoopAnalytics): Analytics
 }

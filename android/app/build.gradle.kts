@@ -119,6 +119,12 @@ dependencies {
     // globally; the consent form is shown only where required (EEA/UK/CH).
     implementation(libs.user.messaging.platform)
 
+    // Firebase Analytics (GA4) — the AnalyticsTracker spine. The google-services
+    // plugin + google-services.json are added by the human engineer; until then
+    // FirebaseApp won't initialize and AnalyticsTracker degrades to Logcat-only.
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+
     // Games engine uses java.time (LocalDate) — desugared for minSdk 24
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 }

@@ -4,7 +4,7 @@ import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.ascend.R
-import app.ascend.analytics.Analytics
+import app.ascend.analytics.AnalyticsTracker
 import app.ascend.core.isOffline
 import app.ascend.data.remote.platform.*
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -39,7 +39,7 @@ sealed interface MockUi {
 class MockViewModel @Inject constructor(
     private val api: AscendApi,
     private val ads: app.ascend.monetization.ads.AdsManager,
-    private val analytics: Analytics,
+    private val analytics: AnalyticsTracker,
     private val profile: app.ascend.data.local.ProfileRepository,
 ) : ViewModel() {
 

@@ -2,7 +2,7 @@ package app.ascend.data.remote.jsearch
 
 import androidx.core.text.HtmlCompat
 import app.ascend.R
-import app.ascend.analytics.Analytics
+import app.ascend.analytics.AnalyticsTracker
 import app.ascend.core.Resource
 import app.ascend.core.isOffline
 import app.ascend.data.model.Job
@@ -18,7 +18,7 @@ import kotlin.math.roundToInt
 @Singleton
 class JSearchRepository @Inject constructor(
     private val api: JSearchApi,
-    private val analytics: Analytics,
+    private val analytics: AnalyticsTracker,
 ) {
     suspend fun search(
         query: String,
