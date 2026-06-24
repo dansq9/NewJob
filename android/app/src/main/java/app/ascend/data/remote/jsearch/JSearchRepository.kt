@@ -1,5 +1,6 @@
 package app.ascend.data.remote.jsearch
 
+import androidx.core.text.HtmlCompat
 import app.ascend.analytics.Analytics
 import app.ascend.core.Resource
 import app.ascend.core.isOffline
@@ -74,10 +75,17 @@ internal fun JSearchJob.toJob(): Job? {
         employmentType = employmentType?.toReadableEmployment(),
         salary = formatSalary(),
         postedAgo = postedAtTimestamp?.let { relativeTime(it) },
-        description = description,
+        description = description?.cleanHtml(),
         applyUrl = bestApplyLink(),
     )
 }
+
+/** JSearch descriptions sometimes contain HTML tags / entities — strip + unescape to plain text. */
+private fun String.cleanHtml(): String =
+    HtmlCompat.fromHtml(this, HtmlCompat.FROM_HTML_MODE_COMPACT)
+        .toString()
+        .replace(Regex("\\n{3,}"), "\n\n")
+        .trim()
 
 /** Prefer a direct (employer-site) apply link, else the first option, else the default. */
 private fun JSearchJob.bestApplyLink(): String? =

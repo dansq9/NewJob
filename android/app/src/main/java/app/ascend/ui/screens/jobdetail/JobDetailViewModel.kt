@@ -36,7 +36,11 @@ class JobDetailViewModel @Inject constructor(
 
     fun markApplied() {
         val j = job.value ?: return
-        viewModelScope.launch { tracker.save(j, TrackStage.APPLIED) }
+        viewModelScope.launch {
+            // Preserve any existing notes/dates if already tracked — only advance the stage.
+            if (tracker.stageOf(j.id) == null) tracker.save(j, TrackStage.APPLIED)
+            else tracker.setStage(j.id, TrackStage.APPLIED)
+        }
     }
 
     /** Set the pipeline stage; saves the job into the tracker first if needed. */
