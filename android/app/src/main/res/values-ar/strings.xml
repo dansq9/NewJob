@@ -326,4 +326,9 @@
     <string name="onboarding_resume_voice_sub">أجب عن بعض الأسئلة وسيكتبها الذكاء الاصطناعي</string>
     <string name="onboarding_resume_skip">تخطَّ الآن</string>
     <string name="onboarding_resume_continue">يبدو صحيحًا، متابعة</string>
+    <string name="jobdetail_strong_match">تطابق قوي لك</string>
+    <string name="jobdetail_strong_match_sub">ملفك يتوافق جيدًا مع هذه الوظيفة.</string>
+    <string name="jobdetail_tailor_title">خصّص سيرتي الذاتية لهذه الوظيفة</string>
+    <string name="jobdetail_tailor_sub">احصل على نسخة محسّنة لأنظمة ATS لهذه الوظيفة.</string>
+    <string name="jobs_clear_filters">مسح عوامل التصفية</string>
 </resources>

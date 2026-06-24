@@ -326,4 +326,9 @@
     <string name="onboarding_resume_voice_sub">कुछ सवालों के जवाब दें, AI लिख देगा</string>
     <string name="onboarding_resume_skip">अभी छोड़ें</string>
     <string name="onboarding_resume_continue">सही है, जारी रखें</string>
+    <string name="jobdetail_strong_match">आपके लिए बढ़िया मेल</string>
+    <string name="jobdetail_strong_match_sub">आपकी प्रोफ़ाइल इस भूमिका से अच्छी तरह मेल खाती है।</string>
+    <string name="jobdetail_tailor_title">इस भूमिका के लिए मेरा रिज़्यूमे तैयार करें</string>
+    <string name="jobdetail_tailor_sub">इस नौकरी के लिए ATS-अनुकूलित संस्करण पाएं।</string>
+    <string name="jobs_clear_filters">फ़िल्टर साफ़ करें</string>
 </resources>

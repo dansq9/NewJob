@@ -326,4 +326,9 @@
     <string name="onboarding_resume_voice_sub">Beantworte ein paar Fragen, die KI schreibt ihn</string>
     <string name="onboarding_resume_skip">Vorerst überspringen</string>
     <string name="onboarding_resume_continue">Sieht gut aus, weiter</string>
+    <string name="jobdetail_strong_match">Starke Übereinstimmung für dich</string>
+    <string name="jobdetail_strong_match_sub">Dein Profil passt gut zu dieser Stelle.</string>
+    <string name="jobdetail_tailor_title">Meinen Lebenslauf auf diese Stelle zuschneiden</string>
+    <string name="jobdetail_tailor_sub">Erhalte eine ATS-optimierte Version für genau diese Stelle.</string>
+    <string name="jobs_clear_filters">Filter löschen</string>
 </resources>

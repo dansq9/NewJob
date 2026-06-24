@@ -326,4 +326,9 @@
     <string name="onboarding_resume_voice_sub">Beantwoord ’n paar vrae en KI skryf dit</string>
     <string name="onboarding_resume_skip">Slaan vir eers oor</string>
     <string name="onboarding_resume_continue">Lyk reg, gaan voort</string>
+    <string name="jobdetail_strong_match">Sterk passing vir jou</string>
+    <string name="jobdetail_strong_match_sub">Jou profiel pas goed by hierdie rol.</string>
+    <string name="jobdetail_tailor_title">Pas my CV aan vir hierdie rol</string>
+    <string name="jobdetail_tailor_sub">Kry ’n ATS-geoptimeerde weergawe vir presies hierdie werk.</string>
+    <string name="jobs_clear_filters">Vee filters uit</string>
 </resources>

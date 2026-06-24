@@ -326,4 +326,9 @@
     <string name="onboarding_resume_voice_sub">Answer a few prompts and AI writes it</string>
     <string name="onboarding_resume_skip">Skip for now</string>
     <string name="onboarding_resume_continue">Looks right, continue</string>
+    <string name="jobdetail_strong_match">Strong match for you</string>
+    <string name="jobdetail_strong_match_sub">Your profile lines up well with this role.</string>
+    <string name="jobdetail_tailor_title">Tailor my resume for this role</string>
+    <string name="jobdetail_tailor_sub">Get an ATS-optimized version for this exact job.</string>
+    <string name="jobs_clear_filters">Clear filters</string>
 </resources>

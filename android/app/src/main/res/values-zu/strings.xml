@@ -326,4 +326,9 @@
     <string name="onboarding_resume_voice_sub">Phendula imibuzo embalwa, i-AI iyabhala</string>
     <string name="onboarding_resume_skip">Yeqa okwamanje</string>
     <string name="onboarding_resume_continue">Kubukeka kulungile, qhubeka</string>
+    <string name="jobdetail_strong_match">Ukufanelana okuhle kuwe</string>
+    <string name="jobdetail_strong_match_sub">Iphrofayela yakho ifanelana kahle nale ndima.</string>
+    <string name="jobdetail_tailor_title">Lungisa i-CV yami yale ndima</string>
+    <string name="jobdetail_tailor_sub">Thola inguqulo elungiselelwe i-ATS yalo msebenzi.</string>
+    <string name="jobs_clear_filters">Sula izihlungi</string>
 </resources>

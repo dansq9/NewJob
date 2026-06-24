@@ -326,4 +326,9 @@
     <string name="onboarding_resume_voice_sub">Répondez à quelques questions, l’IA le rédige</string>
     <string name="onboarding_resume_skip">Ignorer pour l’instant</string>
     <string name="onboarding_resume_continue">C’est bon, continuer</string>
+    <string name="jobdetail_strong_match">Forte compatibilité pour vous</string>
+    <string name="jobdetail_strong_match_sub">Votre profil correspond bien à ce poste.</string>
+    <string name="jobdetail_tailor_title">Adapter mon CV à ce poste</string>
+    <string name="jobdetail_tailor_sub">Obtenez une version optimisée ATS pour ce poste.</string>
+    <string name="jobs_clear_filters">Effacer les filtres</string>
 </resources>

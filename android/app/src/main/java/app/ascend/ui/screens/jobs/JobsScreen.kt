@@ -91,7 +91,9 @@ fun JobsScreen(nav: NavController, vm: JobsViewModel = hiltViewModel()) {
                 if (st.rateLimited) item { RateLimitState() }
                 else item { ErrorState(st.messageRes?.let { stringResource(it) } ?: st.message, onRetry = vm::search) }
             is Resource.Success -> {
-                if (state.jobs.isEmpty()) item { EmptyState() }
+                if (state.jobs.isEmpty()) item {
+                    EmptyState(hasFilters = state.filters.activeCount > 0, onClear = { vm.setFilters(JobFilters()) })
+                }
                 else {
                     items(feed.size) { idx ->
                         when (val row = feed[idx]) {
@@ -228,11 +230,19 @@ private fun ErrorState(message: String, onRetry: () -> Unit) {
 }
 
 @Composable
-private fun EmptyState() {
+private fun EmptyState(hasFilters: Boolean, onClear: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
         Text(stringResource(R.string.jobs_empty), fontWeight = FontWeight.Bold, color = AscendColors.Ink)
         Spacer(Modifier.height(4.dp))
-        Text(stringResource(R.string.jobs_empty_hint), fontSize = 13.sp, color = AscendColors.Muted2)
+        Text(stringResource(R.string.jobs_empty_hint), fontSize = 13.sp, color = AscendColors.Muted2,
+            textAlign = androidx.compose.ui.text.style.TextAlign.Center)
+        if (hasFilters) {
+            Spacer(Modifier.height(16.dp))
+            Button(onClick = onClear, shape = RoundedCornerShape(12.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) {
+                Text(stringResource(R.string.jobs_clear_filters), fontWeight = FontWeight.Bold)
+            }
+        }
     }
 }
 
