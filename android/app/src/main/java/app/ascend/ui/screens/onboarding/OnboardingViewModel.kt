@@ -70,6 +70,8 @@ class OnboardingViewModel @Inject constructor(
         private set
     var saveFailed by mutableStateOf(false)
         private set
+    /** One-shot guard: blocks duplicate Finish execution while save + interstitial + nav are pending. */
+    private var finishSubmitted = false
 
     fun onResumePicked(file: PickedFile) {
         // Validate up front so the user gets a clear rejection instead of a silent drop.
@@ -88,7 +90,11 @@ class OnboardingViewModel @Inject constructor(
     }
 
     fun finish(onDone: () -> Unit) {
-        if (saving) return
+        // One-shot guard + saving flag: duplicate Finish taps are ignored for the entire
+        // duration of save → onboarding_complete → interstitial → navigation, so neither the
+        // analytics event nor the onboarding-complete interstitial can fire twice.
+        if (finishSubmitted || saving) return
+        finishSubmitted = true
         saving = true
         saveFailed = false
         viewModelScope.launch {
@@ -105,8 +111,6 @@ class OnboardingViewModel @Inject constructor(
                 )
                 repo.markOnboardedOnce()   // returning-user suppression on any future re-onboarding
             }.isSuccess
-            // Always clear the busy flag so the user can never get stuck on a failed save.
-            saving = false
             if (ok) {
                 analytics.onboardingComplete(
                     rolePresent = role.isNotBlank(),
@@ -116,9 +120,14 @@ class OnboardingViewModel @Inject constructor(
                 )
                 // After onboarding_complete is persisted+logged, before the first main screen:
                 // run the onboarding-complete interstitial (RC default OFF; fails open; never blocks nav).
+                // `saving` stays true through this so Finish can't be re-tapped while it's pending.
                 monetization.runOnboardingInterstitial()
+                saving = false           // release just before navigating away
                 onDone()
             } else {
+                // Save failed → release BOTH guards so the user can retry; never stuck in saving.
+                saving = false
+                finishSubmitted = false
                 saveFailed = true
             }
         }

@@ -30,14 +30,14 @@ import app.ascend.R
 import app.ascend.ui.theme.AscendColors
 
 /**
- * Branded pre-ad transition shown over the app while the splash/session-start
- * interstitial is about to display (Apero-style). This is a NEUTRAL branded
- * loading surface — no tap prompt, no reward language, no ad-like UI (QA IA11).
- * Its visibility + duration are driven entirely by [MonetizationManager]; this is
- * only the surface.
+ * Branded pre-ad transition shown over the app while a full-screen interstitial is about
+ * to display — the splash/session-start interstitial OR the onboarding-complete interstitial
+ * (Apero-style). This is a NEUTRAL branded loading surface — no tap prompt, no reward
+ * language, no ad-like UI (QA IA11). Its visibility + duration are driven entirely by
+ * [MonetizationManager] (brandedAdTransition); this is only the surface.
  */
 @Composable
-fun SplashTransition(modifier: Modifier = Modifier) {
+fun BrandedAdTransition(modifier: Modifier = Modifier) {
     val pulse = rememberInfiniteTransition(label = "splashPulse")
     val alpha by pulse.animateFloat(
         initialValue = 0.45f,

@@ -78,15 +78,16 @@ class MainActivity : ComponentActivity() {
         setContent {
             AscendTheme {
                 val state by appViewModel.start.collectAsStateWithLifecycle()
-                val splashAd by appViewModel.splashTransition.collectAsStateWithLifecycle()
+                val brandedAdTransition by appViewModel.brandedAdTransition.collectAsStateWithLifecycle()
                 androidx.compose.foundation.layout.Box(Modifier.fillMaxSize()) {
                     when (val s = state) {
                         AppStart.Loading -> Unit // splash stays
                         is AppStart.Ready -> AscendRoot(startOnboarding = !s.onboarded)
                     }
-                    // Branded pre-ad transition overlays everything while the splash
-                    // interstitial is about to show (MonetizationManager-driven).
-                    if (splashAd) app.ascend.ui.monetization.SplashTransition()
+                    // Branded pre-ad transition overlays everything while a full-screen
+                    // interstitial (splash or onboarding-complete) is about to show
+                    // (MonetizationManager-driven).
+                    if (brandedAdTransition) app.ascend.ui.monetization.BrandedAdTransition()
                 }
             }
         }

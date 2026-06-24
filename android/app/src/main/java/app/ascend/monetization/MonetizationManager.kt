@@ -81,9 +81,9 @@ class MonetizationManager @Inject constructor(
     // ---- Splash / session-start interstitial state ----
     private val splashShownThisSession = java.util.concurrent.atomic.AtomicBoolean(false)
     @Volatile private var lastSplashAtMs: Long = Long.MIN_VALUE
-    private val _splashTransition = MutableStateFlow(false)
+    private val _brandedAdTransition = MutableStateFlow(false)
     /** True while a branded pre-ad transition surface (splash OR onboarding-complete) should overlay the app. */
-    val splashTransition: StateFlow<Boolean> = _splashTransition.asStateFlow()
+    val brandedAdTransition: StateFlow<Boolean> = _brandedAdTransition.asStateFlow()
 
     // ---- Onboarding-complete interstitial state ----
     // When it last showed (forward-suppresses the next forced full-screen for an RC window).
@@ -409,7 +409,7 @@ class MonetizationManager @Inject constructor(
      * The 3-second branded transition is a BRANDED transition, not an ad-load wait:
      * an ad must be ready within `load_timeout_ms` first (fail open if not — no 3s
      * hold), and only then is the transition shown for its full duration before the
-     * ad. All decisions go through this manager; the UI just observes [splashTransition].
+     * ad. All decisions go through this manager; the UI just observes [brandedAdTransition].
      */
     suspend fun runSplashInterstitial(): ShowOutcome {
         val p = Placement.INTER_AFTER_SPLASH
@@ -436,11 +436,11 @@ class MonetizationManager @Inject constructor(
         // a transition duration, NOT a load wait — so it is intentionally not clamped to the
         // load timeout (unlike the onboarding interstitial, where transition + wait overlap).
         if (rc.bool(RcKeys.AFTER_SPLASH_TRANSITION_ENABLED)) {
-            _splashTransition.value = true
+            _brandedAdTransition.value = true
             try {
                 delay(rc.long(RcKeys.AFTER_SPLASH_TRANSITION_DURATION_MS))
             } finally {
-                _splashTransition.value = false
+                _brandedAdTransition.value = false
             }
         }
         if (!tryAcquireFullScreen(p.id)) { analytics.adShowFailed(p.id, "mutex"); return ShowOutcome.Skipped(SuppressReason.MUTEX_BUSY) }
@@ -513,7 +513,7 @@ class MonetizationManager @Inject constructor(
         val configuredTransitionMs = if (transitionEnabled) rc.long(RcKeys.AFTER_ONB_TRANSITION_DURATION_MS) else 0L
         val transitionMin = min(configuredTransitionMs, timeout)
         val start = SystemClock.elapsedRealtime()
-        if (transitionEnabled) _splashTransition.value = true
+        if (transitionEnabled) _brandedAdTransition.value = true
         try {
             // Concurrent: branded transition is visible WHILE we await readiness (≤ load_timeout).
             val ready = withTimeoutOrNull(timeout) {
@@ -528,7 +528,7 @@ class MonetizationManager @Inject constructor(
             val elapsed = SystemClock.elapsedRealtime() - start
             if (transitionMin > elapsed) delay(transitionMin - elapsed)
         } finally {
-            _splashTransition.value = false
+            _brandedAdTransition.value = false
         }
         if (!tryAcquireFullScreen(p.id)) { analytics.adShowFailed(p.id, "mutex"); return ShowOutcome.Skipped(SuppressReason.MUTEX_BUSY) }
         return try {
