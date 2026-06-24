@@ -25,7 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import app.ascend.games.engine.games.common.gameViewModel
 import app.ascend.games.engine.core.GameLanguage
 import app.ascend.games.engine.games.GameId
 import app.ascend.games.engine.games.common.BaseGameVM
@@ -83,7 +83,7 @@ class ClustersVM(app: Application) : BaseGameVM<ClustersState>(app, GameId.CLUST
 }
 
 @Composable
-fun ClustersScreen(onBack: () -> Unit, vm: ClustersVM = viewModel()) {
+fun ClustersScreen(onBack: () -> Unit, vm: ClustersVM = gameViewModel()) {
     GameShell(
         vm = vm,
         controls = listOf(

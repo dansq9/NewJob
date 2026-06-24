@@ -20,7 +20,7 @@ import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import app.ascend.games.engine.games.common.gameViewModel
 import app.ascend.games.engine.core.Daily
 import app.ascend.games.engine.games.GameId
 import app.ascend.games.engine.games.common.BaseGameVM
@@ -71,7 +71,7 @@ class ZipVM(app: Application) : BaseGameVM<List<Int>>(app, GameId.ZIP) {
 }
 
 @Composable
-fun ZipScreen(onBack: () -> Unit, vm: ZipVM = viewModel()) {
+fun ZipScreen(onBack: () -> Unit, vm: ZipVM = gameViewModel()) {
     GameShell(
         vm = vm,
         controls = listOf(

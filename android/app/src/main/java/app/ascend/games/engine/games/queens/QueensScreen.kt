@@ -24,7 +24,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import app.ascend.games.engine.games.common.gameViewModel
 import app.ascend.games.engine.core.Daily
 import app.ascend.games.engine.games.GameId
 import app.ascend.games.engine.games.common.BaseGameVM
@@ -83,7 +83,7 @@ class QueensVM(app: Application) : BaseGameVM<List<Int>>(app, GameId.QUEENS) {
 }
 
 @Composable
-fun QueensScreen(onBack: () -> Unit, vm: QueensVM = viewModel()) {
+fun QueensScreen(onBack: () -> Unit, vm: QueensVM = gameViewModel()) {
     GameShell(
         vm = vm,
         controls = listOf(

@@ -22,7 +22,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import app.ascend.games.engine.games.common.gameViewModel
 import app.ascend.games.engine.core.Daily
 import app.ascend.games.engine.games.GameId
 import app.ascend.games.engine.games.common.BaseGameVM
@@ -73,7 +73,7 @@ class Twenty48VM(app: Application) : BaseGameVM<T2048>(app, GameId.G2048) {
 }
 
 @Composable
-fun Twenty48Screen(onBack: () -> Unit, vm: Twenty48VM = viewModel()) {
+fun Twenty48Screen(onBack: () -> Unit, vm: Twenty48VM = gameViewModel()) {
     GameShell(
         vm = vm,
         controls = listOf(

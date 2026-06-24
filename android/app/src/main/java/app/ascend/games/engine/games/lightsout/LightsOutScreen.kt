@@ -13,7 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import app.ascend.games.engine.games.common.gameViewModel
 import app.ascend.games.engine.games.GameId
 import app.ascend.games.engine.games.common.BaseGameVM
 import app.ascend.games.engine.games.common.Brain
@@ -32,7 +32,7 @@ class LightsOutVM(app: Application) : BaseGameVM<List<Boolean>>(app, GameId.LIGH
 }
 
 @Composable
-fun LightsOutScreen(onBack: () -> Unit, vm: LightsOutVM = viewModel()) {
+fun LightsOutScreen(onBack: () -> Unit, vm: LightsOutVM = gameViewModel()) {
     GameShell(
         vm = vm,
         controls = listOf(
