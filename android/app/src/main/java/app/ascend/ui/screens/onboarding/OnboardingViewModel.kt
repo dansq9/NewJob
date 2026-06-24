@@ -27,7 +27,7 @@ class OnboardingViewModel @Inject constructor(
     private var pickedResume: PickedFile? = null
     var saving by mutableStateOf(false)
         private set
-    var saveError by mutableStateOf<String?>(null)
+    var saveFailed by mutableStateOf(false)
         private set
 
     fun onResumePicked(file: PickedFile) {
@@ -49,7 +49,7 @@ class OnboardingViewModel @Inject constructor(
     fun finish(onDone: () -> Unit) {
         if (saving) return
         saving = true
-        saveError = null
+        saveFailed = false
         viewModelScope.launch {
             val ok = runCatching {
                 pickedResume?.let { resumes.add(it) }
@@ -65,7 +65,7 @@ class OnboardingViewModel @Inject constructor(
             }.isSuccess
             // Always clear the busy flag so the user can never get stuck on a failed save.
             saving = false
-            if (ok) onDone() else saveError = "Couldn't save your profile. Please try again."
+            if (ok) onDone() else saveFailed = true
         }
     }
 }

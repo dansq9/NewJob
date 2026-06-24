@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Languages Ascend supports. Surfaces Ascend under Android 13+ system
+  per-app language settings. Keep in sync with LocaleManager.supported and the
+  res/values-<locale> string resources. Add a locale here + a values-<locale>/
+  strings.xml to ship a new language.
+-->
+<locale-config xmlns:android="http://schemas.android.com/apk/res/android">
+    <locale android:name="en" />
+    <locale android:name="es" />
+</locale-config>

@@ -16,12 +16,14 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import app.ascend.R
 import app.ascend.ui.theme.AscendColors
 import app.ascend.ui.util.rememberResumePicker
 
@@ -42,7 +44,7 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
         // top bar: back + progress
         Row(verticalAlignment = Alignment.CenterVertically) {
             if (step > 0) IconButton(onClick = { step-- }, modifier = Modifier.size(38.dp)) {
-                Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = AscendColors.Muted)
+                Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.action_back), tint = AscendColors.Muted)
             } else Spacer(Modifier.size(38.dp))
             Spacer(Modifier.width(8.dp))
             Row(Modifier.weight(1f), horizontalArrangement = Arrangement.spacedBy(6.dp)) {
@@ -59,16 +61,16 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
         Box(Modifier.weight(1f)) {
             when (step) {
                 0 -> Welcome()
-                1 -> Field("What should we call you?", "Your name helps us personalize Ascend.",
-                    vm.name, { vm.name = it }, "e.g. Alex Morgan", KeyboardCapitalization.Words)
+                1 -> Field(stringResource(R.string.onboarding_name_title), stringResource(R.string.onboarding_name_sub),
+                    vm.name, { vm.name = it }, stringResource(R.string.onboarding_name_hint), KeyboardCapitalization.Words)
                 2 -> RoleStep(vm)
                 3 -> LocationStep(vm)
                 else -> ResumeStep(vm, pickResume)
             }
         }
 
-        vm.saveError?.let {
-            Text(it, color = Color(0xFFB3261E), fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
+        if (vm.saveFailed) {
+            Text(stringResource(R.string.onboarding_save_error), color = Color(0xFFB3261E), fontSize = 13.sp, fontWeight = FontWeight.SemiBold,
                 modifier = Modifier.fillMaxWidth().padding(bottom = 8.dp),
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         }
@@ -80,7 +82,7 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
             colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
         ) {
             Text(
-                when (step) { 0 -> "Get started"; STEPS - 1 -> "Finish"; else -> "Continue" },
+                stringResource(when (step) { 0 -> R.string.onboarding_get_started; STEPS - 1 -> R.string.onboarding_finish; else -> R.string.action_continue }),
                 fontWeight = FontWeight.Bold, fontSize = 16.sp,
             )
         }
@@ -95,9 +97,9 @@ private fun Welcome() {
             contentAlignment = Alignment.Center,
         ) { Text("↑↑", color = Color.White, fontSize = 34.sp, fontWeight = FontWeight.Bold) }
         Spacer(Modifier.height(24.dp))
-        Text("Welcome to Ascend", fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
+        Text(stringResource(R.string.onboarding_welcome_title), fontSize = 28.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
         Spacer(Modifier.height(8.dp))
-        Text("Land your next role, faster. Let's set up your search in a few quick steps.",
+        Text(stringResource(R.string.onboarding_welcome_sub),
             fontSize = 15.sp, color = AscendColors.Muted, textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             modifier = Modifier.padding(horizontal = 16.dp), lineHeight = 22.sp)
     }
@@ -134,8 +136,8 @@ private fun Field(
 @Composable
 private fun RoleStep(vm: OnboardingViewModel) {
     Column {
-        Field("What role are you after?", "This tailors your matches, resume tips & mock interviews.",
-            vm.role, { vm.role = it }, "e.g. Product Manager", KeyboardCapitalization.Words)
+        Field(stringResource(R.string.onboarding_role_title), stringResource(R.string.onboarding_role_sub),
+            vm.role, { vm.role = it }, stringResource(R.string.onboarding_role_hint), KeyboardCapitalization.Words)
         Spacer(Modifier.height(16.dp))
         Chips(listOf("Product Manager", "Software Engineer", "Data Analyst", "Designer", "Marketing Manager")) { vm.role = it }
     }
@@ -144,8 +146,8 @@ private fun RoleStep(vm: OnboardingViewModel) {
 @Composable
 private fun LocationStep(vm: OnboardingViewModel) {
     Column {
-        Field("Where are you hunting?", "We'll surface jobs near you and remote roles.",
-            vm.location, { vm.location = it }, "City, region, or Remote", KeyboardCapitalization.Words)
+        Field(stringResource(R.string.onboarding_location_title), stringResource(R.string.onboarding_location_sub),
+            vm.location, { vm.location = it }, stringResource(R.string.onboarding_location_hint), KeyboardCapitalization.Words)
         Spacer(Modifier.height(16.dp))
         Chips(listOf("Remote", "San Francisco, CA", "New York, NY", "Austin, TX", "London, UK")) { vm.location = it }
     }
@@ -154,7 +156,7 @@ private fun LocationStep(vm: OnboardingViewModel) {
 @Composable
 private fun ResumeStep(vm: OnboardingViewModel, pick: () -> Unit) {
     Column {
-        Heading("Add your resume", "We'll use it to tailor matches and offer a free ATS-ready rewrite. You can skip and add it later.")
+        Heading(stringResource(R.string.onboarding_resume_title), stringResource(R.string.onboarding_resume_sub))
         Surface(
             onClick = pick, modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(20.dp), color = Color(0xFFF3F1FF),
@@ -164,13 +166,13 @@ private fun ResumeStep(vm: OnboardingViewModel, pick: () -> Unit) {
                 if (vm.resumeName == null) {
                     Icon(Icons.Outlined.UploadFile, null, tint = AscendColors.Indigo, modifier = Modifier.size(40.dp))
                     Spacer(Modifier.height(10.dp))
-                    Text("Upload resume", fontWeight = FontWeight.Bold, color = AscendColors.Ink)
-                    Text("PDF, DOCX · up to 10MB", fontSize = 12.sp, color = AscendColors.Muted2)
+                    Text(stringResource(R.string.onboarding_resume_upload), fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+                    Text(stringResource(R.string.onboarding_resume_formats), fontSize = 12.sp, color = AscendColors.Muted2)
                 } else {
                     Icon(Icons.Filled.CheckCircle, null, tint = AscendColors.Green, modifier = Modifier.size(40.dp))
                     Spacer(Modifier.height(10.dp))
                     Text(vm.resumeName!!, fontWeight = FontWeight.Bold, color = AscendColors.Ink, maxLines = 1)
-                    Text("Tap to replace", fontSize = 12.sp, color = AscendColors.Muted2)
+                    Text(stringResource(R.string.onboarding_resume_replace), fontSize = 12.sp, color = AscendColors.Muted2)
                 }
             }
         }
@@ -180,7 +182,7 @@ private fun ResumeStep(vm: OnboardingViewModel, pick: () -> Unit) {
         }
         if (vm.resumeName != null) {
             Spacer(Modifier.height(10.dp))
-            TextButton(onClick = { vm.clearResume() }) { Text("Remove", color = AscendColors.Muted) }
+            TextButton(onClick = { vm.clearResume() }) { Text(stringResource(R.string.action_remove), color = AscendColors.Muted) }
         }
     }
 }

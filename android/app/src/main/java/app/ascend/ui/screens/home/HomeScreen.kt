@@ -22,12 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import app.ascend.R
 import app.ascend.core.Resource
 import app.ascend.ui.components.JobCard
 import app.ascend.ui.navigation.Routes
@@ -36,12 +38,15 @@ import app.ascend.ui.theme.AscendColors
 private data class QuickAction(val label: String, val sub: String, val icon: ImageVector, val route: String, val accent: Color)
 
 /** Time-of-day greeting (desugared java.time). */
-private fun greeting(): String = when (java.time.LocalTime.now().hour) {
-    in 5..11 -> "Good morning"
-    in 12..16 -> "Good afternoon"
-    in 17..21 -> "Good evening"
-    else -> "Hello"
-}
+@Composable
+private fun greeting(): String = stringResource(
+    when (java.time.LocalTime.now().hour) {
+        in 5..11 -> R.string.home_greeting_morning
+        in 12..16 -> R.string.home_greeting_afternoon
+        in 17..21 -> R.string.home_greeting_evening
+        else -> R.string.home_greeting_default
+    }
+)
 
 @Composable
 fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
@@ -49,10 +54,10 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
     val profile by vm.profile.collectAsStateWithLifecycle()
     val firstName = profile.name.trim().substringBefore(' ').ifBlank { "there" }
     val actions = listOf(
-        QuickAction("Optimize resume", "Beat the ATS", Icons.Outlined.AutoFixHigh, Routes.RESUME, AscendColors.Indigo),
-        QuickAction("Mock interview", "Practice & get scored", Icons.Outlined.RecordVoiceOver, Routes.MOCK, AscendColors.Green),
-        QuickAction("Live Copilot", "Real-time answers", Icons.Outlined.Bolt, Routes.COPILOT, AscendColors.Violet2),
-        QuickAction("Brain Games", "Sharpen up daily", Icons.Outlined.Extension, Routes.GAMES, Color(0xFFE0913F)),
+        QuickAction(stringResource(R.string.home_qa_resume), stringResource(R.string.home_qa_resume_sub), Icons.Outlined.AutoFixHigh, Routes.RESUME, AscendColors.Indigo),
+        QuickAction(stringResource(R.string.home_qa_mock), stringResource(R.string.home_qa_mock_sub), Icons.Outlined.RecordVoiceOver, Routes.MOCK, AscendColors.Green),
+        QuickAction(stringResource(R.string.home_qa_copilot), stringResource(R.string.home_qa_copilot_sub), Icons.Outlined.Bolt, Routes.COPILOT, AscendColors.Violet2),
+        QuickAction(stringResource(R.string.home_qa_games), stringResource(R.string.home_qa_games_sub), Icons.Outlined.Extension, Routes.GAMES, Color(0xFFE0913F)),
     )
 
     LazyColumn(
@@ -82,11 +87,11 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
                 Row(Modifier.padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
                     Icon(Icons.Outlined.Search, null, tint = AscendColors.Muted2)
                     Spacer(Modifier.width(11.dp))
-                    Text("Search jobs, titles, companies", color = Color(0xFFB3B3BD), fontSize = 15.sp)
+                    Text(stringResource(R.string.home_search_hint), color = Color(0xFFB3B3BD), fontSize = 15.sp)
                 }
             }
         }
-        item { Text("Quick actions", fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink) }
+        item { Text(stringResource(R.string.home_quick_actions), fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink) }
         items(actions.chunked(2)) { row ->
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 row.forEach { qa -> QuickActionCard(qa, Modifier.weight(1f)) { nav.navigate(qa.route) } }
@@ -94,14 +99,14 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
         }
         item {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 10.dp)) {
-                Text("Top matches", style = MaterialTheme.typography.titleLarge, color = AscendColors.Ink, modifier = Modifier.weight(1f))
-                Text("See all", color = AscendColors.Indigo, fontWeight = FontWeight.Bold, fontSize = 13.sp,
+                Text(stringResource(R.string.home_top_matches), style = MaterialTheme.typography.titleLarge, color = AscendColors.Ink, modifier = Modifier.weight(1f))
+                Text(stringResource(R.string.home_see_all), color = AscendColors.Indigo, fontWeight = FontWeight.Bold, fontSize = 13.sp,
                     modifier = Modifier.clickable { nav.navigate(Routes.JOBS) })
             }
         }
         item {
             val sub = listOf(profile.targetRole, profile.location).filter { it.isNotBlank() }.joinToString(" · ")
-            if (sub.isNotBlank()) Text("for $sub", fontSize = 13.sp, color = AscendColors.Muted2)
+            if (sub.isNotBlank()) Text(stringResource(R.string.home_matches_for, sub), fontSize = 13.sp, color = AscendColors.Muted2)
         }
 
         when (val m = matches) {
@@ -109,7 +114,7 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
             is Resource.Error -> item { MatchesMessage(m.message, onRetry = vm::retry) }
             is Resource.Success ->
                 if (m.data.isEmpty()) {
-                    item { MatchesMessage("No matches yet for your target role. Try a broader search.", onRetry = null, action = "Search jobs") { nav.navigate(Routes.JOBS) } }
+                    item { MatchesMessage(stringResource(R.string.home_no_matches), onRetry = null, action = stringResource(R.string.home_find_jobs)) { nav.navigate(Routes.JOBS) } }
                 } else items(m.data, key = { it.id }) { job ->
                     JobCard(job = job, onClick = { vm.select(job); nav.navigate(Routes.jobDetail(job.id)) })
                 }
@@ -125,7 +130,7 @@ private fun MatchesMessage(message: String, onRetry: (() -> Unit)?, action: Stri
             if (onRetry != null) {
                 Spacer(Modifier.height(12.dp))
                 Button(onClick = onRetry, shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) { Text("Try again", fontWeight = FontWeight.Bold) }
+                    colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) { Text(stringResource(R.string.action_retry), fontWeight = FontWeight.Bold) }
             } else if (action != null && onAction != null) {
                 Spacer(Modifier.height(12.dp))
                 Button(onClick = onAction, shape = RoundedCornerShape(12.dp),

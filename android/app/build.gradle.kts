@@ -31,6 +31,10 @@ android {
         versionName = "0.1.0"
         vectorDrawables { useSupportLibrary = true }
 
+        // Ship only the locales we actually translate (keeps the APK lean + the
+        // Android 13 language list honest). Add a tag here + a values-<locale>/.
+        resourceConfigurations += setOf("en", "es")
+
         // --- API configuration ---
         buildConfigField("String", "RAPIDAPI_KEY", "\"${secret("RAPIDAPI_KEY")}\"")
         buildConfigField("String", "JSEARCH_HOST", "\"jsearch.p.rapidapi.com\"")
@@ -42,6 +46,8 @@ android {
     buildTypes {
         debug {
             applicationIdSuffix = ".debug"
+            // Generates en-rXA (accented, longer) + ar-rXB (RTL) for i18n testing.
+            isPseudoLocalesEnabled = true
         }
         release {
             isMinifyEnabled = true

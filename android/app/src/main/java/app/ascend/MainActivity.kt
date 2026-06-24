@@ -1,5 +1,6 @@
 package app.ascend
 
+import android.content.Context
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -41,6 +42,11 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val appViewModel: AppViewModel by viewModels()
+
+    // Apply the user's chosen language before resources are resolved.
+    override fun attachBaseContext(newBase: Context) {
+        super.attachBaseContext(app.ascend.i18n.LocaleManager.wrap(newBase))
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         val splash = installSplashScreen()
@@ -110,6 +116,14 @@ private fun AscendBottomBar(nav: androidx.navigation.NavController, currentRoute
     NavigationBar(containerColor = AscendColors.Card, tonalElevation = 0.dp) {
         Tab.entries.forEach { tab ->
             val selected = currentRoute == tab.route
+            val label = androidx.compose.ui.res.stringResource(
+                when (tab) {
+                    Tab.HOME -> R.string.nav_home
+                    Tab.JOBS -> R.string.nav_jobs
+                    Tab.TRACKER -> R.string.nav_tracker
+                    Tab.INTERVIEWS -> R.string.nav_interviews
+                }
+            )
             NavigationBarItem(
                 selected = selected,
                 onClick = {
@@ -119,8 +133,8 @@ private fun AscendBottomBar(nav: androidx.navigation.NavController, currentRoute
                         restoreState = true
                     }
                 },
-                icon = { Icon(if (selected) tab.selectedIcon else tab.icon, tab.label) },
-                label = { Text(tab.label) },
+                icon = { Icon(if (selected) tab.selectedIcon else tab.icon, label) },
+                label = { Text(label) },
                 colors = NavigationBarItemDefaults.colors(
                     selectedIconColor = AscendColors.Indigo,
                     selectedTextColor = AscendColors.Indigo,

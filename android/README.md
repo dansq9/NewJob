@@ -55,6 +55,22 @@ the Bearer token in `NetworkModule` (`@Named("platform")`).
   anonymous install id which is excluded). Update this when wiring analytics
   (Firebase) + crash reporting (Sentry) so collected data types are declared.
 
+## Localization (i18n)
+- User-facing strings live in `res/values/strings.xml` (English, default) with
+  per-locale overrides in `res/values-<locale>/strings.xml` (e.g. `values-es`).
+  Untranslated keys fall back to English automatically.
+- In-app language picker: **Settings → Language** (`LocaleManager` +
+  `MainActivity.attachBaseContext`), works on all API levels and is surfaced in
+  Android 13+ system per-app language settings via `res/xml/locales_config.xml`.
+- Supported locales are declared in 3 places — keep them in sync: `locales_config.xml`,
+  `LocaleManager.supported`, and `build.gradle.kts` `resourceConfigurations`.
+- Debug builds enable **pseudolocales** (`en-rXA` accented/long, `ar-rXB` RTL) for
+  layout testing. RTL is enabled (`supportsRtl`); `setLayoutDirection` is applied.
+- Extraction is in progress — done: common, nav, Home, Interviews, Onboarding,
+  Settings. Remaining screens (Jobs, JobDetail, Tracker, Resume, Mock, Copilot,
+  Paywall, Games) still carry inline strings; extract them into `strings.xml` the
+  same way. Example data (role/city suggestion chips) is intentionally not localized.
+
 ## Build
 Open the `android/` folder in **Android Studio** (it provisions the Gradle
 wrapper + SDK). Or from CLI once the SDK + wrapper are present: `./gradlew :app:assembleDebug`.

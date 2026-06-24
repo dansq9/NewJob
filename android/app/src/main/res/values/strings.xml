@@ -1,3 +1,96 @@
 <resources>
-    <string name="app_name">Ascend</string>
+    <string name="app_name" translatable="false">Ascend</string>
+
+    <!-- ============ Common / reusable ============ -->
+    <string name="action_cancel">Cancel</string>
+    <string name="action_save">Save</string>
+    <string name="action_dismiss">Dismiss</string>
+    <string name="action_remove">Remove</string>
+    <string name="action_retry">Try again</string>
+    <string name="action_continue">Continue</string>
+    <string name="action_skip">Skip</string>
+    <string name="action_done">Done</string>
+    <string name="action_back">Back</string>
+    <string name="action_clear">Clear</string>
+    <string name="action_set">Set</string>
+    <string name="action_change">Change</string>
+
+    <!-- ============ Bottom navigation ============ -->
+    <string name="nav_home">Home</string>
+    <string name="nav_jobs">Jobs</string>
+    <string name="nav_tracker">Tracker</string>
+    <string name="nav_interviews">Interviews</string>
+
+    <!-- ============ Home ============ -->
+    <string name="home_greeting_morning">Good morning</string>
+    <string name="home_greeting_afternoon">Good afternoon</string>
+    <string name="home_greeting_evening">Good evening</string>
+    <string name="home_greeting_default">Hello</string>
+    <string name="home_search_hint">Search jobs, titles, companies</string>
+    <string name="home_quick_actions">Quick actions</string>
+    <string name="home_qa_resume">Optimize resume</string>
+    <string name="home_qa_resume_sub">Beat the ATS</string>
+    <string name="home_qa_mock">Mock interview</string>
+    <string name="home_qa_mock_sub">Practice &amp; get scored</string>
+    <string name="home_qa_copilot">Live Copilot</string>
+    <string name="home_qa_copilot_sub">Real-time answers</string>
+    <string name="home_qa_games">Brain Games</string>
+    <string name="home_qa_games_sub">Sharpen up daily</string>
+    <string name="home_top_matches">Top matches</string>
+    <string name="home_see_all">See all</string>
+    <string name="home_matches_for">for %1$s</string>
+    <string name="home_no_matches">No matches yet for your target role. Try a broader search.</string>
+    <string name="home_find_jobs">Search jobs</string>
+
+    <!-- ============ Interviews ============ -->
+    <string name="interviews_title">Interviews</string>
+    <string name="interviews_subtitle">Prepare with AI, then get real-time help on the call.</string>
+    <string name="interviews_mock_title">Mock Interview</string>
+    <string name="interviews_mock_sub">AI-generated questions with instant, scored feedback.</string>
+    <string name="interviews_copilot_title">Live Interview Copilot</string>
+    <string name="interviews_copilot_sub">Real-time answers in your voice during the call.</string>
+
+    <!-- ============ Onboarding ============ -->
+    <string name="onboarding_get_started">Get started</string>
+    <string name="onboarding_finish">Finish</string>
+    <string name="onboarding_welcome_title">Welcome to Ascend</string>
+    <string name="onboarding_welcome_sub">Land your next role, faster. Let\'s set up your search in a few quick steps.</string>
+    <string name="onboarding_name_title">What should we call you?</string>
+    <string name="onboarding_name_sub">Your name helps us personalize Ascend.</string>
+    <string name="onboarding_name_hint">e.g. Alex Morgan</string>
+    <string name="onboarding_role_title">What role are you after?</string>
+    <string name="onboarding_role_sub">This tailors your matches, resume tips &amp; mock interviews.</string>
+    <string name="onboarding_role_hint">e.g. Product Manager</string>
+    <string name="onboarding_location_title">Where are you hunting?</string>
+    <string name="onboarding_location_sub">We\'ll surface jobs near you and remote roles.</string>
+    <string name="onboarding_location_hint">City, region, or Remote</string>
+    <string name="onboarding_resume_title">Add your resume</string>
+    <string name="onboarding_resume_sub">We\'ll use it to tailor matches and offer a free ATS-ready rewrite. You can skip and add it later.</string>
+    <string name="onboarding_resume_upload">Upload resume</string>
+    <string name="onboarding_resume_formats">PDF, DOCX · up to 10MB</string>
+    <string name="onboarding_resume_replace">Tap to replace</string>
+    <string name="onboarding_save_error">Couldn\'t save your profile. Please try again.</string>
+
+    <!-- ============ Settings ============ -->
+    <string name="settings_title">Settings</string>
+    <string name="settings_section_profile">Your profile</string>
+    <string name="settings_field_name">Name</string>
+    <string name="settings_field_role">Target role</string>
+    <string name="settings_field_location">Location</string>
+    <string name="settings_save_profile">Save profile</string>
+    <string name="settings_profile_saved">Profile saved</string>
+    <string name="settings_section_resume">Resume</string>
+    <string name="settings_manage_resumes">Manage resumes</string>
+    <string name="settings_no_resume">No resume added yet</string>
+    <string name="settings_section_language">Language</string>
+    <string name="settings_app_language">App language</string>
+    <string name="settings_choose_language">Choose language</string>
+    <string name="settings_section_data">Data &amp; backup</string>
+    <string name="settings_backup_note">Your profile, saved jobs and tracker back up to your Google account and restore on a new device. This device\'s anonymous ID always stays local.</string>
+    <string name="settings_section_reset">Reset</string>
+    <string name="settings_reset_onboarding">Reset onboarding</string>
+    <string name="settings_reset_confirm_title">Reset onboarding?</string>
+    <string name="settings_reset_confirm_body">Your name, role, location and resume selection will be cleared and you\'ll go through setup again. Saved jobs and your resume library are kept.</string>
+    <string name="settings_reset_confirm_action">Reset</string>
+    <string name="settings_version">v%1$s (%2$d)</string>
 </resources>

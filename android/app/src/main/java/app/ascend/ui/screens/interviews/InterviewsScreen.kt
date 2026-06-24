@@ -14,10 +14,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import app.ascend.R
 import app.ascend.ui.navigation.Routes
 import app.ascend.ui.theme.AscendColors
 
@@ -27,15 +29,15 @@ fun InterviewsScreen(nav: NavController) {
         Modifier.fillMaxSize().statusBarsPadding().padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
-        Text("Interviews", style = MaterialTheme.typography.headlineMedium, color = AscendColors.Ink)
-        Text("Prepare with AI, then get real-time help on the call.", fontSize = 14.sp, color = AscendColors.Muted)
+        Text(stringResource(R.string.interviews_title), style = MaterialTheme.typography.headlineMedium, color = AscendColors.Ink)
+        Text(stringResource(R.string.interviews_subtitle), fontSize = 14.sp, color = AscendColors.Muted)
         Spacer(Modifier.height(2.dp))
         InterviewCard(
-            "Mock Interview", "AI-generated questions with instant, scored feedback.",
+            stringResource(R.string.interviews_mock_title), stringResource(R.string.interviews_mock_sub),
             Icons.Outlined.RecordVoiceOver, AscendColors.Indigo,
         ) { nav.navigate(Routes.MOCK) }
         InterviewCard(
-            "Live Interview Copilot", "Real-time answers in your voice during the call.",
+            stringResource(R.string.interviews_copilot_title), stringResource(R.string.interviews_copilot_sub),
             Icons.Outlined.Bolt, AscendColors.Violet2,
         ) { nav.navigate(Routes.COPILOT) }
     }

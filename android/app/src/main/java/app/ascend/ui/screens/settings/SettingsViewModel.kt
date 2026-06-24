@@ -20,7 +20,8 @@ class SettingsViewModel @Inject constructor(
     val profile: StateFlow<UserProfile> =
         repo.profile.stateIn(viewModelScope, SharingStarted.Eagerly, UserProfile())
 
-    val versionLabel: String = "v${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+    val versionName: String = BuildConfig.VERSION_NAME
+    val versionCode: Int = BuildConfig.VERSION_CODE
 
     fun save(name: String, role: String, location: String) {
         viewModelScope.launch {
