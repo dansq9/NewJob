@@ -3,37 +3,56 @@ package app.ascend.ui.screens.jobs
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.ascend.core.Resource
+import app.ascend.data.billing.EntitlementRepository
+import app.ascend.data.local.ProfileRepository
 import app.ascend.data.model.Job
 import app.ascend.data.model.TrackStage
 import app.ascend.data.remote.jsearch.JSearchRepository
 import app.ascend.data.repo.TrackerRepository
 import app.ascend.ui.SelectedJobStore
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.FlowPreview
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-data class JobsUiState(
-    val query: String = "Product Manager",
-    val location: String = "San Francisco · Remote",
+data class JobFilters(
+    val datePosted: String = "all",            // all | today | 3days | week | month
+    val employmentTypes: Set<String> = emptySet(), // FULLTIME, PARTTIME, CONTRACTOR, INTERN
     val remoteOnly: Boolean = false,
-    val results: Resource<List<Job>> = Resource.Loading,
+) {
+    val activeCount: Int
+        get() = (if (datePosted != "all") 1 else 0) + employmentTypes.size + (if (remoteOnly) 1 else 0)
+}
+
+data class JobsUiState(
+    val query: String = "",
+    val location: String = "",
+    val filters: JobFilters = JobFilters(),
+    val jobs: List<Job> = emptyList(),
+    val status: Resource<Unit> = Resource.Loading,   // first-page status
+    val loadingMore: Boolean = false,
+    val endReached: Boolean = false,
     val savedIds: Set<String> = emptySet(),
 )
 
+@OptIn(FlowPreview::class)
 @HiltViewModel
 class JobsViewModel @Inject constructor(
     private val jobs: JSearchRepository,
     private val tracker: TrackerRepository,
     private val selectedJob: SelectedJobStore,
-    private val profileRepo: app.ascend.data.local.ProfileRepository,
-    entitlements: app.ascend.data.billing.EntitlementRepository,
+    private val profileRepo: ProfileRepository,
+    entitlements: EntitlementRepository,
 ) : ViewModel() {
 
-    private val _state = MutableStateFlow(JobsUiState(query = "", location = ""))
+    private val _state = MutableStateFlow(JobsUiState())
     val state: StateFlow<JobsUiState> = _state.asStateFlow()
 
-    /** Native ad cards (every 5 listings) show only for non-Pro users. */
+    private val queryFlow = MutableStateFlow("")
+    private var page = 1
+    private val seenIds = mutableSetOf<String>()
+
     val adsEnabled: StateFlow<Boolean> =
         entitlements.isPro.map { !it }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
 
@@ -43,28 +62,65 @@ class JobsViewModel @Inject constructor(
         }
         viewModelScope.launch {
             val p = profileRepo.profile.first()
-            _state.update {
-                it.copy(
-                    query = it.query.ifBlank { p.targetRole.ifBlank { "Product Manager" } },
-                    location = it.location.ifBlank { p.location },
-                )
-            }
-            search()
+            _state.update { it.copy(query = p.targetRole.ifBlank { "Product Manager" }, location = p.location) }
+            queryFlow.value = _state.value.query
         }
-    }
-
-    fun onQueryChange(q: String) = _state.update { it.copy(query = q) }
-    fun onLocationChange(l: String) = _state.update { it.copy(location = l) }
-    fun toggleRemote() { _state.update { it.copy(remoteOnly = !it.remoteOnly) }; search() }
-
-    fun search() {
-        val s = _state.value
-        _state.update { it.copy(results = Resource.Loading) }
+        // Debounced auto-search as the user types.
         viewModelScope.launch {
-            val res = jobs.search(query = s.query, location = s.location, remoteOnly = s.remoteOnly)
-            _state.update { it.copy(results = res) }
+            queryFlow.debounce(350).distinctUntilChanged().collectLatest { reload() }
         }
     }
+
+    fun onQueryChange(q: String) { _state.update { it.copy(query = q) }; queryFlow.value = q }
+    fun onLocationChange(l: String) = _state.update { it.copy(location = l) }
+    fun search() = reload()
+
+    fun setFilters(filters: JobFilters) { _state.update { it.copy(filters = filters) }; reload() }
+    fun toggleRemote() = setFilters(_state.value.filters.copy(remoteOnly = !_state.value.filters.remoteOnly))
+
+    private fun reload() {
+        page = 1; seenIds.clear()
+        _state.update { it.copy(status = Resource.Loading, jobs = emptyList(), endReached = false, loadingMore = false) }
+        viewModelScope.launch {
+            when (val res = fetch(page)) {
+                is Resource.Success -> {
+                    val fresh = res.data.dedup()
+                    _state.update { it.copy(jobs = fresh, status = Resource.Success(Unit), endReached = res.data.isEmpty()) }
+                }
+                is Resource.Error -> _state.update { it.copy(status = res) }
+                Resource.Loading -> Unit
+            }
+        }
+    }
+
+    fun loadMore() {
+        val s = _state.value
+        if (s.loadingMore || s.endReached || s.status !is Resource.Success || page >= MAX_PAGES) return
+        _state.update { it.copy(loadingMore = true) }
+        viewModelScope.launch {
+            when (val res = fetch(page + 1)) {
+                is Resource.Success -> {
+                    page += 1
+                    val more = res.data.dedup()
+                    _state.update { it.copy(jobs = it.jobs + more, loadingMore = false, endReached = res.data.isEmpty()) }
+                }
+                is Resource.Error -> _state.update { it.copy(loadingMore = false, endReached = true) }
+                Resource.Loading -> Unit
+            }
+        }
+    }
+
+    private suspend fun fetch(p: Int): Resource<List<Job>> {
+        val s = _state.value
+        return jobs.search(
+            query = s.query, location = s.location.ifBlank { null }, page = p,
+            remoteOnly = s.filters.remoteOnly, employmentTypes = s.filters.employmentTypes.toList(),
+            datePosted = s.filters.datePosted,
+        )
+    }
+
+    /** Drop duplicates already shown (JSearch repeats across pages). */
+    private fun List<Job>.dedup(): List<Job> = filter { seenIds.add(it.id) }
 
     fun select(job: Job) = selectedJob.select(job)
 
@@ -74,4 +130,6 @@ class JobsViewModel @Inject constructor(
             else tracker.save(job, TrackStage.SAVED)
         }
     }
+
+    private companion object { const val MAX_PAGES = 10 }
 }

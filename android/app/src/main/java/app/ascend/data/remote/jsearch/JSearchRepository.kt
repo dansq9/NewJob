@@ -5,6 +5,7 @@ import app.ascend.data.model.Job
 import app.ascend.data.model.WorkType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
+import retrofit2.HttpException
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 import javax.inject.Singleton
@@ -34,6 +35,9 @@ class JSearchRepository @Inject constructor(
                 datePosted = datePosted,
             )
             Resource.Success(resp.data.mapNotNull { it.toJob() })
+        } catch (e: HttpException) {
+            if (e.code() == 429) Resource.Error("You've hit the daily search limit. Try again later.", e, rateLimited = true)
+            else Resource.Error("Couldn't load jobs (${e.code()})", e)
         } catch (t: Throwable) {
             Resource.Error(t.message ?: "Couldn't load jobs", t)
         }
@@ -58,9 +62,15 @@ internal fun JSearchJob.toJob(): Job? {
         salary = formatSalary(),
         postedAgo = postedAtTimestamp?.let { relativeTime(it) },
         description = description,
-        applyUrl = applyLink,
+        applyUrl = bestApplyLink(),
     )
 }
+
+/** Prefer a direct (employer-site) apply link, else the first option, else the default. */
+private fun JSearchJob.bestApplyLink(): String? =
+    applyOptions.firstOrNull { it.isDirect == true }?.applyLink
+        ?: applyOptions.firstOrNull()?.applyLink
+        ?: applyLink
 
 private fun JSearchJob.buildLocation(): String {
     val parts = listOfNotNull(city, state, country).filter { it.isNotBlank() }

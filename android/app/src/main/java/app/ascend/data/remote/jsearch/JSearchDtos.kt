@@ -27,4 +27,12 @@ data class JSearchJob(
     @SerialName("job_min_salary") val minSalary: Double? = null,
     @SerialName("job_max_salary") val maxSalary: Double? = null,
     @SerialName("job_salary_period") val salaryPeriod: String? = null,
+    @SerialName("apply_options") val applyOptions: List<ApplyOption> = emptyList(),
+)
+
+@Serializable
+data class ApplyOption(
+    @SerialName("publisher") val publisher: String? = null,
+    @SerialName("apply_link") val applyLink: String? = null,
+    @SerialName("is_direct") val isDirect: Boolean? = null,
 )

@@ -14,7 +14,14 @@ import androidx.compose.material.icons.outlined.BookmarkBorder
 import androidx.compose.material.icons.outlined.OpenInNew
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -37,6 +44,18 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
     val saved by vm.saved.collectAsStateWithLifecycle()
     val uri = LocalUriHandler.current
     val j = job
+
+    // After the user opens the external apply link and returns, prompt to track it.
+    var pendingApply by remember { mutableStateOf(false) }
+    var showApplyPrompt by remember { mutableStateOf(false) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val obs = LifecycleEventObserver { _, e ->
+            if (e == Lifecycle.Event.ON_RESUME && pendingApply) { pendingApply = false; showApplyPrompt = true }
+        }
+        lifecycleOwner.lifecycle.addObserver(obs)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
+    }
 
     Scaffold(
         containerColor = AscendColors.Card,
@@ -67,7 +86,7 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
                         Text("Opens in browser", fontSize = 13.sp, color = AscendColors.Ink, fontWeight = FontWeight.Bold)
                     }
                     Button(
-                        onClick = { vm.markApplied(); uri.openUri(j.applyUrl!!) },
+                        onClick = { uri.openUri(j.applyUrl!!); pendingApply = true },
                         colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
                         shape = RoundedCornerShape(14.dp),
                     ) {
@@ -110,6 +129,14 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
             )
         }
     }
+
+    if (showApplyPrompt && j != null) AlertDialog(
+        onDismissRequest = { showApplyPrompt = false },
+        title = { Text("Did you apply?") },
+        text = { Text("Add ${j.title} at ${j.company} to your tracker as Applied?") },
+        confirmButton = { TextButton(onClick = { vm.markApplied(); showApplyPrompt = false }) { Text("Yes, mark Applied") } },
+        dismissButton = { TextButton(onClick = { showApplyPrompt = false }) { Text("Not yet") } },
+    )
 }
 
 @Composable

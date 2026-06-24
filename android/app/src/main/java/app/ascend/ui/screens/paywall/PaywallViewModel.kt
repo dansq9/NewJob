@@ -18,6 +18,7 @@ import javax.inject.Inject
 @HiltViewModel
 class PaywallViewModel @Inject constructor(
     private val billing: BillingManager,
+    private val analytics: app.ascend.analytics.Analytics,
     entitlements: EntitlementRepository,
 ) : ViewModel() {
 
@@ -30,6 +31,7 @@ class PaywallViewModel @Inject constructor(
     var message by mutableStateOf<String?>(null)
 
     init {
+        analytics.log(app.ascend.analytics.Ev.PAYWALL_VIEW)
         viewModelScope.launch {
             plans = billing.plans()
             selected = plans.firstOrNull()?.productId
@@ -45,7 +47,8 @@ class PaywallViewModel @Inject constructor(
         viewModelScope.launch {
             val ok = runCatching { billing.subscribe(id) }.getOrDefault(false)
             busy = false
-            if (ok) onSuccess() else message = "Purchase didn't complete. Please try again."
+            if (ok) { analytics.log(app.ascend.analytics.Ev.SUBSCRIBE, mapOf("product" to id)); onSuccess() }
+            else message = "Purchase didn't complete. Please try again."
         }
     }
 

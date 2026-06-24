@@ -28,7 +28,9 @@ These are exposed as `BuildConfig.RAPIDAPI_KEY` / `BuildConfig.ASCEND_API_BASE_U
 |------|--------|
 | Onboarding | **Live** — name · target role · location · resume (picked or skipped) |
 | Profile | **DataStore** (`ProfileRepository`) — hydrates Home/Jobs on launch; `anonymous_install_id` UUID |
-| Jobs search | **Live** via JSearch (`/search`), filters, save |
+| Jobs search | **Live** via JSearch — debounce, pagination/load-more, filter sheet (date/type/remote), dedup, rate-limit state, best apply-URL, save/apply prompt |
+| Brain Games | **Playable** — vendored Compose engine (9 boards) behind our hub via `GameHost` |
+| Analytics | `Analytics` facade + event taxonomy (`Ev`) + no-op impl; drop in Firebase + Sentry |
 | Home | greeting, quick actions, top matches (JSearch) |
 | Job detail | header, apply (opens link), save / mark applied |
 | Tracker | **Room-backed** pipeline (Saved→Applied→Interview→Offer→Closed) |
