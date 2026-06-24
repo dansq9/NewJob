@@ -25,12 +25,39 @@ class NoopAdsManager @Inject constructor(
     // Gate: no ad request runs until initialize() has been called (post-consent).
     private val initialized = AtomicBoolean(false)
 
+    // ILRD paid-event sink (MonetizationManager.onAdPaid). The real impl attaches an
+    // OnPaidEventListener to every loaded ad and invokes this; the Noop has no real
+    // impressions so it never fires.
+    @Suppress("unused")
+    private var paidListener: ((app.ascend.monetization.AdPaidEvent) -> Unit)? = null
+
+    override fun setPaidListener(listener: (app.ascend.monetization.AdPaidEvent) -> Unit) {
+        paidListener = listener
+    }
+
     override fun initialize() {
         if (initialized.compareAndSet(false, true)) {
             // TODO(AdMob): MobileAds.initialize(context) here, once the AdMob App ID exists.
             if (BuildConfig.DEBUG) Log.d("NoopAdsManager", "ad SDK initialize() — consent gate open")
         }
     }
+
+    // TODO(AdMob) — attach the SAME ILRD listener to EVERY format when the SDK lands.
+    // Each loaded ad calls back per paid impression; forward it verbatim:
+    //
+    //   ad.setOnPaidEventListener { adValue ->
+    //       paidListener?.invoke(AdPaidEvent(
+    //           placementId = placement.id,
+    //           format = placement.format,
+    //           valueMicros = adValue.valueMicros,
+    //           currencyCode = adValue.currencyCode,
+    //           precision = AdPrecision.fromAdMob(adValue.precisionType),
+    //           adSource = ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName,
+    //           adUnitId = ad.adUnitId,
+    //       ))
+    //   }
+    //
+    // Applies identically to NativeAd, InterstitialAd, RewardedAd, and AppOpenAd.
 
     override suspend fun showInterstitial(placement: AdPlacement) {
         if (!initialized.get()) return            // consent gate not open yet — never request

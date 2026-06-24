@@ -187,3 +187,21 @@ enum class AggressivenessTier(val v: String) {
 
 enum class AccountStatus(val v: String) { FREE("Free"), PRO("Pro") }
 enum class Plan(val v: String) { FREE("Free"), WEEKLY("Weekly"), YEARLY("Yearly"), LIFETIME("Lifetime") }
+
+/**
+ * ILRD value precision (`ad_impression.precision`). Mirrors the Google Mobile Ads
+ * `AdValue.PrecisionType` int so the rest of the app stays SDK-agnostic:
+ * 0=unknown, 1=estimated, 2=publisher_provided, 3=precise.
+ */
+enum class AdPrecision(val v: String) {
+    UNKNOWN("unknown"), ESTIMATED("estimated"), PUBLISHER_PROVIDED("publisher_provided"), PRECISE("precise");
+
+    companion object {
+        fun fromAdMob(precisionType: Int): AdPrecision = when (precisionType) {
+            1 -> ESTIMATED
+            2 -> PUBLISHER_PROVIDED
+            3 -> PRECISE
+            else -> UNKNOWN
+        }
+    }
+}

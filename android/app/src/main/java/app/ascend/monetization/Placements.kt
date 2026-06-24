@@ -1,9 +1,29 @@
 package app.ascend.monetization
 
+import app.ascend.analytics.AdPrecision
 import app.ascend.monetization.config.RcKeys
 
 /** Ad format families. NATIVE is inline (collapses on suppress); the rest are full-screen. */
-enum class AdFormat { NATIVE, INTERSTITIAL, REWARDED, APP_OPEN }
+enum class AdFormat(val schemaName: String) {
+    NATIVE("native"), INTERSTITIAL("interstitial"), REWARDED("rewarded"), APP_OPEN("app_open")
+}
+
+/**
+ * SDK-agnostic mirror of a Google Mobile Ads ILRD paid callback (`AdValue` +
+ * `ResponseInfo`). The real [app.ascend.monetization.ads.AdsManager] impl builds
+ * one of these inside each format's `setOnPaidEventListener` and forwards it to
+ * [MonetizationManager.onAdPaid], which logs `ad_impression` (rule 7). Keeping it
+ * SDK-agnostic means no screen or analytics code depends on the ads SDK.
+ */
+data class AdPaidEvent(
+    val placementId: String,
+    val format: AdFormat,
+    val valueMicros: Long,        // AdValue.getValueMicros()
+    val currencyCode: String,     // AdValue.getCurrencyCode()
+    val precision: AdPrecision,   // AdPrecision.fromAdMob(AdValue.getPrecisionType())
+    val adSource: String?,        // responseInfo.loadedAdapterResponseInfo?.adSourceName
+    val adUnitId: String?,        // responseInfo.responseId / configured unit id
+)
 
 /**
  * The canonical ad placements (monetization-spec "Ad placements" table). Each

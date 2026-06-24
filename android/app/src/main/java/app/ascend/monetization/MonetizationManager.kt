@@ -3,6 +3,7 @@ package app.ascend.monetization
 import android.os.SystemClock
 import android.util.Log
 import app.ascend.BuildConfig
+import app.ascend.analytics.AnalyticsTracker
 import app.ascend.data.billing.EntitlementRepository
 import app.ascend.data.local.ProfileRepository
 import app.ascend.monetization.ads.AdsManager
@@ -43,6 +44,7 @@ class MonetizationManager @Inject constructor(
     private val consent: ConsentManager,
     private val entitlements: EntitlementRepository,
     private val profile: ProfileRepository,
+    private val analytics: AnalyticsTracker,
 ) {
     // The single full-screen slot. Holds the id of whatever surface is on screen.
     private val fullScreenOwner = AtomicReference<String?>(null)
@@ -50,6 +52,26 @@ class MonetizationManager @Inject constructor(
     // Interstitial pacing, session-scoped (resets each cold start).
     private val interstitialsShown = AtomicInteger(0)
     @Volatile private var lastFullScreenAtMs: Long = Long.MIN_VALUE
+
+    init {
+        // Register the single ILRD sink. The real AdsManager attaches an
+        // OnPaidEventListener to EVERY format and forwards each paid callback here
+        // → one ad_impression per impression (rule 7).
+        ads.setPaidListener(::onAdPaid)
+    }
+
+    /** Logs `ad_impression` for one ILRD paid callback (any format). */
+    fun onAdPaid(event: AdPaidEvent) {
+        analytics.adImpression(
+            valueMicros = event.valueMicros,
+            currency = event.currencyCode,
+            adFormat = event.format.schemaName,
+            adSource = event.adSource,
+            adUnit = event.adUnitId,
+            placementId = event.placementId,
+            precision = event.precision,
+        )
+    }
 
     /** Fetch + activate Remote Config once per cold start (call at app start). */
     suspend fun refreshConfig() = rc.refresh()

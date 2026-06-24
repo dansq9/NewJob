@@ -29,6 +29,14 @@ interface AdsManager {
      */
     fun initialize()
 
+    /**
+     * Register the single ILRD paid-event sink (MonetizationManager.onAdPaid).
+     * The real impl MUST attach `setOnPaidEventListener` to EVERY loaded ad —
+     * native, interstitial, rewarded, app-open — and forward each [AdPaidEvent]
+     * here so exactly one `ad_impression` is logged per impression (rule 7).
+     */
+    fun setPaidListener(listener: (app.ascend.monetization.AdPaidEvent) -> Unit)
+
     suspend fun showInterstitial(placement: AdPlacement = AdPlacement.SPLASH_INTERSTITIAL)
 
     /** Show a rewarded ad to unlock one use of [feature]; true if reward granted

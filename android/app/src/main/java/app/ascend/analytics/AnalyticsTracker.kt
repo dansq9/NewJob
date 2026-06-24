@@ -137,6 +137,34 @@ class AnalyticsTracker @Inject constructor(
         log(Ev.MOCK_INTERVIEW_COMPLETE, Pr.QUESTIONS_ANSWERED to questionsAnswered, Pr.GATED_BY to gatedBy.v)
     fun copilotSessionStart() = log(Ev.COPILOT_SESSION_START, Pr.GATED_BY to GatedBy.PRO.v)
 
+    // ---- Monetization spine: ILRD revenue (value + currency REQUIRED, rule 7) ----
+
+    /**
+     * Logs `ad_impression` from an ILRD paid callback — fired for EVERY format
+     * (native/interstitial/rewarded/app_open). [valueMicros] is the SDK's raw
+     * micro-units; it is normalized to a real [Pr.VALUE] (÷ 1,000,000). The value
+     * and [currency] are always the real ILRD figures — never hardcoded (rule 7).
+     */
+    fun adImpression(
+        valueMicros: Long,
+        currency: String,
+        adFormat: String,
+        adSource: String?,
+        adUnit: String?,
+        placementId: String,
+        precision: AdPrecision,
+    ) = log(
+        Ev.AD_IMPRESSION,
+        Pr.VALUE to valueMicros / 1_000_000.0,
+        Pr.CURRENCY to currency,
+        Pr.AD_FORMAT to adFormat,
+        Pr.AD_SOURCE to adSource,
+        Pr.AD_UNIT to adUnit,
+        Pr.PLACEMENT to placementId,
+        Pr.PRECISION to precision.v,
+        Pr.SESSION_NUMBER to sessionNumber,
+    )
+
     // ---- Paywall funnel ----
 
     fun paywallView(variant: PaywallVariant, trigger: TriggerPlacement?) =
