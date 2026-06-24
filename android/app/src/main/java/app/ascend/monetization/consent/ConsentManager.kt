@@ -47,12 +47,21 @@ class ConsentManager @Inject constructor(
         val params = ConsentRequestParameters.Builder()
             .apply {
                 if (BuildConfig.DEBUG) {
-                    // Force EEA geography in debug so the gate + form can be verified
-                    // without travelling. To actually SEE the form on a device, add that
-                    // device's hashed id (printed in Logcat) via addTestDeviceHashedId(...).
+                    // Debug geography:
+                    //  - DEBUG_FORCE_ADS on (default) → NOT_EEA so the gate opens WITHOUT a consent
+                    //    form, letting Google TEST ads actually load+show in Android Studio. (With the
+                    //    sample AdMob app id there is no real consent message to display, so forcing EEA
+                    //    would leave canRequestAds=false and no ads would ever appear.)
+                    //  - DEBUG_FORCE_ADS off → EEA so the consent form/flow can be exercised. To SEE the
+                    //    form, add this device's hashed id (printed in Logcat) via addTestDeviceHashedId(...).
+                    val geography = if (BuildConfig.DEBUG_FORCE_ADS) {
+                        ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_NOT_EEA
+                    } else {
+                        ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA
+                    }
                     setConsentDebugSettings(
                         ConsentDebugSettings.Builder(activity)
-                            .setDebugGeography(ConsentDebugSettings.DebugGeography.DEBUG_GEOGRAPHY_EEA)
+                            .setDebugGeography(geography)
                             .build()
                     )
                 }

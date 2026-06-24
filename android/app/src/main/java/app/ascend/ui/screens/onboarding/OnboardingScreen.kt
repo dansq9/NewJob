@@ -1,9 +1,21 @@
 package app.ascend.ui.screens.onboarding
 
+import android.Manifest
 import android.content.Context
 import android.content.ContextWrapper
+import android.content.pm.PackageManager
+import android.location.Geocoder
+import android.location.LocationManager
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.Crossfade
 import androidx.compose.animation.core.tween
+import androidx.compose.ui.platform.LocalContext
+import androidx.core.content.ContextCompat
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.util.Locale
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -188,13 +200,28 @@ private fun LanguageStep(context: Context) {
 
 @Composable
 private fun LocationStep(vm: OnboardingViewModel) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+    var locating by remember { mutableStateOf(false) }
+    // Real geolocation: request COARSE location permission, then reverse-geocode to a city.
+    val permLauncher = rememberLauncherForActivityResult(ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) { locating = true; scope.launch { vm.location = resolveCity(context); locating = false } }
+    }
+    val useCurrent: () -> Unit = {
+        if (ContextCompat.checkSelfPermission(context, Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+            locating = true; scope.launch { vm.location = resolveCity(context); locating = false }
+        } else {
+            permLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+        }
+    }
     Column(Modifier.verticalScroll(rememberScrollState())) {
         Heading(stringResource(R.string.onboarding_location_title), stringResource(R.string.onboarding_location_sub))
-        AscendCard(onClick = { vm.location = "Current location" }) {
+        AscendCard(onClick = useCurrent) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 AscendIconBadge(Icons.Outlined.MyLocation, tint = AscendColors.Indigo)
                 Spacer(Modifier.width(12.dp))
-                Text(stringResource(R.string.onboarding_location_current), fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+                Text(stringResource(R.string.onboarding_location_current), fontWeight = FontWeight.Bold, color = AscendColors.Ink, modifier = Modifier.weight(1f))
+                if (locating) CircularProgressIndicator(Modifier.size(18.dp), color = AscendColors.Indigo, strokeWidth = 2.dp)
             }
         }
         Spacer(Modifier.height(14.dp))
@@ -329,6 +356,36 @@ private fun isReducedMotion(context: Context): Boolean = try {
     ) == 0f
 } catch (e: Exception) {
     false
+}
+
+/**
+ * Best-effort reverse-geocode of the last known location to a "City, Region" string.
+ * Falls back to a neutral label if no fix or no geocoder result. Runs off the main thread.
+ * Caller must already hold ACCESS_COARSE_LOCATION.
+ */
+@Suppress("DEPRECATION", "MissingPermission")
+private suspend fun resolveCity(context: Context): String = withContext(Dispatchers.IO) {
+    val fallback = "Current location"
+    val lm = context.getSystemService(Context.LOCATION_SERVICE) as? LocationManager ?: return@withContext fallback
+    val loc = try {
+        lm.getLastKnownLocation(LocationManager.NETWORK_PROVIDER) ?: lm.getLastKnownLocation(LocationManager.GPS_PROVIDER)
+    } catch (e: SecurityException) {
+        null
+    } catch (e: Exception) {
+        null
+    } ?: return@withContext fallback
+    val addr = try {
+        Geocoder(context, Locale.getDefault()).getFromLocation(loc.latitude, loc.longitude, 1)?.firstOrNull()
+    } catch (e: Exception) {
+        null
+    } ?: return@withContext fallback
+    val city = addr.locality ?: addr.subAdminArea ?: addr.adminArea
+    val region = addr.adminArea
+    when {
+        city == null -> fallback
+        region != null && region != city -> "$city, $region"
+        else -> city
+    }
 }
 
 /** Walk the ContextWrapper chain to the hosting Activity (for locale-change recreate). */
