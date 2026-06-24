@@ -67,7 +67,7 @@ class ResumeRepository @Inject constructor(
             name = file.name,
             uri = file.uri.toString(),
             sizeBytes = file.sizeBytes,
-            mime = mime,
+            mime = file.mime,
             addedAt = System.currentTimeMillis(),
         )
         dao.upsert(record)
