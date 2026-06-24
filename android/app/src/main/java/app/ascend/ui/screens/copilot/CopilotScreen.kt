@@ -11,7 +11,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.outlined.Bolt
+import androidx.compose.material.icons.outlined.Close
 import androidx.compose.material.icons.outlined.GraphicEq
+import androidx.compose.material.icons.outlined.Mic
+import androidx.compose.material.icons.outlined.MicOff
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,6 +31,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import app.ascend.ui.theme.AscendColors
 import app.ascend.ui.theme.JetBrainsMono
+import app.ascend.ui.util.rememberLiveTranscriber
 
 private val DarkCard = Color(0xFF16161F)
 private val DarkLine = Color(0xFF23232F)
@@ -84,9 +88,9 @@ private fun SetupView(vm: CopilotViewModel, nav: NavController) {
         Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
             Surface(shape = RoundedCornerShape(20.dp), color = AscendColors.Ink, modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(18.dp)) {
-                    Text("REAL-TIME COPILOT", fontFamily = JetBrainsMono, color = Lilac, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+                    Text("INTERVIEW COPILOT", fontFamily = JetBrainsMono, color = Lilac, fontWeight = FontWeight.Bold, fontSize = 11.sp)
                     Spacer(Modifier.height(10.dp))
-                    Text("Set the context once. During your call we transcribe each question and draft an answer in your voice.",
+                    Text("Set the context once. During your call we transcribe each question from your mic — or paste it manually — and draft an answer in your voice.",
                         color = Color(0xFFD8D8E2), fontSize = 15.sp, lineHeight = 22.sp)
                 }
             }
@@ -112,19 +116,38 @@ private fun SetupView(vm: CopilotViewModel, nav: NavController) {
 @Composable
 private fun LiveView(vm: CopilotViewModel, nav: NavController) {
     val s by vm.state.collectAsStateWithLifecycle()
+    // Live transcription via the native speech recognizer; partial + final text fill the question.
+    val transcriber = rememberLiveTranscriber(
+        onPartial = { vm.setQuestion(it) },
+        onFinal = { vm.setQuestion(it) },
+    )
+    val status = when {
+        !transcriber.available -> "Manual mode · paste each question"
+        transcriber.listening -> "Live · listening"
+        else -> "Tap the mic to transcribe"
+    }
+    val statusColor = if (transcriber.listening) Color(0xFF34D17F) else Color(0xFF8A8A99)
     Column(Modifier.fillMaxSize().background(AscendColors.Dark).verticalScroll(rememberScrollState())) {
         Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = { vm.end(); nav.popBackStack() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.White) }
             Column(Modifier.weight(1f)) {
                 Text("${s.role} @ ${s.company}", color = Color.White, fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
-                Text("Live · listening", color = Color(0xFF34D17F), fontSize = 11.sp)
+                Text(status, color = statusColor, fontSize = 11.sp)
             }
+            TextButton(onClick = { vm.end(); nav.popBackStack() }) { Text("End", color = Lilac, fontWeight = FontWeight.Bold) }
         }
         Column(Modifier.padding(horizontal = 16.dp).padding(bottom = 24.dp)) {
             OutlinedTextField(
                 value = s.question, onValueChange = vm::setQuestion, modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text("Paste or type the interviewer's question…", color = Color(0xFF8A8A99)) },
                 shape = RoundedCornerShape(14.dp),
+                trailingIcon = {
+                    if (s.question.isNotEmpty()) {
+                        IconButton(onClick = { vm.setQuestion("") }) {
+                            Icon(Icons.Outlined.Close, "Clear question", tint = Color(0xFF8A8A99))
+                        }
+                    }
+                },
                 keyboardOptions = KeyboardOptions(
                     capitalization = KeyboardCapitalization.Sentences,
                     imeAction = ImeAction.Send,
@@ -137,9 +160,24 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
                 ),
             )
             Spacer(Modifier.height(10.dp))
-            Button(onClick = vm::ask, modifier = Modifier.fillMaxWidth().height(48.dp), shape = RoundedCornerShape(12.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) {
-                Icon(Icons.Outlined.Bolt, null); Spacer(Modifier.width(6.dp)); Text("Draft answer", fontWeight = FontWeight.Bold)
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                if (transcriber.available) {
+                    OutlinedButton(
+                        onClick = { transcriber.toggle() },
+                        modifier = Modifier.height(48.dp),
+                        shape = RoundedCornerShape(12.dp),
+                        border = androidx.compose.foundation.BorderStroke(1.dp, if (transcriber.listening) Color(0xFF34D17F) else DarkLine),
+                    ) {
+                        Icon(if (transcriber.listening) Icons.Outlined.MicOff else Icons.Outlined.Mic, null,
+                            tint = if (transcriber.listening) Color(0xFF34D17F) else Lilac)
+                        Spacer(Modifier.width(6.dp))
+                        Text(if (transcriber.listening) "Stop" else "Listen", color = Color.White)
+                    }
+                }
+                Button(onClick = vm::ask, modifier = Modifier.weight(1f).height(48.dp), shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) {
+                    Icon(Icons.Outlined.Bolt, null); Spacer(Modifier.width(6.dp)); Text("Draft answer", fontWeight = FontWeight.Bold)
+                }
             }
             Spacer(Modifier.height(16.dp))
             when {

@@ -6,6 +6,7 @@ import app.ascend.data.local.ResumeEntity
 import app.ascend.ui.util.PickedFile
 import app.ascend.ui.util.RESUME_MIME
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 import javax.inject.Inject
@@ -44,8 +45,12 @@ class ResumeRepository @Inject constructor(
     /** Validates type + size, persists the file metadata, and auto-selects it. */
     suspend fun add(file: PickedFile): AddResumeResult {
         val mime = file.mime
-        val nameOk = file.name.substringAfterLast('.', "").lowercase() in ALLOWED_EXTENSIONS
-        if (mime != null && mime !in RESUME_MIME && !nameOk) {
+        // Accept on a known resume MIME OR a known extension. This also covers a
+        // missing/generic MIME (e.g. application/octet-stream from some providers),
+        // which then falls back to the extension — and handles casing like RESUME.PDF.
+        val mimeOk = mime != null && mime in RESUME_MIME
+        val extOk = file.name.substringAfterLast('.', "").lowercase() in ALLOWED_EXTENSIONS
+        if (!mimeOk && !extOk) {
             return AddResumeResult.Rejected("Unsupported file. Upload a PDF, DOC, or DOCX.")
         }
         file.sizeBytes?.let { size ->
@@ -69,7 +74,11 @@ class ResumeRepository @Inject constructor(
 
     suspend fun remove(id: String) {
         dao.delete(id)
-        if (profile.selectedResumeIdOnce() == id) profile.setSelectedResume(null)
+        // If we removed the active resume, fall back to the most-recent remaining one (or clear).
+        if (profile.selectedResumeIdOnce() == id) {
+            val next = dao.observeAll().first().firstOrNull()?.id
+            profile.setSelectedResume(next)
+        }
     }
 
     suspend fun recordAtsScore(id: String, score: Int?, jobId: String?) =
