@@ -39,11 +39,13 @@ import app.ascend.ui.theme.AscendColors
 @Composable
 fun JobsScreen(nav: NavController, vm: JobsViewModel = hiltViewModel()) {
     val state by vm.state.collectAsStateWithLifecycle()
-    val adsEnabled by vm.adsEnabled.collectAsStateWithLifecycle()
+    val nativeAdAllowed by vm.nativeAdAllowed.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     var showFilters by remember { mutableStateOf(false) }
     // Job rows interleaved with native ad slots (computed here; remember can't run in LazyListScope).
-    val feed = remember(state.jobs, adsEnabled) { buildFeed(state.jobs, adsEnabled) }
+    val feed = remember(state.jobs, nativeAdAllowed, vm.nativeFrequency) {
+        buildFeed(state.jobs, nativeAdAllowed, vm.nativeFrequency)
+    }
 
     // Infinite scroll: load more when near the end.
     LaunchedEffect(listState) {
@@ -240,10 +242,14 @@ private sealed interface FeedRow {
     data object Ad : FeedRow
 }
 
-private fun buildFeed(jobs: List<Job>, adsEnabled: Boolean): List<FeedRow> = buildList {
+private fun buildFeed(jobs: List<Job>, nativeAdAllowed: Boolean, frequency: Int): List<FeedRow> = buildList {
+    val n = frequency.coerceAtLeast(2)
     jobs.forEachIndexed { i, job ->
         add(FeedRow.JobItem(job))
-        if (adsEnabled && (i + 1) % 5 == 0 && i != jobs.lastIndex) add(FeedRow.Ad)
+        // Spec: first ad after the 4th organic row, then one every N rows. Collapse
+        // (insert nothing) when the placement is suppressed — never a blank slot.
+        val placed = i + 1
+        if (nativeAdAllowed && placed >= 4 && (placed - 4) % n == 0 && i != jobs.lastIndex) add(FeedRow.Ad)
     }
 }
 

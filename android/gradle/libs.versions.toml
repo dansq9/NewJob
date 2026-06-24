@@ -56,6 +56,8 @@ room-compiler = { group = "androidx.room", name = "room-compiler", version.ref =
 
 androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastore" }
 kotlinx-coroutines-android = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-android", version.ref = "coroutines" }
+# Bridges Play Services Task<T> → coroutines (await()), used for Remote Config fetch.
+kotlinx-coroutines-play-services = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-play-services", version.ref = "coroutines" }
 
 # Google User Messaging Platform (UMP) — consent gate (ships globally; form shown only where required)
 user-messaging-platform = { group = "com.google.android.ump", name = "user-messaging-platform", version.ref = "userMessagingPlatform" }
@@ -63,6 +65,8 @@ user-messaging-platform = { group = "com.google.android.ump", name = "user-messa
 # Firebase Analytics (GA4) — the analytics spine. Versions come from the BOM.
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
+# Firebase Remote Config — drives all ad behavior (MonetizationManager). From the BOM.
+firebase-config = { group = "com.google.firebase", name = "firebase-config" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

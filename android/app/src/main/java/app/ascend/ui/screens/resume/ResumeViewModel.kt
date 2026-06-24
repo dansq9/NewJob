@@ -44,7 +44,7 @@ class ResumeViewModel @Inject constructor(
     private val api: AscendApi,
     private val selectedJob: SelectedJobStore,
     private val resumes: ResumeRepository,
-    private val ads: app.ascend.monetization.ads.AdsManager,
+    private val monetization: app.ascend.monetization.MonetizationManager,
     private val analytics: AnalyticsTracker,
 ) : ViewModel() {
 
@@ -81,8 +81,12 @@ class ResumeViewModel @Inject constructor(
         val jobId = selectedJob.selected.value?.id
         val resumeId = library.value.selectedId
         viewModelScope.launch {
-            // Free users watch a rewarded ad to unlock one optimization (Pro bypasses).
-            if (!ads.showRewarded(app.ascend.monetization.ads.RewardedFeature.RESUME_OPTIMIZE)) return@launch
+            // Free users watch a rewarded ad to unlock one optimization; Pro bypasses.
+            // The reward is granted only on the earned-reward callback (rule 5).
+            when (monetization.showRewarded(app.ascend.monetization.Placement.REWARDED_RESUME_OPTIMIZE)) {
+                is app.ascend.monetization.RewardOutcome.NotGranted -> return@launch  // no reward → keep current screen
+                else -> Unit  // Granted or ProBypass → proceed
+            }
             _ui.value = ResumeUi.Loading
             _ui.value = try {
                 val res = api.optimizeResume(OptimizeRequest(resumeId = resumeId, jobId = jobId))

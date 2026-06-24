@@ -38,7 +38,7 @@ sealed interface MockUi {
 @HiltViewModel
 class MockViewModel @Inject constructor(
     private val api: AscendApi,
-    private val ads: app.ascend.monetization.ads.AdsManager,
+    private val monetization: app.ascend.monetization.MonetizationManager,
     private val analytics: AnalyticsTracker,
     private val profile: app.ascend.data.local.ProfileRepository,
 ) : ViewModel() {
@@ -68,8 +68,12 @@ class MockViewModel @Inject constructor(
         val setup = _ui.value as? MockUi.Setup ?: lastSetup
         lastSetup = setup
         viewModelScope.launch {
-            // Free users watch a rewarded ad to start a mock interview (Pro bypasses).
-            if (!ads.showRewarded(app.ascend.monetization.ads.RewardedFeature.MOCK_INTERVIEW)) return@launch
+            // Free users watch a rewarded ad to start a mock interview; Pro bypasses.
+            // Reward granted only on the earned-reward callback (rule 5).
+            when (monetization.showRewarded(app.ascend.monetization.Placement.REWARDED_MOCK_START)) {
+                is app.ascend.monetization.RewardOutcome.NotGranted -> return@launch
+                else -> Unit  // Granted or ProBypass → proceed
+            }
             _ui.value = MockUi.Loading
             _ui.value = try {
                 val r = api.startMock(MockStartRequest(role = setup.role, count = setup.count))

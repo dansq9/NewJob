@@ -106,6 +106,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.coroutines.android)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     implementation(libs.coil.compose)
 
@@ -124,6 +125,9 @@ dependencies {
     // FirebaseApp won't initialize and AnalyticsTracker degrades to Logcat-only.
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.analytics)
+    // Remote Config — all ad behavior (caps/cooldowns/toggles) is RC-controlled.
+    // Degrades to the in-app spec defaults until google-services.json lands.
+    implementation(libs.firebase.config)
 
     // Games engine uses java.time (LocalDate) — desugared for minSdk 24
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")

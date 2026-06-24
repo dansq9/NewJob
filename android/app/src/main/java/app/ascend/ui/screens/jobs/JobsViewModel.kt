@@ -3,12 +3,14 @@ package app.ascend.ui.screens.jobs
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import app.ascend.core.Resource
-import app.ascend.data.billing.EntitlementRepository
 import app.ascend.data.local.ProfileRepository
 import app.ascend.data.model.Job
 import app.ascend.data.model.TrackStage
 import app.ascend.data.remote.jsearch.JSearchRepository
 import app.ascend.data.repo.TrackerRepository
+import app.ascend.monetization.AdDecision
+import app.ascend.monetization.MonetizationManager
+import app.ascend.monetization.Placement
 import app.ascend.ui.SelectedJobStore
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.FlowPreview
@@ -43,7 +45,7 @@ class JobsViewModel @Inject constructor(
     private val tracker: TrackerRepository,
     private val selectedJob: SelectedJobStore,
     private val profileRepo: ProfileRepository,
-    entitlements: EntitlementRepository,
+    private val monetization: MonetizationManager,
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(JobsUiState())
@@ -53,8 +55,18 @@ class JobsViewModel @Inject constructor(
     private var page = 1
     private val seenIds = mutableSetOf<String>()
 
-    val adsEnabled: StateFlow<Boolean> =
-        entitlements.isPro.map { !it }.stateIn(viewModelScope, SharingStarted.Eagerly, true)
+    /**
+     * Whether the native job-list ad may render — decided by MonetizationManager
+     * (Pro → hidden, consent gate, RC toggle). Starts false so the slot collapses
+     * by default and never flashes a blank container (rule 4).
+     */
+    val nativeAdAllowed: StateFlow<Boolean> =
+        monetization.nativeAd(Placement.NATIVE_JOB_LIST)
+            .map { it is AdDecision.Show }
+            .stateIn(viewModelScope, SharingStarted.Eagerly, false)
+
+    /** Organic rows between native ads (RC-controlled; "first 4, then every N"). */
+    val nativeFrequency: Int get() = monetization.nativeListFrequency()
 
     init {
         viewModelScope.launch {

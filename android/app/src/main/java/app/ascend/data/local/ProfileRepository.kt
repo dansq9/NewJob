@@ -39,6 +39,9 @@ class ProfileRepository @Inject constructor(
         return n
     }
 
+    /** Reads the current session counter WITHOUT incrementing (ad eligibility checks). */
+    suspend fun currentSessionNumber(): Int = dataStore.data.first()[Keys.SESSION_NUMBER] ?: 1
+
     /** True once the user has completed a core action (drives user_ad_segment). */
     suspend fun activatedOnce(): Boolean = dataStore.data.first()[Keys.ACTIVATED] ?: false
     suspend fun markActivated() { dataStore.edit { it[Keys.ACTIVATED] = true } }
