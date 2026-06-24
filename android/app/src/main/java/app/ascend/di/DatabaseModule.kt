@@ -18,6 +18,9 @@ object DatabaseModule {
     @Provides @Singleton
     fun database(@ApplicationContext ctx: Context): AscendDatabase =
         Room.databaseBuilder(ctx, AscendDatabase::class.java, "ascend.db")
+            // Pre-launch only: a schema bump wipes saved jobs/tracker/resumes.
+            // BEFORE the first store release, replace this with real Migration(n, n+1)
+            // objects so user data survives app updates.
             .fallbackToDestructiveMigration()
             .build()
 

@@ -11,11 +11,13 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import java.util.UUID
 import javax.inject.Inject
+import javax.inject.Named
 import javax.inject.Singleton
 
 @Singleton
 class ProfileRepository @Inject constructor(
     private val dataStore: DataStore<Preferences>,
+    @Named("device") private val deviceStore: DataStore<Preferences>,
 ) {
     private object Keys {
         val NAME = stringPreferencesKey("name")
@@ -36,11 +38,15 @@ class ProfileRepository @Inject constructor(
 
     suspend fun selectedResumeIdOnce(): String? = dataStore.data.first()[Keys.SELECTED_RESUME]
 
-    /** Stable anonymous install id (random UUID), generated once on first access. */
+    /**
+     * Stable anonymous install id (random UUID), generated once on first access.
+     * Stored in the device-scoped store which is excluded from Android backup, so
+     * it is regenerated on a fresh install rather than restored from the cloud.
+     */
     suspend fun installId(): String {
-        dataStore.data.first()[Keys.INSTALL_ID]?.let { return it }
+        deviceStore.data.first()[Keys.INSTALL_ID]?.let { return it }
         val id = UUID.randomUUID().toString()
-        dataStore.edit { it[Keys.INSTALL_ID] = id }
+        deviceStore.edit { it[Keys.INSTALL_ID] = id }
         return id
     }
 
