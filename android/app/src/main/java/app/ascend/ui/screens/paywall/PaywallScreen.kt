@@ -7,12 +7,12 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.outlined.RecordVoiceOver
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.AutoFixHigh
 import androidx.compose.material.icons.outlined.Block
 import androidx.compose.material.icons.outlined.Bolt
 import androidx.compose.material.icons.outlined.Close
+import androidx.compose.material.icons.outlined.RecordVoiceOver
 import androidx.compose.material.icons.outlined.SupportAgent
 import androidx.compose.material.icons.outlined.Work
 import androidx.compose.material.icons.outlined.WorkspacePremium
@@ -37,7 +37,7 @@ private data class CompareRow(val icon: ImageVector, val label: String, val basi
 private val COMPARE = listOf(
     CompareRow(Icons.Outlined.Work, "Find & apply to jobs", Basic.YES),
     CompareRow(Icons.Outlined.AutoFixHigh, "AI resume optimizer", Basic.ADS),
-    CompareRow(Icons.AutoMirrored.Outlined.RecordVoiceOver, "Mock interviews", Basic.ADS),
+    CompareRow(Icons.Outlined.RecordVoiceOver, "Mock interviews", Basic.ADS),
     CompareRow(Icons.Outlined.Bolt, "Live Interview Navigator", Basic.NO),
     CompareRow(Icons.Outlined.Block, "Ad-free experience", Basic.NO),
     CompareRow(Icons.Outlined.SupportAgent, "Priority support", Basic.NO),

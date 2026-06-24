@@ -40,6 +40,8 @@ fun JobsScreen(nav: NavController, vm: JobsViewModel = hiltViewModel()) {
     val adsEnabled by vm.adsEnabled.collectAsStateWithLifecycle()
     val listState = rememberLazyListState()
     var showFilters by remember { mutableStateOf(false) }
+    // Job rows interleaved with native ad slots (computed here; remember can't run in LazyListScope).
+    val feed = remember(state.jobs, adsEnabled) { buildFeed(state.jobs, adsEnabled) }
 
     // Infinite scroll: load more when near the end.
     LaunchedEffect(listState) {
@@ -86,7 +88,6 @@ fun JobsScreen(nav: NavController, vm: JobsViewModel = hiltViewModel()) {
             is Resource.Success -> {
                 if (state.jobs.isEmpty()) item { EmptyState() }
                 else {
-                    val feed = remember(state.jobs, adsEnabled) { buildFeed(state.jobs, adsEnabled) }
                     items(feed.size) { idx ->
                         when (val row = feed[idx]) {
                             is FeedRow.JobItem -> JobCard(

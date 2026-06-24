@@ -150,7 +150,7 @@ private fun ControlsBar(controls: List<ControlButton>) {
             .fillMaxWidth()
             .background(Brain.Card)
             .windowInsetsPadding(WindowInsets.systemBars)
-            .padding(horizontal = 16.dp, top = 12.dp, bottom = 14.dp),
+            .padding(start = 16.dp, end = 16.dp, top = 12.dp, bottom = 14.dp),
         horizontalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         for (c in controls) {
