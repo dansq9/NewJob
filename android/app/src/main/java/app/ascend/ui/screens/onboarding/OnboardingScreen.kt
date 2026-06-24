@@ -53,14 +53,24 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
     val stepAnimMs = if (animate) config.animationDurationMs.toInt() else 0
     LaunchedEffect(Unit) { vm.onAnimationVariantApplied("onboarding_step") }
 
-    // RC-controlled tour-guide overlay. Placement maps to a step boundary (this app has no
-    // language step, so before/after_language map to the first steps). Fails open: cardCount 0 → skip.
+    // RC-controlled tour-guide overlay. Placement maps to a concrete step boundary.
+    //
+    // NOTE (Product/QA): this native onboarding has NO language step. `before_language` and
+    // `after_language` are LEGACY/ABSTRACT placement names carried in Remote Config for cross-
+    // platform parity; in THIS flow they map to the Welcome and Name steps respectively. Exact
+    // mapping (steps: 0=Welcome, 1=Name, 2=Role, 3=Location, 4=Resume, then finish → Home):
+    //   before_language → step 0 (before/at Welcome — the first screen)
+    //   after_language  → step 1 (at the Name step)
+    //   after_location  → step 4 (after Location, at the Resume step)
+    //   before_home     → after finishing onboarding, before the first main screen
+    // Future: add before_welcome / after_welcome aliases when RC schema is revised.
+    // Fails open: eligibleTourCards == 0 → tour is skipped entirely.
     val triggerStep = remember(config.placement) {
         when (config.placement) {
-            app.ascend.analytics.OnboardingTourPlacement.BEFORE_LANGUAGE -> 0
-            app.ascend.analytics.OnboardingTourPlacement.AFTER_LANGUAGE -> 1
-            app.ascend.analytics.OnboardingTourPlacement.AFTER_LOCATION -> 4
-            app.ascend.analytics.OnboardingTourPlacement.BEFORE_HOME -> STEPS
+            app.ascend.analytics.OnboardingTourPlacement.BEFORE_LANGUAGE -> 0   // Welcome (no language step in this flow)
+            app.ascend.analytics.OnboardingTourPlacement.AFTER_LANGUAGE -> 1     // Name (no language step in this flow)
+            app.ascend.analytics.OnboardingTourPlacement.AFTER_LOCATION -> 4     // Resume (after Location)
+            app.ascend.analytics.OnboardingTourPlacement.BEFORE_HOME -> STEPS    // after finish, before Home
         }
     }
     var tourResolved by rememberSaveable { mutableStateOf(false) }

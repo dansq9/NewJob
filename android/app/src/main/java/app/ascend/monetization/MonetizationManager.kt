@@ -30,6 +30,7 @@ import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Singleton
+import kotlin.math.min
 
 /**
  * The ONE owner of every ad decision (CLAUDE.md rule 2). Screens ASK this; they
@@ -196,7 +197,7 @@ class MonetizationManager @Inject constructor(
             analytics.adShowAttempt(placement.id, fmt)
             val timeout = rc.long(placement.loadTimeoutKey).takeIf { it > 0 } ?: DEFAULT_FULLSCREEN_TIMEOUT_MS
             val shown = withTimeoutOrNull(timeout) {
-                ads.showInterstitial()   // SDK seam; real impl loads+shows here
+                ads.showInterstitial(placement)   // SDK seam; real impl picks the unit from placement.id
                 true
             } ?: false                   // timeout → fail open
             if (shown) {
@@ -298,7 +299,8 @@ class MonetizationManager @Inject constructor(
     private suspend fun maybeShowAppOpen() {
         val p = Placement.APPOPEN_RESUME
         val fmt = p.format.schemaName
-        val reason = appOpenSuppression()
+        // Read-only gate check; ALL mutation (caps, timestamps, shown-marks) stays below, after show.
+        val reason = appOpenSuppressionSnapshot()
         if (reason != null) { logDecision(p, reason); return }
         if (!ads.isAppOpenAdAvailable()) {                            // not preloaded → continue (fail open)
             analytics.adLoadFailed(p.id, fmt, "not_preloaded")
@@ -326,14 +328,18 @@ class MonetizationManager @Inject constructor(
      * show pipeline — it never marks App Open shown, consumes caps, mutates
      * foreground/cooldown state, or starts a load (CLAUDE.md "pure eligibility helpers").
      */
-    suspend fun isAppOpenEligibleSnapshot(): Boolean = appOpenSuppression() == null
+    suspend fun isAppOpenEligibleSnapshot(): Boolean = appOpenSuppressionSnapshot() == null
 
     /**
-     * All app-open gates; returns the blocking reason, or null if eligible. READ-ONLY:
-     * this only evaluates state (entitlement/consent/RC/session/timestamps/caps) and
-     * never mutates anything — the mutation happens in [maybeShowAppOpen] after the show.
+     * READ-ONLY SNAPSHOT of all app-open gates; returns the blocking reason, or null if
+     * eligible. The `Snapshot` suffix is the contract: this method ONLY evaluates state
+     * (entitlement/consent/RC/session/timestamps/caps) and MUST NEVER mutate anything —
+     * it does not mark App Open shown, consume caps, touch timestamps, or start a load/show.
+     * That makes it safe for cross-placement suppression: the splash interstitial calls it
+     * (via [isAppOpenEligibleSnapshot]) to yield priority without running App Open's pipeline.
+     * All App Open mutation lives in [maybeShowAppOpen], strictly after the actual show.
      */
-    private suspend fun appOpenSuppression(): SuppressReason? {
+    private suspend fun appOpenSuppressionSnapshot(): SuppressReason? {
         val p = Placement.APPOPEN_RESUME
         val ent = entitlements.entitlement.first()
         if (ent.isUnknown) return SuppressReason.ENTITLEMENT_UNKNOWN                // no forced ads until resolved
@@ -424,6 +430,11 @@ class MonetizationManager @Inject constructor(
         }
 
         // Ad is ready → show the branded transition for its full duration, then the ad.
+        // The transition CANNOT extend a failed ad wait: readiness is gated above and fails
+        // open (returns NOT_READY) BEFORE we ever reach here, so this branded hold only runs
+        // once an ad is confirmed ready and will show. This is the documented Apero behavior —
+        // a transition duration, NOT a load wait — so it is intentionally not clamped to the
+        // load timeout (unlike the onboarding interstitial, where transition + wait overlap).
         if (rc.bool(RcKeys.AFTER_SPLASH_TRANSITION_ENABLED)) {
             _splashTransition.value = true
             try {
@@ -435,7 +446,7 @@ class MonetizationManager @Inject constructor(
         if (!tryAcquireFullScreen(p.id)) { analytics.adShowFailed(p.id, "mutex"); return ShowOutcome.Skipped(SuppressReason.MUTEX_BUSY) }
         return try {
             analytics.adShowAttempt(p.id, fmt)
-            ads.showInterstitial()   // INTERSTITIAL show path (ad_inter_after_splash is an interstitial)
+            ads.showInterstitial(p)   // INTERSTITIAL show path (canonical placement → splash ad unit)
             recordFullScreenShown(p)
             splashShownThisSession.set(true)
             lastSplashAtMs = SystemClock.elapsedRealtime()
@@ -495,7 +506,12 @@ class MonetizationManager @Inject constructor(
         analytics.adRequest(p.id, fmt)
         val timeout = rc.long(RcKeys.AFTER_ONB_LOAD_TIMEOUT_MS).takeIf { it > 0 } ?: DEFAULT_FULLSCREEN_TIMEOUT_MS
         val transitionEnabled = rc.bool(RcKeys.AFTER_ONB_TRANSITION_ENABLED)
-        val transitionMin = if (transitionEnabled) rc.long(RcKeys.AFTER_ONB_TRANSITION_DURATION_MS) else 0L
+        // Clamp: the branded transition runs CONCURRENTLY with the readiness wait, so its
+        // minimum hold can never exceed `timeout`. If RC sets transition_duration_ms (e.g. 1200)
+        // larger than load_timeout_ms (e.g. 800), the decorative transition must NOT extend the
+        // wait — total user delay stays ≤ load_timeout_ms. A not-ready ad still fails open below.
+        val configuredTransitionMs = if (transitionEnabled) rc.long(RcKeys.AFTER_ONB_TRANSITION_DURATION_MS) else 0L
+        val transitionMin = min(configuredTransitionMs, timeout)
         val start = SystemClock.elapsedRealtime()
         if (transitionEnabled) _splashTransition.value = true
         try {
@@ -517,7 +533,7 @@ class MonetizationManager @Inject constructor(
         if (!tryAcquireFullScreen(p.id)) { analytics.adShowFailed(p.id, "mutex"); return ShowOutcome.Skipped(SuppressReason.MUTEX_BUSY) }
         return try {
             analytics.adShowAttempt(p.id, fmt)
-            ads.showInterstitial()   // INTERSTITIAL show path
+            ads.showInterstitial(p)   // INTERSTITIAL show path (canonical placement → onboarding ad unit)
             recordFullScreenShown(p)
             profile.markOnboardingInterstitialShown()                        // per-install cap
             lastOnboardingInterstitialAtMs = SystemClock.elapsedRealtime()   // forward-suppress window

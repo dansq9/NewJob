@@ -59,10 +59,10 @@ class NoopAdsManager @Inject constructor(
     //
     // Applies identically to NativeAd, InterstitialAd, RewardedAd, and AppOpenAd.
 
-    override suspend fun showInterstitial(placement: AdPlacement) {
+    override suspend fun showInterstitial(placement: app.ascend.monetization.Placement) {
         if (!initialized.get()) return            // consent gate not open yet — never request
         if (entitlements.isPro.first()) return
-        // TODO(AdMob): load + show InterstitialAd for [placement].
+        // TODO(AdMob): load + show the InterstitialAd whose ad unit maps to placement.id.
     }
 
     // No real preload in the Noop → never ready → splash/app-open always fail open (continue).

@@ -1,14 +1,7 @@
 package app.ascend.monetization.ads
 
+import app.ascend.monetization.Placement
 import kotlinx.coroutines.flow.Flow
-
-/** Ad slots in the product (per the monetization plan). */
-enum class AdPlacement {
-    SPLASH_INTERSTITIAL,        // interstitial after splash
-    LOCALIZATION_NATIVE,        // native ad on the language screen
-    RESUME_ONBOARDING_NATIVE,   // native ad on resume optimize during onboarding
-    JOB_LIST_NATIVE,            // native ad every 5 job cards
-}
 
 /** AI features that are free-with-rewarded-ad (and ad-free for Pro). */
 enum class RewardedFeature { RESUME_OPTIMIZE, MOCK_INTERVIEW, RESUME_GENERATE }
@@ -37,7 +30,14 @@ interface AdsManager {
      */
     fun setPaidListener(listener: (app.ascend.monetization.AdPaidEvent) -> Unit)
 
-    suspend fun showInterstitial(placement: AdPlacement = AdPlacement.SPLASH_INTERSTITIAL)
+    /**
+     * Show an interstitial for the given canonical [Placement] (snake_case `placement_id`,
+     * rule 9). The real AdMob impl selects the correct ad unit per placement — e.g.
+     * `ad_inter_after_splash` vs `ad_inter_after_onboarding_complete` map to distinct
+     * units. Format-specific: NEVER route App Open or rewarded through this path
+     * (they have showAppOpen()/showRewarded()), and never route native here (rule 10).
+     */
+    suspend fun showInterstitial(placement: Placement)
 
     /**
      * Whether a non-expired interstitial is preloaded and ready to show now. Used by

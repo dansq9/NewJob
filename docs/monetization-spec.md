@@ -171,6 +171,7 @@ Rules:
 - Missing/invalid Remote Config → use safe defaults and continue onboarding (never block).
 - Tour is not forced unless `force_completion=true`; if `show_skip=true` and `force_completion=false`, show Skip.
 - Do not place the tour before language by default; default placement is `after_location`.
+- **Tour placement → native-step mapping (this app has no language step).** `before_language` / `after_language` are legacy/abstract names kept for cross-platform RC parity; in the Android flow (steps: 0 Welcome, 1 Name, 2 Role, 3 Location, 4 Resume → finish → Home) they resolve to: `before_language` → Welcome (step 0); `after_language` → Name (step 1); `after_location` → Resume step (step 4); `before_home` → after finish, before the first main screen. QA should expect the tour at those exact boundaries. Future RC revision may add `before_welcome` / `after_welcome` aliases.
 - Tour must not interfere with ad placements (`ad_inter_after_splash`, full-screen onboarding native, onboarding-complete interstitial). If a tour placement conflicts with a full-screen ad placement, the monetization placement wins unless Product changes RC; the tour overlay resolves before the onboarding-complete interstitial runs.
 - Respect Android reduced-motion / animator-scale when `reduce_motion_respect_system=true`; animations never delay ad fail-open or block navigation.
 - No raw role/location/query/resume text/filename/name/email/PII may be logged — only controlled `variant`/`card_index`/`cards_seen`/`placement` values.

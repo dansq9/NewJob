@@ -251,6 +251,8 @@ Tracking contract. GA4/Firebase is the source of truth (tROAS-ARO + Remote Confi
 - `variant` (String) — none/subtle/standard/rich
 - `placement` (String) — splash/onboarding_step/tour/before_home
 
+> Tour `placement` mapping (this app has no language step): `before_language` → Welcome step, `after_language` → Name step, `after_location` → Resume step, `before_home` → after finish / before first main screen. `before_language` / `after_language` are legacy/abstract names kept for cross-platform parity.
+
 ## Registered / user properties (attached to every event)
 
 | property | scope | sample | used by |

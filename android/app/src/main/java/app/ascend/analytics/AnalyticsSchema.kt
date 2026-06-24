@@ -282,6 +282,12 @@ enum class OnboardingTourVariant(val v: String, val cap: Int) {
     companion object { fun fromValue(s: String?) = entries.firstOrNull { it.v == s } ?: NONE }
 }
 
+/**
+ * Where the onboarding tour appears. This native flow has NO language step, so
+ * [BEFORE_LANGUAGE] / [AFTER_LANGUAGE] are LEGACY/ABSTRACT names (cross-platform RC parity)
+ * mapped to the Welcome / Name steps in OnboardingScreen — see the mapping table there.
+ * Future: add `before_welcome` / `after_welcome` aliases when the RC schema is revised.
+ */
 enum class OnboardingTourPlacement(val v: String) {
     BEFORE_LANGUAGE("before_language"), AFTER_LANGUAGE("after_language"),
     AFTER_LOCATION("after_location"), BEFORE_HOME("before_home");
