@@ -53,4 +53,11 @@ object AdUnitIds {
 
     /** Convenience for the native Compose slot, which works from a [Placement]. */
     fun nativeUnitFor(placement: Placement): String = unitFor(placement)
+
+    /**
+     * Rewarded ad unit. The rewarded show path only knows a coarse [RewardedFeature] (not a
+     * canonical placement), so all rewarded placements share one unit: the test unit in debug,
+     * blank in release (→ no ad, no reward) until a real unit is wired.
+     */
+    fun rewardedUnit(): String = if (BuildConfig.DEBUG) Test.REWARDED else ""
 }
