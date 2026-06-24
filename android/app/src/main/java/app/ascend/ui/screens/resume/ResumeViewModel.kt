@@ -67,7 +67,10 @@ class ResumeViewModel @Inject constructor(
         viewModelScope.launch {
             when (val r = resumes.add(file)) {
                 is AddResumeResult.Success -> _snackbar.value = "Added ${r.record.name}"
-                is AddResumeResult.Rejected -> _snackbar.value = r.reason
+                is AddResumeResult.Rejected -> {
+                    analytics.resumeUploadFailed(app.ascend.analytics.ErrorType.UNSUPPORTED_FILE)
+                    _snackbar.value = r.reason
+                }
             }
         }
     }
@@ -95,6 +98,7 @@ class ResumeViewModel @Inject constructor(
                 }
                 ResumeUi.Result(res)
             } catch (t: Throwable) {
+                analytics.resumeOptimizeFailed(app.ascend.analytics.errorTypeOf(t))
                 // Record only metadata (op + jobId) — never resume content. Skip offline (expected).
                 if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "resume_optimize", "jobId" to jobId))
                 ResumeUi.Error(if (t.isOffline()) R.string.error_offline else R.string.error_optimize_failed)

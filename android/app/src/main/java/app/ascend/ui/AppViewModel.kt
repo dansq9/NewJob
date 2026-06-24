@@ -6,6 +6,7 @@ import app.ascend.analytics.AnalyticsTracker
 import app.ascend.data.local.ProfileRepository
 import app.ascend.data.model.UserProfile
 import app.ascend.monetization.MonetizationManager
+import app.ascend.monetization.billing.BillingManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
@@ -24,6 +25,7 @@ class AppViewModel @Inject constructor(
     repo: ProfileRepository,
     analytics: AnalyticsTracker,
     monetization: MonetizationManager,
+    billing: BillingManager,
 ) : ViewModel() {
     val start: StateFlow<AppStart> =
         repo.profile
@@ -38,5 +40,8 @@ class AppViewModel @Inject constructor(
         // Fetch Remote Config so all ad caps/cooldowns/toggles are current before
         // any placement is evaluated. Fails safe to the in-app spec defaults.
         viewModelScope.launch { monetization.refreshConfig() }
+        // Resolve the entitlement against Play Billing. Until this completes the
+        // state is entitlement_unknown → no forced ads (spec IAP states).
+        viewModelScope.launch { billing.syncEntitlement() }
     }
 }

@@ -1,5 +1,7 @@
 package app.ascend.analytics
 
+import app.ascend.core.isOffline
+
 /**
  * Typed constants generated from /docs/event-schema.md. The ONLY place raw
  * event/param strings live (CLAUDE.md rules 8-9). Screens/VMs call typed methods
@@ -158,6 +160,14 @@ enum class OnboardingStep(val v: String) { LANGUAGE("language"), ROLE("role"), L
 enum class ErrorType(val v: String) {
     NETWORK("network"), TIMEOUT("timeout"), VALIDATION("validation"),
     NO_RESULTS("no_results"), UNSUPPORTED_FILE("unsupported_file"), API_ERROR("api_error")
+}
+
+/** Maps a caught throwable to a low-cardinality [ErrorType] for the *_failed events. */
+fun errorTypeOf(t: Throwable): ErrorType = when {
+    t is java.net.SocketTimeoutException -> ErrorType.TIMEOUT
+    t is retrofit2.HttpException -> ErrorType.API_ERROR
+    t.isOffline() -> ErrorType.NETWORK
+    else -> ErrorType.API_ERROR
 }
 enum class PaywallVariant(val v: String) { CONTROL("control"), DISCOUNT("discount"), TRIAL("trial"), LIFETIME("lifetime") }
 enum class TriggerPlacement(val v: String) { COPILOT("copilot"), RESUME_DOWNLOAD("resume_download"), MOCK_SCORE("mock_score") }

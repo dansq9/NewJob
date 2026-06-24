@@ -66,6 +66,7 @@ class CopilotViewModel @Inject constructor(
                 val ans = api.copilotAnswer(CopilotAnswerRequest(ctx, s.question))
                 _state.update { it.copy(loading = false, answer = ans) }
             } catch (t: Throwable) {
+                analytics.copilotAnswerFailed(app.ascend.analytics.errorTypeOf(t))
                 // Never log the interviewer question text — metadata only.
                 if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "copilot_answer"))
                 val msg = if (t.isOffline()) R.string.error_offline else R.string.error_copilot_failed

@@ -79,6 +79,7 @@ class MockViewModel @Inject constructor(
                 val r = api.startMock(MockStartRequest(role = setup.role, count = setup.count))
                 MockUi.Live(r.sessionId, r.questions)
             } catch (t: Throwable) {
+                analytics.mockInterviewFailed(app.ascend.analytics.errorTypeOf(t))
                 if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "mock_start"))
                 MockUi.Error(if (t.isOffline()) R.string.error_offline else R.string.error_mock_start_failed, MockUi.Phase.START)
             }
@@ -123,6 +124,7 @@ class MockViewModel @Inject constructor(
                 val answers = live.answers.map { MockAnswer(it.key, it.value) }
                 MockUi.Report(api.scoreMock(MockScoreRequest(live.sessionId, answers)))
             } catch (t: Throwable) {
+                analytics.mockInterviewFailed(app.ascend.analytics.errorTypeOf(t))
                 // Metadata only — never the answer text.
                 if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "mock_score", "answers" to live.answers.size))
                 MockUi.Error(if (t.isOffline()) R.string.error_offline else R.string.error_mock_score_failed, MockUi.Phase.SCORE)

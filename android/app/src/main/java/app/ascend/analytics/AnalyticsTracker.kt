@@ -183,6 +183,55 @@ class AnalyticsTracker @Inject constructor(
     fun paywallDismiss(variant: PaywallVariant, trigger: TriggerPlacement?) =
         log(Ev.PAYWALL_DISMISS, Pr.VARIANT to variant.v, Pr.TRIGGER_PLACEMENT to trigger?.v)
 
+    // ---- Purchase (THE revenue source of truth; real local value+currency, rule 7) ----
+
+    /**
+     * Logs the manual `purchase` event with the REAL local [valueMicros]+[currency]
+     * from Play Billing `ProductDetails` — never a hardcoded/pre-converted USD figure.
+     * Deduped on [transactionId] so a re-delivered purchase is counted once; this is
+     * the single source of truth (the Firebase auto `in_app_purchase` event must NOT
+     * be marked a key event — see event-schema §5).
+     */
+    suspend fun purchase(
+        valueMicros: Long,
+        currency: String,
+        productId: String,
+        productType: String,
+        trial: Boolean,
+        isRenewal: Boolean,
+        transactionId: String,
+    ) {
+        if (!profile.recordPurchaseOnce(transactionId)) return   // dedupe on transaction_id
+        log(
+            Ev.PURCHASE,
+            Pr.VALUE to valueMicros / 1_000_000.0,
+            Pr.CURRENCY to currency,
+            Pr.PRODUCT_ID to productId,
+            Pr.PRODUCT_TYPE to productType,
+            Pr.TRIAL to trial,
+            Pr.IS_RENEWAL to isRenewal,
+            Pr.TRANSACTION_ID to transactionId,
+            Pr.PURCHASE_SOURCE to "play_billing_direct",
+        )
+    }
+
+    // ---- Ad-lifecycle diagnostics (DEBUG funnel; NOT imported to Google Ads) ----
+
+    fun adRequest(placementId: String, format: String) =
+        log(Ev.AD_REQUEST, Pr.PLACEMENT_ID to placementId, Pr.AD_FORMAT to format)
+    fun adLoaded(placementId: String, format: String, adSource: String?) =
+        log(Ev.AD_LOADED, Pr.PLACEMENT_ID to placementId, Pr.AD_FORMAT to format, Pr.AD_SOURCE to adSource)
+    fun adLoadFailed(placementId: String, format: String, reason: String) =
+        log(Ev.AD_LOAD_FAILED, Pr.PLACEMENT_ID to placementId, Pr.AD_FORMAT to format, Pr.REASON to reason)
+    fun adShowAttempt(placementId: String, format: String) =
+        log(Ev.AD_SHOW_ATTEMPT, Pr.PLACEMENT_ID to placementId, Pr.AD_FORMAT to format)
+    fun adShowFailed(placementId: String, reason: String) =
+        log(Ev.AD_SHOW_FAILED, Pr.PLACEMENT_ID to placementId, Pr.REASON to reason)
+    fun adSuppressed(placementId: String, reason: String) =
+        log(Ev.AD_SUPPRESSED, Pr.PLACEMENT_ID to placementId, Pr.REASON to reason)
+    fun adDismissed(placementId: String, format: String) =
+        log(Ev.AD_DISMISSED, Pr.PLACEMENT_ID to placementId, Pr.AD_FORMAT to format)
+
     // ---- Failures (low-cardinality; separate "broke" from "lost interest") ----
 
     fun jobSearchFailed(error: ErrorType) = log(Ev.JOB_SEARCH_FAILED, Pr.ERROR_TYPE to error.v)

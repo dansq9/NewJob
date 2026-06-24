@@ -6,6 +6,7 @@ import androidx.datastore.preferences.core.booleanPreferencesKey
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.intPreferencesKey
 import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.core.stringSetPreferencesKey
 import app.ascend.data.model.UserProfile
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
@@ -30,6 +31,21 @@ class ProfileRepository @Inject constructor(
         val SELECTED_RESUME = stringPreferencesKey("selected_resume_id")
         val SESSION_NUMBER = intPreferencesKey("session_number")
         val ACTIVATED = booleanPreferencesKey("activated")
+        val LOGGED_PURCHASES = stringSetPreferencesKey("logged_purchase_tx")
+    }
+
+    /**
+     * Atomically records that purchase [txId] has been logged; returns true only the
+     * FIRST time (so the `purchase` event is deduped on transaction_id — one source
+     * of truth, never double-counted against the Firebase auto event).
+     */
+    suspend fun recordPurchaseOnce(txId: String): Boolean {
+        var fresh = false
+        dataStore.edit { p ->
+            val seen = p[Keys.LOGGED_PURCHASES] ?: emptySet()
+            if (txId !in seen) { p[Keys.LOGGED_PURCHASES] = seen + txId; fresh = true }
+        }
+        return fresh
     }
 
     /** Local session counter — incremented once per cold start (analytics session_number). */

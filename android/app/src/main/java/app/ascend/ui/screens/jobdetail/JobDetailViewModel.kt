@@ -18,6 +18,7 @@ class JobDetailViewModel @Inject constructor(
     selectedJob: SelectedJobStore,
     private val tracker: TrackerRepository,
     private val monetization: app.ascend.monetization.MonetizationManager,
+    private val analytics: app.ascend.analytics.AnalyticsTracker,
 ) : ViewModel() {
 
     private val jobId: String? = savedState["jobId"]
@@ -45,6 +46,9 @@ class JobDetailViewModel @Inject constructor(
 
     /** The user is leaving to the external apply page — suppress app-open on return. */
     fun onApplyExternal() = monetization.noteExternalLinkOpened()
+
+    /** Opening the external apply link failed (malformed URL / no browser). */
+    fun onApplyFailed() = analytics.externalApplyFailed(app.ascend.analytics.ErrorType.VALIDATION)
 
     private companion object { var detailViewCount = 0 }
 

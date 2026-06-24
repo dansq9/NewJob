@@ -4,6 +4,7 @@ import android.os.SystemClock
 import android.util.Log
 import app.ascend.BuildConfig
 import app.ascend.analytics.AnalyticsTracker
+import app.ascend.data.billing.Entitlement
 import app.ascend.data.billing.EntitlementRepository
 import app.ascend.data.local.ProfileRepository
 import app.ascend.monetization.ads.AdsManager
@@ -113,13 +114,14 @@ class MonetizationManager @Inject constructor(
      * the slot on [AdDecision.Suppressed] — never a blank container (rule 4).
      */
     fun nativeAd(placement: Placement): Flow<AdDecision> =
-        combine(entitlements.isPro, consent.canRequestAds) { pro, canRequest ->
-            decideNative(placement, pro, canRequest)
+        combine(entitlements.entitlement, consent.canRequestAds) { ent, canRequest ->
+            decideNative(placement, ent, canRequest)
         }
 
-    private fun decideNative(placement: Placement, pro: Boolean, canRequestAds: Boolean): AdDecision {
+    private fun decideNative(placement: Placement, ent: Entitlement, canRequestAds: Boolean): AdDecision {
         if (!canRequestAds) return AdDecision.Suppressed(placement, SuppressReason.CONSENT_NOT_READY)
-        if (pro && suppressForPaid()) return AdDecision.Suppressed(placement, SuppressReason.PAID_USER)
+        if (ent.isUnknown) return AdDecision.Suppressed(placement, SuppressReason.ENTITLEMENT_UNKNOWN)  // no forced ads until resolved
+        if (ent.isPro && suppressForPaid()) return AdDecision.Suppressed(placement, SuppressReason.PAID_USER)
         if (!rc.bool(RcKeys.GLOBAL_ENABLED)) return AdDecision.Suppressed(placement, SuppressReason.GLOBAL_DISABLED)
         if (!rc.bool(placement.rcEnabledKey)) return AdDecision.Suppressed(placement, SuppressReason.RC_DISABLED)
         return AdDecision.Show(placement, loadTimeoutMs = 0L)   // native is non-blocking
@@ -132,12 +134,13 @@ class MonetizationManager @Inject constructor(
 
     /** Pure-policy decision for a full-screen placement; the present path re-checks the mutex atomically. */
     suspend fun decide(placement: Placement): AdDecision {
-        val pro = entitlements.isPro.first()
+        val ent = entitlements.entitlement.first()
         val canRequestAds = consent.canRequestAds.value
         val session = profile.currentSessionNumber()
 
         if (!canRequestAds) return AdDecision.Suppressed(placement, SuppressReason.CONSENT_NOT_READY)
-        if (pro && suppressForPaid()) return AdDecision.Suppressed(placement, SuppressReason.PAID_USER)
+        if (ent.isUnknown) return AdDecision.Suppressed(placement, SuppressReason.ENTITLEMENT_UNKNOWN)
+        if (ent.isPro && suppressForPaid()) return AdDecision.Suppressed(placement, SuppressReason.PAID_USER)
         if (!rc.bool(RcKeys.GLOBAL_ENABLED)) return AdDecision.Suppressed(placement, SuppressReason.GLOBAL_DISABLED)
         if (!rc.bool(placement.rcEnabledKey)) return AdDecision.Suppressed(placement, SuppressReason.RC_DISABLED)
         if (session < placement.firstEligibleSession) return AdDecision.Suppressed(placement, SuppressReason.NOT_ELIGIBLE_YET)
@@ -163,15 +166,27 @@ class MonetizationManager @Inject constructor(
             is AdDecision.Suppressed -> { logDecision(placement, d.reason); return ShowOutcome.Skipped(d.reason) }
             is AdDecision.Show -> Unit
         }
-        if (!tryAcquireFullScreen(placement.id)) return ShowOutcome.Skipped(SuppressReason.MUTEX_BUSY)
+        val fmt = placement.format.schemaName
+        if (!tryAcquireFullScreen(placement.id)) {
+            analytics.adShowFailed(placement.id, "mutex")
+            return ShowOutcome.Skipped(SuppressReason.MUTEX_BUSY)
+        }
         return try {
+            analytics.adRequest(placement.id, fmt)
+            analytics.adShowAttempt(placement.id, fmt)
             val timeout = rc.long(placement.loadTimeoutKey).takeIf { it > 0 } ?: DEFAULT_FULLSCREEN_TIMEOUT_MS
             val shown = withTimeoutOrNull(timeout) {
                 ads.showInterstitial()   // SDK seam; real impl loads+shows here
                 true
             } ?: false                   // timeout → fail open
-            if (shown) recordFullScreenShown(placement)
-            if (shown) ShowOutcome.Shown else ShowOutcome.Skipped(null)
+            if (shown) {
+                recordFullScreenShown(placement)
+                analytics.adDismissed(placement.id, fmt)
+                ShowOutcome.Shown
+            } else {
+                analytics.adLoadFailed(placement.id, fmt, "no_fill")   // no preloaded ad / timed out
+                ShowOutcome.Skipped(null)
+            }
         } finally {
             releaseFullScreen(placement.id)
         }
@@ -261,26 +276,36 @@ class MonetizationManager @Inject constructor(
     }
 
     private suspend fun maybeShowAppOpen() {
+        val p = Placement.APPOPEN_RESUME
+        val fmt = p.format.schemaName
         val reason = appOpenSuppression()
-        if (reason != null) { logDecision(Placement.APPOPEN_RESUME, reason); return }
-        if (!ads.isAppOpenAdAvailable()) return                       // not preloaded → continue (fail open)
-        if (!tryAcquireFullScreen(Placement.APPOPEN_RESUME.id)) return
+        if (reason != null) { logDecision(p, reason); return }
+        if (!ads.isAppOpenAdAvailable()) {                            // not preloaded → continue (fail open)
+            analytics.adLoadFailed(p.id, fmt, "not_preloaded")
+            return
+        }
+        if (!tryAcquireFullScreen(p.id)) { analytics.adShowFailed(p.id, "mutex"); return }
         try {
+            analytics.adRequest(p.id, fmt)
+            analytics.adShowAttempt(p.id, fmt)
             ads.showAppOpen()
             val now = SystemClock.elapsedRealtime()
             lastAppOpenAtMs = now
             lastFullScreenAtMs = now
             appOpensThisSession.incrementAndGet()
             rewards.incrementAppOpen()
+            analytics.adDismissed(p.id, fmt)
         } finally {
-            releaseFullScreen(Placement.APPOPEN_RESUME.id)
+            releaseFullScreen(p.id)
         }
     }
 
     /** All app-open gates; returns the blocking reason, or null if eligible to show. */
     private suspend fun appOpenSuppression(): SuppressReason? {
         val p = Placement.APPOPEN_RESUME
-        if (entitlements.isPro.first()) return SuppressReason.PAID_USER             // rule 6: zero forced ads
+        val ent = entitlements.entitlement.first()
+        if (ent.isUnknown) return SuppressReason.ENTITLEMENT_UNKNOWN                // no forced ads until resolved
+        if (ent.isPro) return SuppressReason.PAID_USER                             // rule 6: zero forced ads
         if (!consent.canRequestAds.value) return SuppressReason.CONSENT_NOT_READY   // rule 1
         if (!rc.bool(RcKeys.GLOBAL_ENABLED)) return SuppressReason.GLOBAL_DISABLED
         if (!rc.bool(p.rcEnabledKey)) return SuppressReason.RC_DISABLED             // rule 4: missing → OFF
@@ -370,6 +395,7 @@ class MonetizationManager @Inject constructor(
     }
 
     private fun logDecision(placement: Placement, reason: SuppressReason) {
+        analytics.adSuppressed(placement.id, reason.diag)   // ad_suppressed diagnostic (DEBUG funnel)
         if (BuildConfig.DEBUG) Log.d(TAG, "suppress ${placement.id}: $reason")
     }
 

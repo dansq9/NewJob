@@ -104,7 +104,26 @@ enum class SuppressReason {
     BACKGROUND_TOO_SHORT, // app-open: returned faster than min_background_seconds
     SUPPRESS_ZONE,      // app-open: within a suppress_* window or an active suppressed flow
     NOT_PRELOADED,      // app-open: no ready ad → continue immediately (fail open)
+    ENTITLEMENT_UNKNOWN, // billing not yet resolved — no forced ads until restore resolves
 }
+
+/** Low-cardinality token for the `ad_suppressed` diagnostic event (event-schema §8). */
+val SuppressReason.diag: String
+    get() = when (this) {
+        SuppressReason.PAID_USER -> "paid"
+        SuppressReason.CONSENT_NOT_READY -> "consent"
+        SuppressReason.GLOBAL_DISABLED -> "global_off"
+        SuppressReason.RC_DISABLED -> "rc_off"
+        SuppressReason.NOT_ELIGIBLE_YET -> "not_eligible"
+        SuppressReason.MUTEX_BUSY -> "mutex"
+        SuppressReason.COOLDOWN -> "cooldown"
+        SuppressReason.SESSION_CAP -> "cap"
+        SuppressReason.FIRST_LAUNCH -> "first_launch"
+        SuppressReason.BACKGROUND_TOO_SHORT -> "bg_too_short"
+        SuppressReason.SUPPRESS_ZONE -> "suppress_zone"
+        SuppressReason.NOT_PRELOADED -> "not_preloaded"
+        SuppressReason.ENTITLEMENT_UNKNOWN -> "entitlement_unknown"
+    }
 
 /**
  * Active user flows that suppress the app-open ad while in progress (spec

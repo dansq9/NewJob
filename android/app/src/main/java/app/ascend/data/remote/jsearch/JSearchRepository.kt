@@ -45,10 +45,12 @@ class JSearchRepository @Inject constructor(
                 Resource.Error("Daily search limit reached", e, rateLimited = true, messageRes = R.string.error_rate_limited)
             } else {
                 analytics.recordError(e, mapOf("op" to "job_search", "http" to e.code()))
+                analytics.jobSearchFailed(app.ascend.analytics.ErrorType.API_ERROR)
                 Resource.Error("Couldn't load jobs (${e.code()})", e, messageRes = R.string.error_load_jobs)
             }
         } catch (t: Throwable) {
             val offline = t.isOffline()
+            analytics.jobSearchFailed(app.ascend.analytics.errorTypeOf(t))   // fires on offline (network) + other breaks
             // Offline is an expected condition, not a bug — don't spam the crash backend with it.
             if (!offline) analytics.recordError(t, mapOf("op" to "job_search"))
             Resource.Error(

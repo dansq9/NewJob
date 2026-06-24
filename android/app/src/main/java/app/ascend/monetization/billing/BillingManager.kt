@@ -4,9 +4,14 @@ package app.ascend.monetization.billing
 data class SubPlan(
     val productId: String,
     val title: String,
-    val price: String,      // formatted, e.g. "$9.99"
-    val period: String,     // "month", "year"
+    val price: String,            // localized formatted string from ProductDetails (e.g. "₹799")
+    val period: String,           // "month", "year"
     val highlight: String? = null,
+    // Structured pricing straight from ProductDetails — the REAL local figures the
+    // `purchase` event reports (never hardcoded/pre-converted USD, rule 7).
+    val priceMicros: Long = 0L,   // ProductDetails…priceAmountMicros
+    val currencyCode: String = "", // ProductDetails…priceCurrencyCode (ISO 4217)
+    val productType: String = "",  // weekly | yearly | lifetime
 )
 
 /**
@@ -25,4 +30,11 @@ interface BillingManager {
 
     /** Re-query Play purchases and refresh entitlement; true if Pro found. */
     suspend fun restore(): Boolean
+
+    /**
+     * Connect to Play Billing and resolve the entitlement at startup. Until this
+     * completes the entitlement is `entitlement_unknown` and NO forced ads show.
+     * Call once per cold start.
+     */
+    suspend fun syncEntitlement()
 }

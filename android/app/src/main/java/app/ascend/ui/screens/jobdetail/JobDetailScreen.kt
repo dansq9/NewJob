@@ -100,7 +100,7 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
                             // A malformed URL or a device with no browser must not crash the app.
                             val opened = runCatching { uri.openUri(j.applyUrl!!) }.isSuccess
                             if (opened) { pendingApply = true; vm.onApplyExternal() }
-                            else android.widget.Toast.makeText(ctx, openLinkError, android.widget.Toast.LENGTH_SHORT).show()
+                            else { vm.onApplyFailed(); android.widget.Toast.makeText(ctx, openLinkError, android.widget.Toast.LENGTH_SHORT).show() }
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
                         shape = RoundedCornerShape(14.dp),
