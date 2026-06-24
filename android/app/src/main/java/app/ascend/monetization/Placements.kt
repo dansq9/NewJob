@@ -61,6 +61,8 @@ enum class Placement(
     INTER_AFTER_MOCK_REPORT("ad_inter_after_mock_report", AdFormat.INTERSTITIAL, "ads.inter.mock_report.enabled", 2),
     INTER_AFTER_COPILOT_END("ad_inter_after_copilot_end", AdFormat.INTERSTITIAL, "ads.inter.copilot_end.enabled", 2),
     INTER_AFTER_GAME_COMPLETE("ad_inter_after_game_complete", AdFormat.INTERSTITIAL, "ads.inter.game_complete.enabled", 2),
+    // Splash/session-start interstitial — its own session gate (RC after_splash.*); never session 1.
+    INTER_AFTER_SPLASH("ad_inter_after_splash", AdFormat.INTERSTITIAL, "ads.inter.after_splash.enabled", 2),
 
     // --- Rewarded (user-initiated unlock; "no ad → free" for paid; reward on callback only) ---
     // free/day + rewarded/day caps from the spec's "Rewarded unlocks" table.
@@ -105,6 +107,11 @@ enum class SuppressReason {
     SUPPRESS_ZONE,      // app-open: within a suppress_* window or an active suppressed flow
     NOT_PRELOADED,      // app-open: no ready ad → continue immediately (fail open)
     ENTITLEMENT_UNKNOWN, // billing not yet resolved — no forced ads until restore resolves
+    FIRST_SESSION,       // splash interstitial: session 1 (or below min_session) — never show
+    NOT_ACTIVATED_SESSION_2, // splash interstitial: session 2 but no session-1 core action
+    APPOPEN_ELIGIBLE,    // splash interstitial: App Open is eligible this foreground cycle — yield
+    PROTECTED_FLOW,      // splash interstitial: a protected flow is active (resume/mock/copilot/billing)
+    NOT_READY,           // splash interstitial: no ad ready within the load timeout — fail open
 }
 
 /** Low-cardinality token for the `ad_suppressed` diagnostic event (event-schema §8). */
@@ -123,6 +130,11 @@ val SuppressReason.diag: String
         SuppressReason.SUPPRESS_ZONE -> "suppress_zone"
         SuppressReason.NOT_PRELOADED -> "not_preloaded"
         SuppressReason.ENTITLEMENT_UNKNOWN -> "entitlement_unknown"
+        SuppressReason.FIRST_SESSION -> "first_session"
+        SuppressReason.NOT_ACTIVATED_SESSION_2 -> "not_activated_session_2"
+        SuppressReason.APPOPEN_ELIGIBLE -> "appopen_eligible"
+        SuppressReason.PROTECTED_FLOW -> "protected_flow"
+        SuppressReason.NOT_READY -> "not_ready"
     }
 
 /**

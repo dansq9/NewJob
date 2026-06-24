@@ -7,6 +7,7 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
@@ -77,9 +78,15 @@ class MainActivity : ComponentActivity() {
         setContent {
             AscendTheme {
                 val state by appViewModel.start.collectAsStateWithLifecycle()
-                when (val s = state) {
-                    AppStart.Loading -> Unit // splash stays
-                    is AppStart.Ready -> AscendRoot(startOnboarding = !s.onboarded)
+                val splashAd by appViewModel.splashTransition.collectAsStateWithLifecycle()
+                androidx.compose.foundation.layout.Box(Modifier.fillMaxSize()) {
+                    when (val s = state) {
+                        AppStart.Loading -> Unit // splash stays
+                        is AppStart.Ready -> AscendRoot(startOnboarding = !s.onboarded)
+                    }
+                    // Branded pre-ad transition overlays everything while the splash
+                    // interstitial is about to show (MonetizationManager-driven).
+                    if (splashAd) app.ascend.ui.monetization.SplashTransition()
                 }
             }
         }

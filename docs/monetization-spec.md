@@ -54,6 +54,9 @@ AdMob Mediation is the **sole** owner. **AdMob Network = waterfall** backstop; *
 | `ad_inter_after_game_complete` | Interstitial | Game complete | After completion | `ads.inter.game_complete.enabled` | 1 per 2 games | 90s | session 2 | suppress | — | fail open |
 | `ad_rewarded_game_hint` | Rewarded | Game | Hint / redo / extra puzzle | `ads.reward.game_hint.enabled` | — | — | any | no ad (free for Pro) | retry | gated; clear retry/upgrade |
 | `ad_appopen_resume` | App-open | App resume | Return from background | `ads.appopen.resume.enabled` | 1/sess · 2/day | 30 min | s2 if activated, else s3 | suppress | — | fail open |
+| `ad_inter_after_splash` | Interstitial | App splash / session start | After splash/profile load + UMP consent resolves, before Home/Onboarding continuation | `ads.inter.after_splash.enabled` | max 1 / session | 180s | session 2 if activated in session 1, else session 3 | suppress | skip | fail open after timeout |
+
+**Splash vs App Open.** The splash/session-start interstitial (`ad_inter_after_splash`) is **separate** from App Open (`ad_appopen_resume`). Splash interstitial fires on **cold/session start** after splash/profile load; App Open fires on **background→foreground resume**. They must **never both show in the same foreground cycle** (`ads.inter.after_splash.suppress_if_appopen_eligible`). The 3-second branded transition is a *branded transition duration*, **not** an ad-load wait — if no ad is ready within `load_timeout_ms`, continue (fail open); never hold the user 3s for a failed ad. Never on session 1.
 
 ## Remote Config keys
 
@@ -85,6 +88,14 @@ Missing full-screen key => OFF. No blank containers.
 | `ads.appopen.resume.suppress_after_fullscreen_ad_seconds` | 180 | 120–300 | n/a | n/a | 300 |
 | `ads.appopen.resume.load_timeout_ms` | 1200 | 800–1500 | n/a | n/a | 1200 |
 | `ads.appopen.resume.ad_expiration_hours` | 4 | 4 | n/a | n/a | 4 |
+| `ads.inter.after_splash.enabled` | false | true|false | suppress | skip | false |
+| `ads.inter.after_splash.min_session` | 2 | 2|3|4 | n/a | n/a | 3 |
+| `ads.inter.after_splash.require_activation_for_session_2` | true | true|false | n/a | n/a | true |
+| `ads.inter.after_splash.cooldown_seconds` | 180 | 120–600 | n/a | n/a | 300 |
+| `ads.inter.after_splash.load_timeout_ms` | 1000 | 800–1200 | n/a | skip | 1000 |
+| `ads.inter.after_splash.transition_enabled` | true | true|false | n/a | n/a | true |
+| `ads.inter.after_splash.transition_duration_ms` | 3000 | 1500–3000 | n/a | n/a | 1500 |
+| `ads.inter.after_splash.suppress_if_appopen_eligible` | true | true|false | n/a | n/a | true |
 | `paywall.variant` | control | control|discount|trial|lifetime | n/a | last cached | control |
 | `paywall.suppress_if_rewarded_engaged` | true | true|false | n/a | n/a | true |
 | `push.jobs_fresh.daily_cap` | 1 | 0–2 | n/a | n/a | 1 |

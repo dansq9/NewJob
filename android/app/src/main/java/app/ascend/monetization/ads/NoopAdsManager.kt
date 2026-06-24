@@ -65,7 +65,8 @@ class NoopAdsManager @Inject constructor(
         // TODO(AdMob): load + show InterstitialAd for [placement].
     }
 
-    // No real preload in the Noop → never available → app-open always fails open (continues).
+    // No real preload in the Noop → never ready → splash/app-open always fail open (continue).
+    override fun isInterstitialReady(): Boolean = false
     override fun isAppOpenAdAvailable(): Boolean = false
 
     override suspend fun showAppOpen() {

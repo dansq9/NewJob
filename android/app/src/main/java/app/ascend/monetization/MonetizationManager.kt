@@ -15,7 +15,11 @@ import app.ascend.monetization.consent.ConsentManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -72,6 +76,13 @@ class MonetizationManager @Inject constructor(
     private val firstForeground = java.util.concurrent.atomic.AtomicBoolean(true)
     private val appOpensThisSession = AtomicInteger(0)
     private val activeFlows = java.util.concurrent.ConcurrentHashMap.newKeySet<AdFlow>()
+
+    // ---- Splash / session-start interstitial state ----
+    private val splashShownThisSession = java.util.concurrent.atomic.AtomicBoolean(false)
+    @Volatile private var lastSplashAtMs: Long = Long.MIN_VALUE
+    private val _splashTransition = MutableStateFlow(false)
+    /** True while the branded pre-ad transition surface should be shown over the app. */
+    val splashTransition: StateFlow<Boolean> = _splashTransition.asStateFlow()
 
     // App-lifetime scope so a full-screen present survives the caller's lifecycle
     // (e.g. an interstitial requested as a screen pops). The real ad shows over the
@@ -359,6 +370,86 @@ class MonetizationManager @Inject constructor(
     private fun within(eventAtMs: Long, secondsKey: String): Boolean {
         if (eventAtMs == Long.MIN_VALUE) return false
         return SystemClock.elapsedRealtime() - eventAtMs < rc.long(secondsKey) * 1000
+    }
+
+    // ---- Splash / session-start interstitial (Apero-style; separate from App Open) ----
+
+    /**
+     * Run the splash/session-start interstitial at cold start (call once, after the
+     * start destination + UMP consent + session number are known). Never on session 1.
+     *
+     * The 3-second branded transition is a BRANDED transition, not an ad-load wait:
+     * an ad must be ready within `load_timeout_ms` first (fail open if not — no 3s
+     * hold), and only then is the transition shown for its full duration before the
+     * ad. All decisions go through this manager; the UI just observes [splashTransition].
+     */
+    suspend fun runSplashInterstitial(): ShowOutcome {
+        val p = Placement.INTER_AFTER_SPLASH
+        val fmt = p.format.schemaName
+        val reason = splashSuppression()
+        if (reason != null) { logDecision(p, reason); return ShowOutcome.Skipped(reason) }
+
+        // Ad-load gate (NOT the branded duration): wait at most load_timeout for a ready ad.
+        analytics.adRequest(p.id, fmt)
+        val timeout = rc.long(RcKeys.AFTER_SPLASH_LOAD_TIMEOUT_MS).takeIf { it > 0 } ?: DEFAULT_FULLSCREEN_TIMEOUT_MS
+        val ready = withTimeoutOrNull(timeout) {
+            while (!ads.isInterstitialReady()) delay(50)
+            true
+        } ?: false
+        if (!ready) {                                   // no ad ready → fail open, never hold 3s
+            analytics.adLoadFailed(p.id, fmt, "not_ready")
+            return ShowOutcome.Skipped(SuppressReason.NOT_READY)
+        }
+
+        // Ad is ready → show the branded transition for its full duration, then the ad.
+        if (rc.bool(RcKeys.AFTER_SPLASH_TRANSITION_ENABLED)) {
+            _splashTransition.value = true
+            try {
+                delay(rc.long(RcKeys.AFTER_SPLASH_TRANSITION_DURATION_MS))
+            } finally {
+                _splashTransition.value = false
+            }
+        }
+        if (!tryAcquireFullScreen(p.id)) { analytics.adShowFailed(p.id, "mutex"); return ShowOutcome.Skipped(SuppressReason.MUTEX_BUSY) }
+        return try {
+            analytics.adShowAttempt(p.id, fmt)
+            ads.showInterstitial()
+            recordFullScreenShown(p)
+            splashShownThisSession.set(true)
+            lastSplashAtMs = SystemClock.elapsedRealtime()
+            analytics.adDismissed(p.id, fmt)
+            ShowOutcome.Shown
+        } finally {
+            releaseFullScreen(p.id)
+        }
+    }
+
+    private suspend fun splashSuppression(): SuppressReason? {
+        val p = Placement.INTER_AFTER_SPLASH
+        val ent = entitlements.entitlement.first()
+        if (ent.isUnknown) return SuppressReason.ENTITLEMENT_UNKNOWN
+        if (ent.isPro) return SuppressReason.PAID_USER                              // rule 6
+        if (!consent.canRequestAds.value) return SuppressReason.CONSENT_NOT_READY   // rule 1
+        if (!rc.bool(RcKeys.GLOBAL_ENABLED)) return SuppressReason.GLOBAL_DISABLED
+        if (!rc.bool(p.rcEnabledKey)) return SuppressReason.RC_DISABLED             // remote_config_off; missing → OFF
+
+        // Session gate: never session 1; session == min only if activated in session 1; else min+.
+        val session = profile.currentSessionNumber()
+        val minSession = rc.long(RcKeys.AFTER_SPLASH_MIN_SESSION).toInt()
+        if (session < minSession) return SuppressReason.FIRST_SESSION
+        if (session == minSession && rc.bool(RcKeys.AFTER_SPLASH_REQUIRE_ACTIVATION_S2) && !profile.activatedOnce()) {
+            return SuppressReason.NOT_ACTIVATED_SESSION_2
+        }
+
+        // Never both splash + App Open in the same foreground cycle.
+        if (rc.bool(RcKeys.AFTER_SPLASH_SUPPRESS_IF_APPOPEN) && appOpenSuppression() == null) {
+            return SuppressReason.APPOPEN_ELIGIBLE
+        }
+        if (activeFlows.isNotEmpty()) return SuppressReason.PROTECTED_FLOW          // resume/mock/copilot/billing/legal
+        if (isFullScreenBusy()) return SuppressReason.MUTEX_BUSY                    // rule 3
+        if (splashShownThisSession.get()) return SuppressReason.SESSION_CAP         // max 1 / session
+        if (within(lastSplashAtMs, RcKeys.AFTER_SPLASH_COOLDOWN_SECONDS)) return SuppressReason.COOLDOWN
+        return null
     }
 
     // ---- Full-screen mutex (also used by paywall / permission / purchase dialogs, rule 3) ----

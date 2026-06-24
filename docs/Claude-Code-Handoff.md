@@ -80,6 +80,26 @@ Wire native and interstitial placements exactly per the table: placement_id, scr
 Acceptance: each placement matches the table; native collapses on no-fill; no full-screen ad before the first value moment (native allowed only if non-blocking).
 ```
 
+### Task 5a — Splash interstitial + branded pre-ad transition
+```
+Read /docs/monetization-spec.md (ad_inter_after_splash) and CLAUDE.md rules 1-4, 6-9.
+Add the Apero-style splash/session-start interstitial — SEPARATE from App Open.
+- Implement ad_inter_after_splash exactly from the spec; MonetizationManager only,
+  no screen-level ad SDK calls.
+- Never on session 1. Session 2 requires a session-1 core_action_done; session 3+
+  per Remote Config (min_session + require_activation_for_session_2).
+- Show the 3-second branded transition ONLY when eligible, transition enabled, and
+  an ad is ready — it is a branded transition, NOT an ad-load wait. If no ad is
+  ready within load_timeout_ms, fail open and continue (no 3s hold on failure).
+- Suppress if App Open is eligible/active in the same foreground cycle; suppress for
+  paid users; honor the UMP consent gate and the full-screen mutex.
+- Log ad_show_attempt, ad_suppressed, ad_show_failed, ad_dismissed, ad_impression
+  through the existing analytics wrapper; placement_id = ad_inter_after_splash.
+Acceptance: no full-screen ad in session 1; session-2 gated on activation; 3s branded
+transition before an eligible ad; fail open on not-ready; paid users see nothing;
+splash + App Open never both fire in one foreground cycle; QA IA08–IA15 pass.
+```
+
 ### Task 6 — Rewarded unlocks + Copilot gating
 ```
 Read /docs/monetization-spec.md (Rewarded caps) and CLAUDE.md rules 5-6.

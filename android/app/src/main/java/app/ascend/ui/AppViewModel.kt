@@ -7,12 +7,15 @@ import app.ascend.data.local.ProfileRepository
 import app.ascend.data.model.UserProfile
 import app.ascend.monetization.MonetizationManager
 import app.ascend.monetization.billing.BillingManager
+import app.ascend.monetization.consent.ConsentManager
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 
 sealed interface AppStart {
@@ -24,13 +27,17 @@ sealed interface AppStart {
 class AppViewModel @Inject constructor(
     repo: ProfileRepository,
     analytics: AnalyticsTracker,
-    monetization: MonetizationManager,
+    private val monetization: MonetizationManager,
     billing: BillingManager,
+    consent: ConsentManager,
 ) : ViewModel() {
     val start: StateFlow<AppStart> =
         repo.profile
             .map<UserProfile, AppStart> { AppStart.Ready(it.onboarded) }
             .stateIn(viewModelScope, SharingStarted.Eagerly, AppStart.Loading)
+
+    /** True while the branded splash-interstitial transition should overlay the app. */
+    val splashTransition: StateFlow<Boolean> = monetization.splashTransition
 
     init {
         // Once per cold start: establish identity + user properties and fire
@@ -43,5 +50,13 @@ class AppViewModel @Inject constructor(
         // Resolve the entitlement against Play Billing. Until this completes the
         // state is entitlement_unknown → no forced ads (spec IAP states).
         viewModelScope.launch { billing.syncEntitlement() }
+        // Splash/session-start interstitial: run once the start destination is known
+        // and UMP consent has resolved. The manager owns every gate (never session 1,
+        // session-2 activation, paid, App-Open mutex, RC default OFF, fail open).
+        viewModelScope.launch {
+            start.first { it is AppStart.Ready }
+            withTimeoutOrNull(2500) { consent.canRequestAds.first { it } }   // let consent resolve (capped)
+            monetization.runSplashInterstitial()
+        }
     }
 }

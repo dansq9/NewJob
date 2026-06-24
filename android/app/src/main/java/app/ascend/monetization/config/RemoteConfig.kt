@@ -36,6 +36,15 @@ object RcKeys {
     // Rewarded global daily cap (total ad-backed unlocks per day, across all placements)
     const val REWARD_DAILY_CAP = "ads.reward.daily_cap"
 
+    // Splash / session-start interstitial (Apero-style; separate from App Open)
+    const val AFTER_SPLASH_MIN_SESSION = "ads.inter.after_splash.min_session"
+    const val AFTER_SPLASH_REQUIRE_ACTIVATION_S2 = "ads.inter.after_splash.require_activation_for_session_2"
+    const val AFTER_SPLASH_COOLDOWN_SECONDS = "ads.inter.after_splash.cooldown_seconds"
+    const val AFTER_SPLASH_LOAD_TIMEOUT_MS = "ads.inter.after_splash.load_timeout_ms"
+    const val AFTER_SPLASH_TRANSITION_ENABLED = "ads.inter.after_splash.transition_enabled"
+    const val AFTER_SPLASH_TRANSITION_DURATION_MS = "ads.inter.after_splash.transition_duration_ms"
+    const val AFTER_SPLASH_SUPPRESS_IF_APPOPEN = "ads.inter.after_splash.suppress_if_appopen_eligible"
+
     // Native frequency (job list)
     const val NATIVE_JOB_LIST_FREQUENCY = "ads.native.job_list.frequency"
 
@@ -83,6 +92,15 @@ private val DEFAULTS: Map<String, Any> = mapOf(
     RcKeys.INTER_MAX_PER_SESSION to 1L,
 
     RcKeys.REWARD_DAILY_CAP to 3L,   // missing-key (fail-safe) value; spec default is 5
+
+    // Splash interstitial — fail-safe (missing-key) values; OFF until configured.
+    RcKeys.AFTER_SPLASH_MIN_SESSION to 3L,
+    RcKeys.AFTER_SPLASH_REQUIRE_ACTIVATION_S2 to true,
+    RcKeys.AFTER_SPLASH_COOLDOWN_SECONDS to 300L,
+    RcKeys.AFTER_SPLASH_LOAD_TIMEOUT_MS to 1000L,
+    RcKeys.AFTER_SPLASH_TRANSITION_ENABLED to true,
+    RcKeys.AFTER_SPLASH_TRANSITION_DURATION_MS to 1500L,
+    RcKeys.AFTER_SPLASH_SUPPRESS_IF_APPOPEN to true,
 
     RcKeys.NATIVE_JOB_LIST_FREQUENCY to 8L,
 

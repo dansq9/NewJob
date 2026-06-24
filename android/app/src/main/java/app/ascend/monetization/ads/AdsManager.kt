@@ -40,6 +40,13 @@ interface AdsManager {
     suspend fun showInterstitial(placement: AdPlacement = AdPlacement.SPLASH_INTERSTITIAL)
 
     /**
+     * Whether a non-expired interstitial is preloaded and ready to show now. Used by
+     * the splash interstitial to fail open (continue) when no ad is ready within the
+     * load timeout — never block the user. The real impl preloads in the background.
+     */
+    fun isInterstitialReady(): Boolean
+
+    /**
      * Whether a non-expired app-open ad is preloaded and ready to show right now.
      * If false, the caller must continue immediately — app-open never blocks resume
      * (CLAUDE.md rule 4, fail open). The real impl preloads in the background and

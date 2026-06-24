@@ -28,6 +28,14 @@ Dual sign-off (partner check, then QA confirm). Evidence (video/screenshot) requ
 | IA05 | Interstitial | Show after splash loads | No ad before splash; loading then ad | High |
 | IA06 | Interstitial | No internet | Flow continues normally; no block | High |
 | IA07 | Interstitial | Ad does not overlay app content/audio | No popup/music overlap during ad | Medium |
+| IA08 | Interstitial | Interstitial after splash/session start | `ad_inter_after_splash` only after splash/profile load and UMP consent resolution; never before splash | High |
+| IA09 | Interstitial | No splash interstitial on first session | No `ad_inter_after_splash` in session 1 | Critical |
+| IA10 | Interstitial | Session-2 activation gate | Session 2 only eligible if `core_action_done` happened in session 1; otherwise first eligible is session 3 | High |
+| IA11 | Interstitial | Splash transition animation | 3-second branded loading/transition surface before the ad; no tap prompt, no fake reward language, no ad-like UI | Medium |
+| IA12 | Interstitial | Splash interstitial fail-open | If the ad is not ready within `ads.inter.after_splash.load_timeout_ms`, continue to the target screen (no 3s hold for a failed ad) | Critical |
+| IA13 | Interstitial | Splash interstitial vs App Open mutex | `ad_inter_after_splash` and `ad_appopen_resume` never both show in the same foreground cycle | Critical |
+| IA14 | Interstitial | Splash interstitial paid-user suppression | Paid users never see the splash interstitial or its transition | Critical |
+| IA15 | Interstitial | Splash interstitial UMP gate | No splash interstitial request/show before `canRequestAds()==true` | Critical |
 | OA01 | App-open | Background fill under resume ad | Branded/neutral surface, no half-rendered content | Medium |
 | OA02 | App-open | Click resume ad | Redirects to landing page | Medium |
 | OA03 | App-open | Close resume ad | Returns to the resume screen | High |
