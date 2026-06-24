@@ -5,6 +5,7 @@ import androidx.lifecycle.DefaultLifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.ProcessLifecycleOwner
 import app.ascend.monetization.MonetizationManager
+import app.ascend.monetization.ads.CurrentActivityHolder
 import dagger.hilt.android.HiltAndroidApp
 import javax.inject.Inject
 
@@ -15,6 +16,8 @@ class AscendApp : Application() {
 
     override fun onCreate() {
         super.onCreate()
+        // Track the resumed Activity so full-screen ads (AdMob requires an Activity) can show.
+        CurrentActivityHolder.register(this)
         // Drive the app-open ad off process foreground/background. The first ON_START
         // (cold start) is ignored inside the manager — app-open shows only on a real
         // return from background, gated by every suppression rule (CLAUDE.md rules 1-4).

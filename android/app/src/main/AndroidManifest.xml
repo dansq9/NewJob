@@ -24,6 +24,13 @@
         android:localeConfig="@xml/locales_config"
         android:theme="@style/Theme.Ascend">
 
+        <!-- AdMob App ID (Google Mobile Ads). Value injected per build type via the
+             admobAppId manifest placeholder — sample/test id by default, real id in
+             release from local.properties. Required or MobileAds.initialize crashes. -->
+        <meta-data
+            android:name="com.google.android.gms.ads.APPLICATION_ID"
+            android:value="${admobAppId}" />
+
         <activity
             android:name=".MainActivity"
             android:exported="true"
