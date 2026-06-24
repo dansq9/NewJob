@@ -31,7 +31,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import app.ascend.R
 import app.ascend.core.Resource
+import app.ascend.monetization.Placement
 import app.ascend.ui.components.JobCard
+import app.ascend.ui.monetization.NativeAdSlot
 import app.ascend.ui.navigation.Routes
 import app.ascend.ui.theme.AscendColors
 
@@ -97,6 +99,7 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
                 row.forEach { qa -> QuickActionCard(qa, Modifier.weight(1f)) { nav.navigate(qa.route) } }
             }
         }
+        item { NativeAdSlot(placement = Placement.NATIVE_HOME_MID, modifier = Modifier.fillMaxWidth()) }
         item {
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.padding(top = 10.dp)) {
                 Text(stringResource(R.string.home_top_matches), style = MaterialTheme.typography.titleLarge, color = AscendColors.Ink, modifier = Modifier.weight(1f))

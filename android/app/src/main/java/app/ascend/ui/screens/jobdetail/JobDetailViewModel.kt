@@ -17,6 +17,7 @@ class JobDetailViewModel @Inject constructor(
     savedState: SavedStateHandle,
     selectedJob: SelectedJobStore,
     private val tracker: TrackerRepository,
+    private val monetization: app.ascend.monetization.MonetizationManager,
 ) : ViewModel() {
 
     private val jobId: String? = savedState["jobId"]
@@ -27,10 +28,22 @@ class JobDetailViewModel @Inject constructor(
     val job: StateFlow<Job?> = _job.asStateFlow()
 
     init {
+        detailViewCount++   // session-scoped count of job-detail opens (drives close interstitial)
         if (_job.value == null && jobId != null) {
             viewModelScope.launch { _job.value = tracker.get(jobId)?.job }
         }
     }
+
+    /**
+     * ad_inter_after_job_detail_close — call when leaving the detail. Only eligible
+     * after the user has viewed ≥2 details this session (per the spec trigger); the
+     * manager still owns the real gate (paid/consent/RC/cap/cooldown/session 2).
+     */
+    fun onClose() {
+        if (detailViewCount >= 2) monetization.requestFullScreen(app.ascend.monetization.Placement.INTER_AFTER_JOB_DETAIL_CLOSE)
+    }
+
+    private companion object { var detailViewCount = 0 }
 
     val saved: StateFlow<Boolean> = combine(job, tracker.tracked) { j, list ->
         j != null && list.any { it.job.id == j.id }

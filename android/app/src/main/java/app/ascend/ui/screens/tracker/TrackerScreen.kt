@@ -36,6 +36,8 @@ import androidx.navigation.NavController
 import app.ascend.data.model.TrackStage
 import app.ascend.data.repo.TrackedJob
 import app.ascend.R
+import app.ascend.monetization.Placement
+import app.ascend.ui.monetization.NativeAdSlot
 import app.ascend.ui.components.CompanyAvatar
 import app.ascend.ui.i18n.label
 import app.ascend.ui.navigation.Routes
@@ -120,6 +122,8 @@ fun TrackerScreen(nav: NavController, vm: TrackerViewModel = hiltViewModel()) {
         }
         if (state.total == 0) {
             item { EmptyTracker(onFind = { nav.navigate(Routes.JOBS) }) }
+            // ad_native_tracker_empty — only when there are no tracked jobs (collapses on no-fill).
+            item { NativeAdSlot(Placement.NATIVE_TRACKER_EMPTY) }
         } else if (state.grouped.isEmpty()) {
             item { NoMatches() }
         } else {

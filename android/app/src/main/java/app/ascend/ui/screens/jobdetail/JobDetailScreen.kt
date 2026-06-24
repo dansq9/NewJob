@@ -52,6 +52,9 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
     val openLinkError = stringResource(R.string.error_open_link)
     val j = job
 
+    // System back also counts as closing the detail (ad_inter_after_job_detail_close).
+    androidx.activity.compose.BackHandler { vm.onClose(); nav.popBackStack() }
+
     // After the user opens the external apply link and returns, prompt to track it.
     var pendingApply by remember { mutableStateOf(false) }
     var showApplyPrompt by remember { mutableStateOf(false) }
@@ -70,7 +73,7 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
             TopAppBar(
                 title = {},
                 navigationIcon = {
-                    IconButton(onClick = { nav.popBackStack() }) {
+                    IconButton(onClick = { vm.onClose(); nav.popBackStack() }) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.action_back), tint = AscendColors.Ink)
                     }
                 },
@@ -167,6 +170,9 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
                 j.description?.take(1200) ?: stringResource(R.string.jobdetail_no_description),
                 fontSize = 14.sp, color = AscendColors.Body, lineHeight = 22.sp,
             )
+            Spacer(Modifier.height(20.dp))
+            // ad_native_job_detail_bottom — below the description (collapses on no-fill).
+            app.ascend.ui.monetization.NativeAdSlot(app.ascend.monetization.Placement.NATIVE_JOB_DETAIL_BOTTOM)
         }
     }
 

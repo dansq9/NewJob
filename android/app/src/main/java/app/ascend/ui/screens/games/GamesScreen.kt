@@ -95,7 +95,14 @@ fun GamesScreen(nav: NavController) {
                 Text(stringResource(R.string.games_header_blurb),
                     color = AscendColors.Muted, fontSize = 14.sp)
             }
-            items(GameId.all) { game ->
+            items(GameId.all.take(2)) { game ->
+                PuzzleCard(game) { nav.navigate("game/${game.id}") }
+            }
+            // ad_native_games_hub — full-width, after the first game row (collapses on no-fill).
+            item(span = { GridItemSpan(2) }) {
+                app.ascend.ui.monetization.NativeAdSlot(app.ascend.monetization.Placement.NATIVE_GAMES_HUB)
+            }
+            items(GameId.all.drop(2)) { game ->
                 PuzzleCard(game) { nav.navigate("game/${game.id}") }
             }
         }

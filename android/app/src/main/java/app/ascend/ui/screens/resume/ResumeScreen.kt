@@ -37,6 +37,8 @@ import androidx.navigation.NavController
 import app.ascend.R
 import app.ascend.data.remote.platform.OptimizeResponse
 import app.ascend.data.repo.ResumeRecord
+import app.ascend.monetization.Placement
+import app.ascend.ui.monetization.NativeAdSlot
 import app.ascend.ui.components.AscendTopBar
 import app.ascend.ui.components.SectionLabel
 import app.ascend.ui.theme.AscendColors
@@ -198,6 +200,9 @@ private fun Results(data: OptimizeResponse, resumeName: String?) {
             }
         }
     }
+    Spacer(Modifier.height(16.dp))
+    // ad_native_resume_result — below the score, before suggestions (collapses on no-fill).
+    NativeAdSlot(Placement.NATIVE_RESUME_RESULT)
     Spacer(Modifier.height(16.dp))
     data.issues.forEach { issue ->
         Surface(Modifier.fillMaxWidth().padding(bottom = 10.dp), shape = RoundedCornerShape(16.dp),

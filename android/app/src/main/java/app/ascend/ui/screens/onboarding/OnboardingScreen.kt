@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import app.ascend.R
+import app.ascend.monetization.Placement
+import app.ascend.ui.monetization.NativeAdSlot
 import app.ascend.ui.theme.AscendColors
 import app.ascend.ui.util.rememberResumePicker
 
@@ -184,6 +186,8 @@ private fun ResumeStep(vm: OnboardingViewModel, pick: () -> Unit) {
             Spacer(Modifier.height(10.dp))
             TextButton(onClick = { vm.clearResume() }) { Text(stringResource(R.string.action_remove), color = AscendColors.Muted) }
         }
+        Spacer(Modifier.height(16.dp))
+        NativeAdSlot(placement = Placement.NATIVE_ONBOARDING_FINAL, modifier = Modifier.fillMaxWidth())
     }
 }
 

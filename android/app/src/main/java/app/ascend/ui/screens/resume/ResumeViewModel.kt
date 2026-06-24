@@ -99,6 +99,11 @@ class ResumeViewModel @Inject constructor(
                 if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "resume_optimize", "jobId" to jobId))
                 ResumeUi.Error(if (t.isOffline()) R.string.error_offline else R.string.error_optimize_failed)
             }
+            // ad_inter_after_resume_score — after the value moment (result shown). The manager
+            // gates it (paid/consent/RC/cap 1·session/cooldown/first-eligible session 2).
+            if (_ui.value is ResumeUi.Result) {
+                monetization.requestFullScreen(app.ascend.monetization.Placement.INTER_AFTER_RESUME_SCORE)
+            }
         }
     }
 

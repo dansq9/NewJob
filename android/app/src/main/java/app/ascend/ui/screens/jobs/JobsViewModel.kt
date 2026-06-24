@@ -55,6 +55,18 @@ class JobsViewModel @Inject constructor(
     private var page = 1
     private val seenIds = mutableSetOf<String>()
 
+    // ad_inter_after_search_batch: count search batches (new search + load more); attempt an
+    // interstitial after the 2nd, then on alternate batches. MonetizationManager owns the real
+    // gate (paid/consent/RC/cap/cooldown/first-eligible session 2), so this only marks intent.
+    private var searchBatches = 0
+
+    private fun maybeShowSearchInterstitial() {
+        searchBatches++
+        if (searchBatches >= 2 && searchBatches % 2 == 0) {
+            monetization.requestFullScreen(Placement.INTER_AFTER_SEARCH_BATCH)
+        }
+    }
+
     /**
      * Whether the native job-list ad may render — decided by MonetizationManager
      * (Pro → hidden, consent gate, RC toggle). Starts false so the slot collapses
@@ -98,6 +110,7 @@ class JobsViewModel @Inject constructor(
                 is Resource.Success -> {
                     val fresh = res.data.dedup()
                     _state.update { it.copy(jobs = fresh, status = Resource.Success(Unit), endReached = res.data.isEmpty()) }
+                    maybeShowSearchInterstitial()
                 }
                 is Resource.Error -> _state.update { it.copy(status = res) }
                 Resource.Loading -> Unit

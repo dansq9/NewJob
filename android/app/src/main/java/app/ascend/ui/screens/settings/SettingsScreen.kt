@@ -28,6 +28,8 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import app.ascend.R
 import app.ascend.i18n.LocaleManager
+import app.ascend.monetization.Placement
+import app.ascend.ui.monetization.NativeAdSlot
 import app.ascend.ui.components.AscendTopBar
 import app.ascend.ui.components.SectionLabel
 import app.ascend.ui.navigation.Routes
@@ -98,6 +100,9 @@ fun SettingsScreen(nav: NavController, vm: SettingsViewModel = hiltViewModel()) 
                 stringResource(R.string.settings_app_language),
                 currentLanguage.endonym,
             ) { showLanguages = true }
+            Spacer(Modifier.height(12.dp))
+            // ad_native_language — the app's language-selection surface (collapses on no-fill).
+            NativeAdSlot(Placement.NATIVE_LANGUAGE)
 
             Spacer(Modifier.height(24.dp))
             SectionLabel(stringResource(R.string.settings_section_data))

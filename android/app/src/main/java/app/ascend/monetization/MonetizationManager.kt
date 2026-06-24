@@ -11,9 +11,13 @@ import app.ascend.monetization.ads.RewardedFeature
 import app.ascend.monetization.config.RcKeys
 import app.ascend.monetization.config.RemoteConfig
 import app.ascend.monetization.consent.ConsentManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withTimeoutOrNull
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
@@ -52,6 +56,16 @@ class MonetizationManager @Inject constructor(
     // Interstitial pacing, session-scoped (resets each cold start).
     private val interstitialsShown = AtomicInteger(0)
     @Volatile private var lastFullScreenAtMs: Long = Long.MIN_VALUE
+
+    // App-lifetime scope so a full-screen present survives the caller's lifecycle
+    // (e.g. an interstitial requested as a screen pops). The real ad shows over the
+    // Activity, independent of any ViewModel scope.
+    private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Main.immediate)
+
+    /** Fire-and-forget full-screen present on the manager's own scope (for close/exit triggers). */
+    fun requestFullScreen(placement: Placement) {
+        scope.launch { presentFullScreen(placement) }
+    }
 
     init {
         // Register the single ILRD sink. The real AdsManager attaches an

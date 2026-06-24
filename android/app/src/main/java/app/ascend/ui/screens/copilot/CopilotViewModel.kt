@@ -20,6 +20,7 @@ import javax.inject.Inject
 class CopilotViewModel @Inject constructor(
     private val api: AscendApi,
     private val analytics: AnalyticsTracker,
+    private val monetization: app.ascend.monetization.MonetizationManager,
     entitlements: app.ascend.data.billing.EntitlementRepository,
 ) : ViewModel() {
 
@@ -44,7 +45,13 @@ class CopilotViewModel @Inject constructor(
     fun setCompany(c: String) = _state.update { it.copy(company = c) }
     fun setQuestion(q: String) = _state.update { it.copy(question = q) }
     fun launch() = _state.update { it.copy(live = true) }
-    fun end() = _state.value.let { _state.value = State() }
+    fun end() {
+        // ad_inter_after_copilot_end — on tapping Done after a live session. Copilot is Pro-only,
+        // so the manager suppresses this for paid users (it effectively never shows); wired per spec.
+        val wasLive = _state.value.live
+        _state.value = State()
+        if (wasLive) monetization.requestFullScreen(app.ascend.monetization.Placement.INTER_AFTER_COPILOT_END)
+    }
 
     // Live transcription: wire android.speech.SpeechRecognizer in continuous mode
     // (RECOGNIZER_INTENT free-form, partial results) to feed detected questions

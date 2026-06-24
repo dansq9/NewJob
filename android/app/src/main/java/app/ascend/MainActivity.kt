@@ -43,6 +43,9 @@ import app.ascend.ui.theme.AscendColors
 import app.ascend.ui.theme.AscendTheme
 import dagger.hilt.android.AndroidEntryPoint
 
+/** Session-scoped count of game exits (drives ad_inter_after_game_complete cadence). */
+private var gamesExited = 0
+
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val appViewModel: AppViewModel by viewModels()
@@ -118,9 +121,19 @@ private fun AscendRoot(startOnboarding: Boolean) {
             composable(Routes.COPILOT) { CopilotScreen(nav) }
             composable(Routes.GAMES) { GamesScreen(nav) }
             composable("game/{gameId}") { entry ->
+                // ad_inter_after_game_complete — fired on leaving a game, capped to ~1 per 2 games.
+                // (The vendored engine exposes only onBack, not a per-game win callback, so exit
+                // approximates completion; a true completion hook is a follow-up in the engine.)
+                val monetization = app.ascend.ui.monetization.rememberMonetizationManager()
                 app.ascend.games.engine.games.host.GameHost(
                     gameId = entry.arguments?.getString("gameId").orEmpty(),
-                    onBack = { nav.popBackStack() },
+                    onBack = {
+                        gamesExited += 1
+                        if (gamesExited % 2 == 0) {
+                            monetization.requestFullScreen(app.ascend.monetization.Placement.INTER_AFTER_GAME_COMPLETE)
+                        }
+                        nav.popBackStack()
+                    },
                 )
             }
             composable(Routes.PAYWALL) { PaywallScreen(onClose = { nav.popBackStack() }) }
