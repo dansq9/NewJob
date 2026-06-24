@@ -6,7 +6,7 @@
     <string name="action_save">حفظ</string>
     <string name="action_dismiss">تجاهل</string>
     <string name="action_remove">إزالة</string>
-    <string name="action_retry">إعادة المحاولة</string>
+    <string name="action_retry">حاول مرة أخرى</string>
     <string name="action_continue">متابعة</string>
     <string name="action_skip">تخطّي</string>
     <string name="action_done">تم</string>
@@ -23,7 +23,7 @@
 
     <!-- ============ Home ============ -->
     <string name="home_greeting_morning">صباح الخير</string>
-    <string name="home_greeting_afternoon">طاب يومك</string>
+    <string name="home_greeting_afternoon">طاب مساؤك</string>
     <string name="home_greeting_evening">مساء الخير</string>
     <string name="home_greeting_default">مرحبًا</string>
     <string name="home_search_hint">ابحث عن وظائف أو مسميات أو شركات</string>
@@ -35,31 +35,31 @@
     <string name="home_qa_copilot">المساعد المباشر</string>
     <string name="home_qa_copilot_sub">إجابات فورية</string>
     <string name="home_qa_games">ألعاب ذهنية</string>
-    <string name="home_qa_games_sub">طوّر مهاراتك يوميًا</string>
+    <string name="home_qa_games_sub">حافظ على نشاط ذهنك يوميًا</string>
     <string name="home_top_matches">أفضل التطابقات</string>
     <string name="home_see_all">عرض الكل</string>
-    <string name="home_matches_for">لـ %1$s</string>
+    <string name="home_matches_for">لِـ %1$s</string>
     <string name="home_no_matches">لا توجد تطابقات بعد للدور المستهدف. جرّب بحثًا أوسع.</string>
-    <string name="home_find_jobs">البحث عن وظائف</string>
+    <string name="home_find_jobs">ابحث عن وظائف</string>
 
     <!-- ============ Interviews ============ -->
     <string name="interviews_title">المقابلات</string>
     <string name="interviews_subtitle">استعدّ بمساعدة الذكاء الاصطناعي، ثم احصل على مساعدة فورية أثناء المكالمة.</string>
     <string name="interviews_mock_title">مقابلة تجريبية</string>
-    <string name="interviews_mock_sub">أسئلة مولّدة بالذكاء الاصطناعي مع ملاحظات فورية ومقيّمة.</string>
-    <string name="interviews_copilot_title">المساعد المباشر للمقابلة</string>
-    <string name="interviews_copilot_sub">إجابات فورية بصوتك أثناء المكالمة.</string>
+    <string name="interviews_mock_sub">أسئلة مُولّدة بالذكاء الاصطناعي مع تقييم وملاحظات فورية.</string>
+    <string name="interviews_copilot_title">المساعد المباشر للمقابلات</string>
+    <string name="interviews_copilot_sub">إجابات فورية بأسلوبك أثناء المكالمة.</string>
 
     <!-- ============ Onboarding ============ -->
     <string name="onboarding_get_started">ابدأ الآن</string>
     <string name="onboarding_finish">إنهاء</string>
     <string name="onboarding_welcome_title">مرحبًا بك في Ascend</string>
-    <string name="onboarding_welcome_sub">احصل على وظيفتك التالية بشكل أسرع. لنُعدّ بحثك في بضع خطوات سريعة.</string>
+    <string name="onboarding_welcome_sub">احصل على وظيفتك التالية بشكل أسرع. لنُعِدّ بحثك في بضع خطوات سريعة.</string>
     <string name="onboarding_name_title">بماذا تحب أن نناديك؟</string>
-    <string name="onboarding_name_sub">اسمك يساعدنا على تخصيص Ascend لك.</string>
-    <string name="onboarding_name_hint">مثال: أليكس مورغان</string>
+    <string name="onboarding_name_sub">يساعدنا اسمك على تخصيص Ascend لك.</string>
+    <string name="onboarding_name_hint">مثال: أحمد المصري</string>
     <string name="onboarding_role_title">ما الدور الذي تبحث عنه؟</string>
-    <string name="onboarding_role_sub">هذا يخصّص تطابقاتك ونصائح سيرتك الذاتية ومقابلاتك التجريبية.</string>
+    <string name="onboarding_role_sub">يُخصّص هذا تطابقاتك ونصائح سيرتك الذاتية ومقابلاتك التجريبية.</string>
     <string name="onboarding_role_hint">مثال: مدير منتج</string>
     <string name="onboarding_location_title">أين تبحث عن عمل؟</string>
     <string name="onboarding_location_sub">سنعرض لك الوظائف القريبة منك والأدوار عن بُعد.</string>
@@ -69,7 +69,7 @@
     <string name="onboarding_resume_upload">رفع السيرة الذاتية</string>
     <string name="onboarding_resume_formats">PDF، DOCX · حتى 10 ميغابايت</string>
     <string name="onboarding_resume_replace">انقر للاستبدال</string>
-    <string name="onboarding_save_error">تعذّر حفظ ملفك الشخصي. يرجى إعادة المحاولة.</string>
+    <string name="onboarding_save_error">تعذّر حفظ ملفك الشخصي. يُرجى المحاولة مرة أخرى.</string>
 
     <!-- ============ Settings ============ -->
     <string name="settings_title">الإعدادات</string>
@@ -86,11 +86,232 @@
     <string name="settings_app_language">لغة التطبيق</string>
     <string name="settings_choose_language">اختر اللغة</string>
     <string name="settings_section_data">البيانات والنسخ الاحتياطي</string>
-    <string name="settings_backup_note">يتم نسخ ملفك الشخصي والوظائف المحفوظة والتتبّع احتياطيًا إلى حساب Google الخاص بك واستعادتها على جهاز جديد. يبقى المعرّف المجهول لهذا الجهاز محليًا دائمًا.</string>
+    <string name="settings_backup_note">يتم نسخ ملفك الشخصي والوظائف المحفوظة وأداة التتبّع احتياطيًا إلى حساب Google الخاص بك واستعادتها على جهاز جديد. يبقى المعرّف المجهول لهذا الجهاز محليًا دائمًا.</string>
     <string name="settings_section_reset">إعادة التعيين</string>
     <string name="settings_reset_onboarding">إعادة تعيين الإعداد الأولي</string>
     <string name="settings_reset_confirm_title">إعادة تعيين الإعداد الأولي؟</string>
-    <string name="settings_reset_confirm_body">سيتم مسح اسمك ودورك وموقعك واختيار سيرتك الذاتية وستمر بعملية الإعداد مجددًا. يتم الاحتفاظ بالوظائف المحفوظة ومكتبة سيرتك الذاتية.</string>
-    <string name="settings_reset_confirm_action">إعادة التعيين</string>
+    <string name="settings_reset_confirm_body">سيتم مسح اسمك ودورك وموقعك واختيار سيرتك الذاتية، وستمر بعملية الإعداد مرة أخرى. تُحفظ الوظائف المحفوظة ومكتبة سيرتك الذاتية.</string>
+    <string name="settings_reset_confirm_action">إعادة تعيين</string>
     <string name="settings_version">الإصدار %1$s ‏(%2$d)</string>
+
+    <!-- ============ Jobs ============ -->
+    <string name="jobs_title">اعثر على دورك التالي</string>
+    <string name="jobs_search_hint">المسمى أو الشركة أو كلمة مفتاحية</string>
+    <string name="jobs_location_anywhere">أي مكان</string>
+    <string name="jobs_filters">عوامل التصفية</string>
+    <string name="jobs_reset">إعادة تعيين</string>
+    <string name="jobs_remote_only">عن بُعد فقط</string>
+    <string name="jobs_date_posted">تاريخ النشر</string>
+    <string name="jobs_date_any">أيّ تاريخ</string>
+    <string name="jobs_date_today">اليوم</string>
+    <string name="jobs_date_3days">3 أيام</string>
+    <string name="jobs_date_week">أسبوع</string>
+    <string name="jobs_date_month">شهر</string>
+    <string name="jobs_employment_type">نوع التوظيف</string>
+    <string name="jobs_emp_fulltime">دوام كامل</string>
+    <string name="jobs_emp_parttime">دوام جزئي</string>
+    <string name="jobs_emp_contract">بعقد</string>
+    <string name="jobs_emp_internship">تدريب</string>
+    <string name="jobs_show_results">عرض النتائج</string>
+    <string name="jobs_end_reached">لقد وصلت إلى النهاية · %1$d وظيفة</string>
+    <string name="jobs_rate_limit_title">تم بلوغ حد البحث اليومي</string>
+    <string name="jobs_error_title">تعذّر تحميل الوظائف</string>
+    <string name="jobs_empty">لا توجد وظائف تطابق بحثك</string>
+    <string name="jobs_empty_hint">جرّب كلمة مفتاحية مختلفة أو وسّع عوامل التصفية.</string>
+    <string name="jobs_ad_sponsored">إعلان مموّل</string>
+    <string name="jobs_ad_placeholder">إعلانك المدمج هنا</string>
+    <string name="jobs_ad_badge">إعلان</string>
+
+    <!-- ============ Job detail ============ -->
+    <string name="jobdetail_apply">تقديم</string>
+    <string name="jobdetail_apply_site">التقديم على موقع الشركة</string>
+    <string name="jobdetail_opens_browser">يُفتح في المتصفح</string>
+    <string name="jobdetail_pipeline_stage">مرحلة التقديم</string>
+    <string name="jobdetail_about">عن الدور</string>
+    <string name="jobdetail_no_description">لا يوجد وصف.</string>
+    <string name="jobdetail_applied_q_title">هل تقدّمت؟</string>
+    <string name="jobdetail_applied_q_body">هل تريد إضافة %1$s في %2$s إلى أداة التتبّع كـ«تم التقديم»؟</string>
+    <string name="jobdetail_applied_q_yes">نعم، ضع علامة «تم التقديم»</string>
+    <string name="jobdetail_applied_q_no">ليس بعد</string>
+    <string name="jobdetail_unavailable_title">هذه الوظيفة غير متاحة</string>
+    <string name="jobdetail_unavailable_body">قد تكون منتهية الصلاحية، أو أُعيد فتح التطبيق. تصفّح الوظائف المتاحة حاليًا بدلًا من ذلك.</string>
+    <string name="jobdetail_browse">تصفّح الوظائف</string>
+    <!-- ============ Resume ============ -->
+    <string name="resume_title">محسّن السيرة الذاتية</string>
+    <string name="resume_hero_eyebrow">تخصيص لوظيفة معيّنة</string>
+    <string name="resume_hero_title">تغلّب على أنظمة ATS للدور الذي تريده تحديدًا</string>
+    <string name="resume_hero_subtitle">يُعيد الذكاء الاصطناعي في Ascend كتابة سيرتك الذاتية لتطابق الكلمات المفتاحية لهذا الدور ومعايير تقييمه.</string>
+    <string name="resume_library_label">سيرك الذاتية</string>
+    <string name="resume_add">إضافة</string>
+    <string name="resume_target_role">الدور المستهدف</string>
+    <string name="resume_optimization_mode">وضع التحسين</string>
+    <string name="resume_general_optimization">تحسين عام متوافق مع أنظمة ATS</string>
+    <string name="resume_open_job_hint">افتح وظيفة أولًا للتخصيص لذلك الدور المحدد.</string>
+    <string name="resume_add_to_start">أضف سيرة ذاتية للبدء</string>
+    <string name="resume_analyze">تحليل وتحسين</string>
+    <string name="resume_selected">محدّدة</string>
+    <string name="resume_select">تحديد</string>
+    <string name="resume_ats_label">ATS</string>
+    <string name="resume_document">المستند</string>
+    <string name="resume_remove">إزالة</string>
+    <string name="resume_upload_title">ارفع سيرتك الذاتية</string>
+    <string name="resume_upload_subtitle">PDF أو DOC أو DOCX · حتى 10 ميغابايت</string>
+    <string name="resume_download_link_error">تعذّر فتح رابط التنزيل.</string>
+    <string name="resume_share_subject">سيرة ذاتية محسّنة</string>
+    <string name="resume_share_chooser">مشاركة السيرة الذاتية</string>
+    <string name="resume_download">تنزيل</string>
+    <string name="resume_share">مشاركة</string>
+    <string name="resume_error_title">حدث خطأ ما</string>
+
+    <!-- ============ Mock interview ============ -->
+    <string name="mock_title">مقابلة تجريبية</string>
+    <string name="mock_setup_intro">تدرّب على أسئلة مُولّدة بالذكاء الاصطناعي واحصل على ملاحظات فورية.</string>
+    <string name="mock_role_label">الدور المراد الاستعداد له</string>
+    <string name="mock_count_label">عدد الأسئلة</string>
+    <string name="mock_start">ابدأ المقابلة التجريبية</string>
+    <string name="mock_question_progress">السؤال %1$d من %2$d</string>
+    <string name="mock_type">كتابة</string>
+    <string name="mock_speak">تحدّث</string>
+    <string name="mock_answer_placeholder">اكتب إجابتك هنا…</string>
+    <string name="mock_finish_score">إنهاء وتقييم</string>
+    <string name="mock_next_question">السؤال التالي</string>
+    <string name="mock_report_title">تقرير الجلسة</string>
+    <string name="mock_average_score">متوسط الدرجة</string>
+    <string name="mock_practice_again">تدرّب مرة أخرى</string>
+
+    <!-- ============ Job detail action tiles ============ -->
+    <string name="jobdetail_action_resume">تخصيص السيرة الذاتية</string>
+    <string name="jobdetail_action_copilot">مساعد المقابلات</string>
+    <string name="jobdetail_action_mock">مقابلة تجريبية</string>
+    <!-- ============ Copilot ============ -->
+    <string name="copilot_title">مساعد المقابلات بالذكاء الاصطناعي</string>
+    <string name="copilot_prolock_title">مرشد المقابلات المباشر</string>
+    <string name="copilot_prolock_desc">احصل على إجابات فورية بأسلوبك أثناء المقابلات. المساعد المباشر ميزة من Ascend Pro.</string>
+    <string name="copilot_unlock_pro">افتح الميزة مع Pro</string>
+    <string name="copilot_setup_eyebrow">مساعد المقابلات</string>
+    <string name="copilot_setup_intro">حدّد السياق مرة واحدة. أثناء مكالمتك نُفرّغ كل سؤال من ميكروفونك — أو الصقه يدويًا — ونصوغ إجابة بأسلوبك.</string>
+    <string name="copilot_job_title">المسمى الوظيفي</string>
+    <string name="copilot_company_optional">الشركة · اختياري</string>
+    <string name="copilot_launch">تشغيل المساعد</string>
+    <string name="copilot_split_screen_hint">أبقِ هذا مفتوحًا في وضع تقسيم الشاشة أثناء مكالمة الفيديو.</string>
+    <string name="copilot_status_manual">الوضع اليدوي · الصق كل سؤال</string>
+    <string name="copilot_status_listening">مباشر · يستمع</string>
+    <string name="copilot_status_tap_mic">انقر على الميكروفون للتفريغ النصي</string>
+    <string name="copilot_back">رجوع</string>
+    <string name="copilot_role_at_company">%1$s @ %2$s</string>
+    <string name="copilot_end">إنهاء</string>
+    <string name="copilot_question_placeholder">الصق أو اكتب سؤال المُقابِل…</string>
+    <string name="copilot_clear_question">مسح السؤال</string>
+    <string name="copilot_listen">استماع</string>
+    <string name="copilot_stop">إيقاف</string>
+    <string name="copilot_draft_answer">صياغة إجابة</string>
+    <string name="copilot_tip">نصيحة: أبقِ هاتفك بالقرب من مكبّر صوت الحاسوب.</string>
+    <string name="copilot_answer_eyebrow">إجابة المساعد</string>
+    <string name="copilot_mic_rationale_title">هل تريد استخدام ميكروفونك؟</string>
+    <string name="copilot_mic_rationale_body">يستخدم Ascend ميكروفونك لتفريغ أسئلة المُقابِل نصيًا في الوقت الفعلي ليتمكّن من صياغة الإجابات. تتم معالجة الصوت للتفريغ النصي فقط — ولا يُسجَّل أو يُخزَّن من قِبل Ascend.</string>
+    <string name="copilot_mic_not_now">ليس الآن</string>
+    <string name="copilot_mic_denied_title">الميكروفون مُعطّل</string>
+    <string name="copilot_mic_denied_body">لتفريغ الأسئلة مباشرةً، فعّل إذن الميكروفون لـ Ascend في الإعدادات. لا يزال بإمكانك لصق الأسئلة أو كتابتها يدويًا.</string>
+    <string name="copilot_mic_open_settings">فتح الإعدادات</string>
+    <string name="copilot_mic_manual_entry">استخدم الإدخال اليدوي</string>
+
+    <!-- ============ Paywall ============ -->
+    <string name="paywall_close">إغلاق</string>
+    <string name="paywall_headline">احصل على وظيفة باحترافية</string>
+    <string name="paywall_subhead">افتح جميع الميزات</string>
+    <string name="paywall_col_premium">المميّز</string>
+    <string name="paywall_col_basic">الأساسي</string>
+    <string name="paywall_feature_find_jobs">البحث عن الوظائف والتقديم عليها</string>
+    <string name="paywall_feature_resume">محسّن السيرة الذاتية بالذكاء الاصطناعي</string>
+    <string name="paywall_feature_mock">مقابلات تجريبية</string>
+    <string name="paywall_feature_navigator">مرشد المقابلات المباشر</string>
+    <string name="paywall_feature_ad_free">تجربة خالية من الإعلانات</string>
+    <string name="paywall_feature_support">دعم ذو أولوية</string>
+    <string name="paywall_basic_ads">إعلانات</string>
+    <string name="paywall_price_line">%1$s/%2$s بعد تجربة مجانية لمدة 3 أيام</string>
+    <string name="paywall_price_fallback">ابدأ تجربتك المجانية</string>
+    <string name="paywall_start_trial">ابدأ التجربة المجانية</string>
+    <string name="paywall_billing_disclosure">يتم تحصيل رسوم الاشتراك بعد انتهاء التجربة وسيتجدّد تلقائيًا. ألغِ في أي وقت قبل انتهاء التجربة لتجنّب الرسوم.</string>
+    <string name="paywall_restore">استعادة</string>
+    <string name="paywall_terms">الشروط</string>
+    <string name="paywall_privacy">الخصوصية</string>
+    <string name="paywall_purchase_failed">لم تكتمل عملية الشراء. يُرجى المحاولة مرة أخرى.</string>
+    <string name="paywall_restore_success">تمت استعادة Pro.</string>
+    <string name="paywall_restore_none">لم يتم العثور على عمليات شراء سابقة.</string>
+    <!-- ============ Tracker ============ -->
+    <string name="tracker_header">متتبّع الوظائف</string>
+    <string name="tracker_count">%1$d وظيفة · %2$d نشطة</string>
+    <string name="tracker_search_hint">ابحث في المسمى أو الشركة أو الموقع</string>
+    <string name="tracker_sort_recent">الأحدث</string>
+    <string name="tracker_sort_company">الشركة</string>
+    <string name="tracker_sort_stage">المرحلة</string>
+    <string name="tracker_interview_followup">مقابلة / متابعة</string>
+    <string name="tracker_not_set">غير محدّد</string>
+    <string name="tracker_notes">ملاحظات</string>
+    <string name="tracker_notes_placeholder">اسم المسؤول عن التوظيف، نطاق الراتب، الخطوات التالية…</string>
+    <string name="tracker_save_notes">حفظ الملاحظات</string>
+    <string name="tracker_mark_closed_lost">وضع علامة مغلقة / خاسرة</string>
+    <string name="tracker_close_why">لماذا أُغلق هذا؟</string>
+    <string name="tracker_close_reason_rejected">مرفوض</string>
+    <string name="tracker_close_reason_withdrew">انسحبت</string>
+    <string name="tracker_close_reason_filled">تم شغل الوظيفة</string>
+    <string name="tracker_close_reason_placeholder">السبب (اختياري)</string>
+    <string name="tracker_mark_closed">وضع علامة مغلق</string>
+    <string name="tracker_closed_reason">مغلق: %1$s</string>
+    <string name="tracker_remove">إزالة من المتتبّع</string>
+    <string name="tracker_remove_confirm_title">الإزالة من المتتبّع؟</string>
+    <string name="tracker_remove_confirm_body">ستتم إزالة \"%1$s\" في %2$s. لا يمكن التراجع عن هذا.</string>
+    <string name="tracker_demote">خفض المرحلة</string>
+    <string name="tracker_promote">رفع المرحلة</string>
+    <string name="tracker_no_matches">لا توجد تطابقات</string>
+    <string name="tracker_no_matches_hint">جرّب بحثًا مختلفًا.</string>
+    <string name="tracker_empty_title">لم تتم متابعة أي وظائف بعد</string>
+    <string name="tracker_empty_body">احفظ الوظائف أو تقدّم لها وستظهر هنا.</string>
+    <string name="tracker_find_jobs">ابحث عن وظائف</string>
+
+    <!-- ============ Games ============ -->
+    <string name="games_header_blurb">لغز يومي للحفاظ على حدة ذهنك بين طلبات التقديم.</string>
+    <string name="games_play">العب</string>
+    <string name="games_patches_title">رُقَع</string>
+    <string name="games_patches_blurb">اكشف الصورة المخفية</string>
+    <string name="games_sudoku_title">سودوكو مصغّر</string>
+    <string name="games_sudoku_blurb">املأ شبكة 6 × 6</string>
+    <string name="games_zip_title">المسار</string>
+    <string name="games_zip_blurb">تتبّع من 1 إلى 7 في مسار واحد</string>
+    <string name="games_queens_title">النجوم</string>
+    <string name="games_queens_blurb">واحدة في كل صف وعمود ولون</string>
+    <string name="games_tango_title">الكسوف</string>
+    <string name="games_tango_blurb">وازن بين الشموس والأقمار</string>
+    <string name="games_g2048_title">2048</string>
+    <string name="games_g2048_blurb">ادمج المربّعات حتى 2048</string>
+    <string name="games_clusters_title">المجموعات</string>
+    <string name="games_clusters_blurb">جمّع الكلمات الست عشرة</string>
+    <string name="games_crossword_title">كلمات متقاطعة مصغّرة</string>
+    <string name="games_crossword_blurb">كلمات متقاطعة 5 × 5</string>
+    <string name="games_lightsout_title">إطفاء الأضواء</string>
+    <string name="games_lightsout_blurb">أطفئ كل الأضواء</string>
+
+    <!-- ============ Shared: work type / pipeline stage labels ============ -->
+    <string name="worktype_remote">عن بُعد</string>
+    <string name="worktype_hybrid">مختلط</string>
+    <string name="worktype_onsite">في الموقع</string>
+    <string name="stage_saved">محفوظة</string>
+    <string name="stage_applied">تم التقديم</string>
+    <string name="stage_interview">مقابلة</string>
+    <string name="stage_offer">عرض</string>
+    <string name="stage_closed">مغلقة</string>
+
+    <!-- ============ Shared: errors / network ============ -->
+    <string name="error_offline">أنت غير متصل بالإنترنت. تحقّق من اتصالك وحاول مرة أخرى.</string>
+    <string name="error_generic">حدث خطأ ما. يُرجى المحاولة مرة أخرى.</string>
+    <string name="error_rate_limited">لقد بلغت حد البحث اليومي. حاول مرة أخرى لاحقًا.</string>
+    <string name="error_load_jobs">تعذّر تحميل الوظائف. يُرجى المحاولة مرة أخرى.</string>
+    <string name="error_optimize_failed">فشل التحسين. تحقّق من اتصالك وحاول مرة أخرى.</string>
+    <string name="error_mock_start_failed">تعذّر بدء المقابلة. يُرجى المحاولة مرة أخرى.</string>
+    <string name="error_mock_score_failed">تعذّر تقييم الجلسة. يُرجى المحاولة مرة أخرى.</string>
+    <string name="error_copilot_failed">تعذّر الوصول إلى المساعد. يُرجى المحاولة مرة أخرى.</string>
+    <string name="error_open_link">تعذّر فتح الرابط.</string>
+
+    <!-- ============ Misc fallbacks ============ -->
+    <string name="home_fallback_name">صديقي</string>
 </resources>

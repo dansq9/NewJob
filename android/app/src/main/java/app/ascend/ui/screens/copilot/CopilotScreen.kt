@@ -24,7 +24,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.annotation.StringRes
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,6 +38,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import app.ascend.R
 import app.ascend.ui.theme.AscendColors
 import app.ascend.ui.theme.JetBrainsMono
 import app.ascend.ui.util.rememberLiveTranscriber
@@ -59,7 +62,7 @@ fun CopilotScreen(nav: NavController, vm: CopilotViewModel = hiltViewModel()) {
 private fun ProLock(onUpgrade: () -> Unit, onBack: () -> Unit) {
     Scaffold(
         containerColor = AscendColors.Bg,
-        topBar = { app.ascend.ui.components.AscendTopBar("AI Interview Copilot", onBack = onBack) },
+        topBar = { app.ascend.ui.components.AscendTopBar(stringResource(R.string.copilot_title), onBack = onBack) },
     ) { padding ->
         Column(
             Modifier.fillMaxSize().padding(padding).padding(28.dp),
@@ -69,10 +72,10 @@ private fun ProLock(onUpgrade: () -> Unit, onBack: () -> Unit) {
                 Icon(Icons.Outlined.Bolt, null, tint = AscendColors.Indigo, modifier = Modifier.size(38.dp))
             }
             Spacer(Modifier.height(18.dp))
-            Text("Live Interview Navigator", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
+            Text(stringResource(R.string.copilot_prolock_title), fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
             Spacer(Modifier.height(8.dp))
             Text(
-                "Get real-time, in-your-voice answers during interviews. The live copilot is an Ascend Pro feature.",
+                stringResource(R.string.copilot_prolock_desc),
                 fontSize = 14.sp, color = AscendColors.Muted, lineHeight = 21.sp,
                 textAlign = androidx.compose.ui.text.style.TextAlign.Center,
             )
@@ -80,7 +83,7 @@ private fun ProLock(onUpgrade: () -> Unit, onBack: () -> Unit) {
             Button(
                 onClick = onUpgrade, modifier = Modifier.fillMaxWidth().height(54.dp),
                 shape = RoundedCornerShape(16.dp), colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
-            ) { Text("Unlock with Pro", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp) }
+            ) { Text(stringResource(R.string.copilot_unlock_pro), fontWeight = FontWeight.ExtraBold, fontSize = 16.sp) }
         }
     }
 }
@@ -90,31 +93,31 @@ private fun SetupView(vm: CopilotViewModel, nav: NavController) {
     val s by vm.state.collectAsStateWithLifecycle()
     Scaffold(
         containerColor = AscendColors.Bg,
-        topBar = { app.ascend.ui.components.AscendTopBar("AI Interview Copilot", onBack = { nav.popBackStack() }) },
+        topBar = { app.ascend.ui.components.AscendTopBar(stringResource(R.string.copilot_title), onBack = { nav.popBackStack() }) },
     ) { padding ->
         Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
             Surface(shape = RoundedCornerShape(20.dp), color = AscendColors.Ink, modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(18.dp)) {
-                    Text("INTERVIEW COPILOT", fontFamily = JetBrainsMono, color = Lilac, fontWeight = FontWeight.Bold, fontSize = 11.sp)
+                    Text(stringResource(R.string.copilot_setup_eyebrow), fontFamily = JetBrainsMono, color = Lilac, fontWeight = FontWeight.Bold, fontSize = 11.sp)
                     Spacer(Modifier.height(10.dp))
-                    Text("Set the context once. During your call we transcribe each question from your mic — or paste it manually — and draft an answer in your voice.",
+                    Text(stringResource(R.string.copilot_setup_intro),
                         color = Color(0xFFD8D8E2), fontSize = 15.sp, lineHeight = 22.sp)
                 }
             }
             Spacer(Modifier.height(20.dp))
-            Label("Job title")
+            Label(stringResource(R.string.copilot_job_title))
             Field(s.role, vm::setRole)
             Spacer(Modifier.height(16.dp))
-            Label("Company · optional")
+            Label(stringResource(R.string.copilot_company_optional))
             Field(s.company, vm::setCompany)
             Spacer(Modifier.height(28.dp))
             Button(onClick = vm::launch, modifier = Modifier.fillMaxWidth().height(54.dp), shape = RoundedCornerShape(16.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) {
                 Icon(Icons.Outlined.GraphicEq, null); Spacer(Modifier.width(8.dp))
-                Text("Launch Copilot", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
+                Text(stringResource(R.string.copilot_launch), fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
             }
             Spacer(Modifier.height(10.dp))
-            Text("Keep this open in split-screen during your video call.", fontSize = 11.5.sp,
+            Text(stringResource(R.string.copilot_split_screen_hint), fontSize = 11.5.sp,
                 color = AscendColors.Muted2, modifier = Modifier.fillMaxWidth(), textAlign = androidx.compose.ui.text.style.TextAlign.Center)
         }
     }
@@ -129,9 +132,9 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
         onFinal = { vm.setQuestion(it) },
     )
     val status = when {
-        !transcriber.available -> "Manual mode · paste each question"
-        transcriber.listening -> "Live · listening"
-        else -> "Tap the mic to transcribe"
+        !transcriber.available -> stringResource(R.string.copilot_status_manual)
+        transcriber.listening -> stringResource(R.string.copilot_status_listening)
+        else -> stringResource(R.string.copilot_status_tap_mic)
     }
     val statusColor = if (transcriber.listening) Color(0xFF34D17F) else Color(0xFF8A8A99)
 
@@ -168,22 +171,22 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
 
     Column(Modifier.fillMaxSize().background(AscendColors.Dark).verticalScroll(rememberScrollState())) {
         Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = { vm.end(); nav.popBackStack() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = Color.White) }
+            IconButton(onClick = { vm.end(); nav.popBackStack() }) { Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.copilot_back), tint = Color.White) }
             Column(Modifier.weight(1f)) {
-                Text("${s.role} @ ${s.company}", color = Color.White, fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
+                Text(stringResource(R.string.copilot_role_at_company, s.role, s.company), color = Color.White, fontWeight = FontWeight.ExtraBold, fontSize = 14.sp)
                 Text(status, color = statusColor, fontSize = 11.sp)
             }
-            TextButton(onClick = { vm.end(); nav.popBackStack() }) { Text("End", color = Lilac, fontWeight = FontWeight.Bold) }
+            TextButton(onClick = { vm.end(); nav.popBackStack() }) { Text(stringResource(R.string.copilot_end), color = Lilac, fontWeight = FontWeight.Bold) }
         }
         Column(Modifier.padding(horizontal = 16.dp).padding(bottom = 24.dp)) {
             OutlinedTextField(
                 value = s.question, onValueChange = vm::setQuestion, modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Paste or type the interviewer's question…", color = Color(0xFF8A8A99)) },
+                placeholder = { Text(stringResource(R.string.copilot_question_placeholder), color = Color(0xFF8A8A99)) },
                 shape = RoundedCornerShape(14.dp),
                 trailingIcon = {
                     if (s.question.isNotEmpty()) {
                         IconButton(onClick = { vm.setQuestion("") }) {
-                            Icon(Icons.Outlined.Close, "Clear question", tint = Color(0xFF8A8A99))
+                            Icon(Icons.Outlined.Close, stringResource(R.string.copilot_clear_question), tint = Color(0xFF8A8A99))
                         }
                     }
                 },
@@ -210,12 +213,12 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
                         Icon(if (transcriber.listening) Icons.Outlined.MicOff else Icons.Outlined.Mic, null,
                             tint = if (transcriber.listening) Color(0xFF34D17F) else Lilac)
                         Spacer(Modifier.width(6.dp))
-                        Text(if (transcriber.listening) "Stop" else "Listen", color = Color.White)
+                        Text(stringResource(if (transcriber.listening) R.string.copilot_stop else R.string.copilot_listen), color = Color.White)
                     }
                 }
                 Button(onClick = vm::ask, modifier = Modifier.weight(1f).height(48.dp), shape = RoundedCornerShape(12.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) {
-                    Icon(Icons.Outlined.Bolt, null); Spacer(Modifier.width(6.dp)); Text("Draft answer", fontWeight = FontWeight.Bold)
+                    Icon(Icons.Outlined.Bolt, null); Spacer(Modifier.width(6.dp)); Text(stringResource(R.string.copilot_draft_answer), fontWeight = FontWeight.Bold)
                 }
             }
             Spacer(Modifier.height(16.dp))
@@ -223,30 +226,30 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
                 s.loading -> Box(Modifier.fillMaxWidth().padding(24.dp), Alignment.Center) { CircularProgressIndicator(color = Lilac) }
                 s.error != null -> CopilotError(s.error!!, onRetry = vm::ask)
                 s.answer != null -> AnswerCard(s.answer!!)
-                else -> Text("Tip: keep your phone near the computer speaker.", color = Color(0xFF8A8A99), fontSize = 12.5.sp)
+                else -> Text(stringResource(R.string.copilot_tip), color = Color(0xFF8A8A99), fontSize = 12.5.sp)
             }
         }
     }
 
     if (showRationale) AlertDialog(
         onDismissRequest = { showRationale = false },
-        title = { Text("Use your microphone?") },
+        title = { Text(stringResource(R.string.copilot_mic_rationale_title)) },
         text = {
-            Text("Ascend uses your microphone to transcribe the interviewer's questions in real time so it can draft answers. Audio is processed for transcription only — it isn't recorded or stored by Ascend.")
+            Text(stringResource(R.string.copilot_mic_rationale_body))
         },
         confirmButton = {
             TextButton(onClick = {
                 showRationale = false
                 micPermission.launch(android.Manifest.permission.RECORD_AUDIO)
-            }) { Text("Continue") }
+            }) { Text(stringResource(R.string.action_continue)) }
         },
-        dismissButton = { TextButton(onClick = { showRationale = false }) { Text("Not now") } },
+        dismissButton = { TextButton(onClick = { showRationale = false }) { Text(stringResource(R.string.copilot_mic_not_now)) } },
     )
 
     if (showDenied) AlertDialog(
         onDismissRequest = { showDenied = false },
-        title = { Text("Microphone is off") },
-        text = { Text("To transcribe questions live, enable the Microphone permission for Ascend in Settings. You can still paste or type questions manually.") },
+        title = { Text(stringResource(R.string.copilot_mic_denied_title)) },
+        text = { Text(stringResource(R.string.copilot_mic_denied_body)) },
         confirmButton = {
             TextButton(onClick = {
                 showDenied = false
@@ -258,9 +261,9 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
                         ),
                     )
                 }
-            }) { Text("Open settings") }
+            }) { Text(stringResource(R.string.copilot_mic_open_settings)) }
         },
-        dismissButton = { TextButton(onClick = { showDenied = false }) { Text("Use manual entry") } },
+        dismissButton = { TextButton(onClick = { showDenied = false }) { Text(stringResource(R.string.copilot_mic_manual_entry)) } },
     )
 }
 
@@ -271,7 +274,7 @@ private fun AnswerCard(answer: app.ascend.data.remote.platform.CopilotAnswerResp
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Outlined.Bolt, null, tint = Lilac, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(7.dp))
-                Text("COPILOT ANSWER", color = Lilac, fontWeight = FontWeight.ExtraBold, fontSize = 11.sp)
+                Text(stringResource(R.string.copilot_answer_eyebrow), color = Lilac, fontWeight = FontWeight.ExtraBold, fontSize = 11.sp)
             }
             Spacer(Modifier.height(12.dp))
             answer.sections.forEach { sec ->
@@ -285,14 +288,14 @@ private fun AnswerCard(answer: app.ascend.data.remote.platform.CopilotAnswerResp
 }
 
 @Composable
-private fun CopilotError(message: String, onRetry: () -> Unit) {
+private fun CopilotError(@StringRes message: Int, onRetry: () -> Unit) {
     Surface(shape = RoundedCornerShape(14.dp), color = Color(0xFF2A1A22), modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(14.dp)) {
-            Text(message, color = Color(0xFFFFB4B4), fontSize = 13.sp, lineHeight = 18.sp)
+            Text(stringResource(message), color = Color(0xFFFFB4B4), fontSize = 13.sp, lineHeight = 18.sp)
             Spacer(Modifier.height(10.dp))
             Button(onClick = onRetry, shape = RoundedCornerShape(10.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) {
-                Text("Try again", fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.action_retry), fontWeight = FontWeight.Bold)
             }
         }
     }

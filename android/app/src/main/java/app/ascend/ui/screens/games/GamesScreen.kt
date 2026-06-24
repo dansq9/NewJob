@@ -26,13 +26,45 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import app.ascend.R
 import app.ascend.ui.components.AscendTopBar
 import app.ascend.ui.theme.AscendColors
 import app.ascend.games.engine.games.GameId
+
+@Composable
+private fun titleFor(game: GameId): String = stringResource(
+    when (game) {
+        GameId.PATCHES -> R.string.games_patches_title
+        GameId.SUDOKU -> R.string.games_sudoku_title
+        GameId.ZIP -> R.string.games_zip_title
+        GameId.QUEENS -> R.string.games_queens_title
+        GameId.TANGO -> R.string.games_tango_title
+        GameId.G2048 -> R.string.games_g2048_title
+        GameId.CLUSTERS -> R.string.games_clusters_title
+        GameId.CROSSWORD -> R.string.games_crossword_title
+        GameId.LIGHTSOUT -> R.string.games_lightsout_title
+    }
+)
+
+@Composable
+private fun blurbFor(game: GameId): String = stringResource(
+    when (game) {
+        GameId.PATCHES -> R.string.games_patches_blurb
+        GameId.SUDOKU -> R.string.games_sudoku_blurb
+        GameId.ZIP -> R.string.games_zip_blurb
+        GameId.QUEENS -> R.string.games_queens_blurb
+        GameId.TANGO -> R.string.games_tango_blurb
+        GameId.G2048 -> R.string.games_g2048_blurb
+        GameId.CLUSTERS -> R.string.games_clusters_blurb
+        GameId.CROSSWORD -> R.string.games_crossword_blurb
+        GameId.LIGHTSOUT -> R.string.games_lightsout_blurb
+    }
+)
 
 private fun iconFor(id: GameId): ImageVector = when (id) {
     GameId.PATCHES -> Icons.Outlined.Image
@@ -60,7 +92,7 @@ fun GamesScreen(nav: NavController) {
             verticalArrangement = Arrangement.spacedBy(12.dp),
         ) {
             item(span = { GridItemSpan(2) }) {
-                Text("A daily puzzle to keep your mind sharp between applications.",
+                Text(stringResource(R.string.games_header_blurb),
                     color = AscendColors.Muted, fontSize = 14.sp)
             }
             items(GameId.all) { game ->
@@ -82,13 +114,13 @@ private fun PuzzleCard(game: GameId, onClick: () -> Unit) {
                 Icon(iconFor(game), null, tint = AscendColors.Indigo)
             }
             Spacer(Modifier.height(12.dp))
-            Text(game.title, fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
-            Text(game.blurb, fontSize = 12.sp, color = AscendColors.Muted2, lineHeight = 16.sp)
+            Text(titleFor(game), fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
+            Text(blurbFor(game), fontSize = 12.sp, color = AscendColors.Muted2, lineHeight = 16.sp)
             Spacer(Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable(onClick = onClick)) {
                 Icon(Icons.Filled.PlayArrow, null, tint = AscendColors.Indigo, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(4.dp))
-                Text("Play", color = AscendColors.Indigo, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                Text(stringResource(R.string.games_play), color = AscendColors.Indigo, fontWeight = FontWeight.Bold, fontSize = 13.sp)
             }
         }
     }

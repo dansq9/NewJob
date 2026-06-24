@@ -13,4 +13,6 @@
     <locale android:name="de" />
     <locale android:name="hi" />
     <locale android:name="ar" />
+    <locale android:name="af" />
+    <locale android:name="zu" />
 </locale-config>

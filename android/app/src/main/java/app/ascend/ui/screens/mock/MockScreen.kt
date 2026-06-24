@@ -10,6 +10,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.font.FontWeight
@@ -18,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import app.ascend.R
 import app.ascend.ui.components.AscendTopBar
 import app.ascend.ui.components.Pill
 import androidx.compose.material.icons.Icons
@@ -33,7 +35,7 @@ fun MockScreen(nav: NavController, vm: MockViewModel = hiltViewModel()) {
     val ui by vm.ui.collectAsStateWithLifecycle()
     Scaffold(
         containerColor = AscendColors.Bg,
-        topBar = { AscendTopBar("Mock Interview", onBack = { nav.popBackStack() }) },
+        topBar = { AscendTopBar(stringResource(R.string.mock_title), onBack = { nav.popBackStack() }) },
     ) { padding ->
         Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
             when (val s = ui) {
@@ -41,7 +43,7 @@ fun MockScreen(nav: NavController, vm: MockViewModel = hiltViewModel()) {
                 MockUi.Loading -> Box(Modifier.fillMaxWidth().padding(60.dp), Alignment.Center) { CircularProgressIndicator(color = AscendColors.Indigo) }
                 is MockUi.Live -> Live(s, vm)
                 is MockUi.Report -> Report(s, vm)
-                is MockUi.Error -> ApiError(s.message, onRetry = vm::retry, onDismiss = vm::reset)
+                is MockUi.Error -> ApiError(stringResource(s.messageRes), onRetry = vm::retry, onDismiss = vm::reset)
             }
         }
     }
@@ -49,9 +51,9 @@ fun MockScreen(nav: NavController, vm: MockViewModel = hiltViewModel()) {
 
 @Composable
 private fun Setup(s: MockUi.Setup, vm: MockViewModel) {
-    Text("Practice with AI-generated questions and get instant feedback.", color = AscendColors.Muted, fontSize = 14.sp)
+    Text(stringResource(R.string.mock_setup_intro), color = AscendColors.Muted, fontSize = 14.sp)
     Spacer(Modifier.height(22.dp))
-    Text("Role to prep for", fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
+    Text(stringResource(R.string.mock_role_label), fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
     Spacer(Modifier.height(10.dp))
     OutlinedTextField(
         value = s.role, onValueChange = vm::setRole, singleLine = true, modifier = Modifier.fillMaxWidth(),
@@ -60,7 +62,7 @@ private fun Setup(s: MockUi.Setup, vm: MockViewModel) {
         colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = AscendColors.Card, unfocusedContainerColor = AscendColors.Card),
     )
     Spacer(Modifier.height(22.dp))
-    Text("Number of questions", fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
+    Text(stringResource(R.string.mock_count_label), fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
     Spacer(Modifier.height(10.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         listOf(3, 5, 8, 10).forEach { n ->
@@ -78,7 +80,7 @@ private fun Setup(s: MockUi.Setup, vm: MockViewModel) {
     Spacer(Modifier.height(28.dp))
     Button(onClick = vm::start, modifier = Modifier.fillMaxWidth().height(54.dp), shape = RoundedCornerShape(16.dp),
         colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) {
-        Text("Start Mock Interview", fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
+        Text(stringResource(R.string.mock_start), fontWeight = FontWeight.ExtraBold, fontSize = 16.sp)
     }
 }
 
@@ -90,7 +92,7 @@ private fun Live(s: MockUi.Live, vm: MockViewModel) {
         vm.answer(text)
     }
     Row(verticalAlignment = Alignment.CenterVertically) {
-        Text("Question ${s.index + 1} of ${s.questions.size}", fontFamily = JetBrainsMono,
+        Text(stringResource(R.string.mock_question_progress, s.index + 1, s.questions.size), fontFamily = JetBrainsMono,
             fontWeight = FontWeight.Bold, color = AscendColors.Muted2, fontSize = 13.sp)
     }
     Spacer(Modifier.height(10.dp))
@@ -105,14 +107,14 @@ private fun Live(s: MockUi.Live, vm: MockViewModel) {
     Text(s.current.prompt, fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink, lineHeight = 27.sp)
     Spacer(Modifier.height(16.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-        AssistChip(onClick = {}, enabled = false, leadingIcon = { Icon(Icons.Outlined.Keyboard, null, Modifier.size(18.dp)) }, label = { Text("Type") })
-        AssistChip(onClick = startVoice, leadingIcon = { Icon(Icons.Outlined.Mic, null, Modifier.size(18.dp)) }, label = { Text("Speak") })
+        AssistChip(onClick = {}, enabled = false, leadingIcon = { Icon(Icons.Outlined.Keyboard, null, Modifier.size(18.dp)) }, label = { Text(stringResource(R.string.mock_type)) })
+        AssistChip(onClick = startVoice, leadingIcon = { Icon(Icons.Outlined.Mic, null, Modifier.size(18.dp)) }, label = { Text(stringResource(R.string.mock_speak)) })
     }
     Spacer(Modifier.height(12.dp))
     OutlinedTextField(
         value = text, onValueChange = { text = it; vm.answer(it) },
         modifier = Modifier.fillMaxWidth().heightIn(min = 130.dp),
-        placeholder = { Text("Type your answer here…") }, shape = RoundedCornerShape(14.dp),
+        placeholder = { Text(stringResource(R.string.mock_answer_placeholder)) }, shape = RoundedCornerShape(14.dp),
         keyboardOptions = KeyboardOptions(
             capitalization = KeyboardCapitalization.Sentences,
             imeAction = ImeAction.Default,   // multiline: Enter inserts newlines
@@ -123,18 +125,18 @@ private fun Live(s: MockUi.Live, vm: MockViewModel) {
     val last = s.index == s.questions.lastIndex
     Button(onClick = { if (last) vm.finish() else vm.next() }, modifier = Modifier.fillMaxWidth().height(52.dp),
         shape = RoundedCornerShape(14.dp), colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) {
-        Text(if (last) "Finish & score" else "Next question", fontWeight = FontWeight.ExtraBold)
+        Text(if (last) stringResource(R.string.mock_finish_score) else stringResource(R.string.mock_next_question), fontWeight = FontWeight.ExtraBold)
     }
 }
 
 @Composable
 private fun Report(s: MockUi.Report, vm: MockViewModel) {
-    Text("Session report", fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
+    Text(stringResource(R.string.mock_report_title), fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
     Spacer(Modifier.height(14.dp))
     Surface(shape = RoundedCornerShape(16.dp), color = AscendColors.ChipIndigo, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text("${s.data.averageScore}%", fontFamily = JetBrainsMono, fontWeight = FontWeight.ExtraBold, fontSize = 34.sp, color = AscendColors.Indigo)
-            Text("Average score", fontSize = 12.sp, color = AscendColors.Muted2)
+            Text(stringResource(R.string.mock_average_score), fontSize = 12.sp, color = AscendColors.Muted2)
         }
     }
     Spacer(Modifier.height(14.dp))
@@ -149,5 +151,5 @@ private fun Report(s: MockUi.Report, vm: MockViewModel) {
     }
     Spacer(Modifier.height(20.dp))
     Button(onClick = vm::reset, modifier = Modifier.fillMaxWidth().height(52.dp), shape = RoundedCornerShape(14.dp),
-        colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) { Text("Practice again", fontWeight = FontWeight.ExtraBold) }
+        colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) { Text(stringResource(R.string.mock_practice_again), fontWeight = FontWeight.ExtraBold) }
 }

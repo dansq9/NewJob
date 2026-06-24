@@ -52,7 +52,7 @@ private fun greeting(): String = stringResource(
 fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
     val matches by vm.topMatches.collectAsStateWithLifecycle()
     val profile by vm.profile.collectAsStateWithLifecycle()
-    val firstName = profile.name.trim().substringBefore(' ').ifBlank { "there" }
+    val firstName = profile.name.trim().substringBefore(' ').ifBlank { stringResource(R.string.home_fallback_name) }
     val actions = listOf(
         QuickAction(stringResource(R.string.home_qa_resume), stringResource(R.string.home_qa_resume_sub), Icons.Outlined.AutoFixHigh, Routes.RESUME, AscendColors.Indigo),
         QuickAction(stringResource(R.string.home_qa_mock), stringResource(R.string.home_qa_mock_sub), Icons.Outlined.RecordVoiceOver, Routes.MOCK, AscendColors.Green),
@@ -111,7 +111,7 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
 
         when (val m = matches) {
             is Resource.Loading -> item { Box(Modifier.fillMaxWidth().padding(30.dp), Alignment.Center) { CircularProgressIndicator(color = AscendColors.Indigo) } }
-            is Resource.Error -> item { MatchesMessage(m.message, onRetry = vm::retry) }
+            is Resource.Error -> item { MatchesMessage(m.messageRes?.let { stringResource(it) } ?: m.message, onRetry = vm::retry) }
             is Resource.Success ->
                 if (m.data.isEmpty()) {
                     item { MatchesMessage(stringResource(R.string.home_no_matches), onRetry = null, action = stringResource(R.string.home_find_jobs)) { nav.navigate(Routes.JOBS) } }

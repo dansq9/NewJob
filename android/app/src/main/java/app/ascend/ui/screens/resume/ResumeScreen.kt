@@ -26,6 +26,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
@@ -33,6 +34,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import app.ascend.R
 import app.ascend.data.remote.platform.OptimizeResponse
 import app.ascend.data.repo.ResumeRecord
 import app.ascend.ui.components.AscendTopBar
@@ -55,19 +57,19 @@ fun ResumeScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) {
 
     Scaffold(
         containerColor = AscendColors.Bg,
-        topBar = { AscendTopBar("Resume Optimizer", onBack = { nav.popBackStack() }) },
+        topBar = { AscendTopBar(stringResource(R.string.resume_title), onBack = { nav.popBackStack() }) },
         snackbarHost = { SnackbarHost(snackbarHost) },
     ) { padding ->
         Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
             Surface(shape = RoundedCornerShape(22.dp), color = AscendColors.Ink, modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(22.dp)) {
-                    Text("TAILOR FOR A JOB", fontFamily = JetBrainsMono, fontSize = 13.sp,
+                    Text(stringResource(R.string.resume_hero_eyebrow), fontFamily = JetBrainsMono, fontSize = 13.sp,
                         fontWeight = FontWeight.SemiBold, color = AscendColors.Violet2)
                     Spacer(Modifier.height(8.dp))
-                    Text("Beat the ATS for the exact role you want", color = Color.White,
+                    Text(stringResource(R.string.resume_hero_title), color = Color.White,
                         fontSize = 20.sp, fontWeight = FontWeight.ExtraBold, lineHeight = 26.sp)
                     Spacer(Modifier.height(8.dp))
-                    Text("Ascend's AI rewrites your resume to match this role's keywords and scoring.",
+                    Text(stringResource(R.string.resume_hero_subtitle),
                         fontSize = 13.5.sp, color = Color(0xFFB8B8C4), lineHeight = 20.sp)
                 }
             }
@@ -75,12 +77,12 @@ fun ResumeScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) {
 
             // ---- Resume library ----
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                SectionLabel("Your resumes")
+                SectionLabel(stringResource(R.string.resume_library_label))
                 Spacer(Modifier.weight(1f))
                 TextButton(onClick = pickResume) {
                     Icon(Icons.Outlined.UploadFile, null, Modifier.size(18.dp), tint = AscendColors.Indigo)
                     Spacer(Modifier.width(6.dp))
-                    Text("Add", color = AscendColors.Indigo, fontWeight = FontWeight.Bold)
+                    Text(stringResource(R.string.resume_add), color = AscendColors.Indigo, fontWeight = FontWeight.Bold)
                 }
             }
             Spacer(Modifier.height(10.dp))
@@ -99,13 +101,13 @@ fun ResumeScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) {
             }
             Spacer(Modifier.height(12.dp))
 
-            SectionLabel(if (vm.targetTitle != null) "Target role" else "Optimization mode")
+            SectionLabel(if (vm.targetTitle != null) stringResource(R.string.resume_target_role) else stringResource(R.string.resume_optimization_mode))
             Spacer(Modifier.height(10.dp))
             Surface(shape = RoundedCornerShape(16.dp), color = AscendColors.Card, border = BorderStroke(1.5.dp, AscendColors.Line), modifier = Modifier.fillMaxWidth()) {
                 Column(Modifier.padding(16.dp)) {
-                    Text(vm.targetTitle ?: "General ATS optimization", fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+                    Text(vm.targetTitle ?: stringResource(R.string.resume_general_optimization), fontWeight = FontWeight.Bold, color = AscendColors.Ink)
                     if (vm.targetTitle == null) {
-                        Text("Open a job first to tailor for that specific role.", fontSize = 12.5.sp, color = AscendColors.Muted2)
+                        Text(stringResource(R.string.resume_open_job_hint), fontSize = 12.5.sp, color = AscendColors.Muted2)
                     }
                 }
             }
@@ -113,14 +115,14 @@ fun ResumeScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) {
 
             when (val s = ui) {
                 ResumeUi.Idle -> PrimaryButton(
-                    label = if (lib.resumes.isEmpty()) "Add a resume to start" else "Analyze & optimize",
+                    label = if (lib.resumes.isEmpty()) stringResource(R.string.resume_add_to_start) else stringResource(R.string.resume_analyze),
                     icon = Icons.Outlined.AutoFixHigh,
                     enabled = lib.resumes.isNotEmpty(),
                     onClick = vm::optimize,
                 )
                 ResumeUi.Loading -> Box(Modifier.fillMaxWidth().padding(40.dp), Alignment.Center) { CircularProgressIndicator(color = AscendColors.Indigo) }
                 is ResumeUi.Result -> Results(s.data, lib.selected?.name)
-                is ResumeUi.Error -> ApiError(s.message, onRetry = vm::optimize, onDismiss = vm::reset)
+                is ResumeUi.Error -> ApiError(stringResource(s.messageRes), onRetry = vm::optimize, onDismiss = vm::reset)
             }
             Spacer(Modifier.height(24.dp))
         }
@@ -138,7 +140,7 @@ private fun ResumeRow(record: ResumeRecord, selected: Boolean, onSelect: () -> U
         Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(
                 if (selected) Icons.Outlined.RadioButtonChecked else Icons.Outlined.RadioButtonUnchecked,
-                contentDescription = if (selected) "Selected" else "Select",
+                contentDescription = if (selected) stringResource(R.string.resume_selected) else stringResource(R.string.resume_select),
                 tint = if (selected) AscendColors.Indigo else AscendColors.Muted2,
             )
             Spacer(Modifier.width(12.dp))
@@ -147,12 +149,14 @@ private fun ResumeRow(record: ResumeRecord, selected: Boolean, onSelect: () -> U
             Column(Modifier.weight(1f)) {
                 Text(record.name, fontWeight = FontWeight.Bold, color = AscendColors.Ink,
                     fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                val atsLabel = stringResource(R.string.resume_ats_label)
+                val documentLabel = stringResource(R.string.resume_document)
                 Text(buildString {
-                    append(formatSize(record.sizeBytes))
-                    record.atsScore?.let { append(" · ATS $it") }
+                    append(formatSize(record.sizeBytes, documentLabel))
+                    record.atsScore?.let { append(" · $atsLabel $it") }
                 }, fontSize = 12.sp, color = AscendColors.Muted2)
             }
-            TextButton(onClick = onRemove) { Text("Remove", color = AscendColors.Muted2, fontSize = 13.sp) }
+            TextButton(onClick = onRemove) { Text(stringResource(R.string.resume_remove), color = AscendColors.Muted2, fontSize = 13.sp) }
         }
     }
 }
@@ -167,8 +171,8 @@ private fun EmptyLibrary(onAdd: () -> Unit) {
         Column(Modifier.fillMaxWidth().padding(22.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Icon(Icons.Outlined.UploadFile, null, tint = AscendColors.Indigo, modifier = Modifier.size(28.dp))
             Spacer(Modifier.height(8.dp))
-            Text("Upload your resume", fontWeight = FontWeight.Bold, color = AscendColors.Ink)
-            Text("PDF, DOC, or DOCX · up to 10MB", fontSize = 12.sp, color = AscendColors.Muted2)
+            Text(stringResource(R.string.resume_upload_title), fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+            Text(stringResource(R.string.resume_upload_subtitle), fontSize = 12.sp, color = AscendColors.Muted2)
         }
     }
 }
@@ -177,6 +181,9 @@ private fun EmptyLibrary(onAdd: () -> Unit) {
 private fun Results(data: OptimizeResponse, resumeName: String?) {
     val uriHandler = LocalUriHandler.current
     val ctx = LocalContext.current
+    val downloadLinkError = stringResource(R.string.resume_download_link_error)
+    val shareSubject = stringResource(R.string.resume_share_subject)
+    val shareChooserTitle = stringResource(R.string.resume_share_chooser)
     Surface(shape = RoundedCornerShape(20.dp), color = AscendColors.Card, border = BorderStroke(1.5.dp, AscendColors.Line), modifier = Modifier.fillMaxWidth()) {
         Row(Modifier.padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
             Box(contentAlignment = Alignment.Center) {
@@ -213,7 +220,7 @@ private fun Results(data: OptimizeResponse, resumeName: String?) {
             onClick = {
                 data.downloadUrl?.let { url ->
                     if (runCatching { uriHandler.openUri(url) }.isFailure) {
-                        android.widget.Toast.makeText(ctx, "Couldn't open the download link.", android.widget.Toast.LENGTH_SHORT).show()
+                        android.widget.Toast.makeText(ctx, downloadLinkError, android.widget.Toast.LENGTH_SHORT).show()
                     }
                 }
             },
@@ -221,7 +228,7 @@ private fun Results(data: OptimizeResponse, resumeName: String?) {
             modifier = Modifier.weight(1f).height(50.dp),
             shape = RoundedCornerShape(14.dp),
         ) {
-            Icon(Icons.Outlined.Download, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text("Download")
+            Icon(Icons.Outlined.Download, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text(stringResource(R.string.resume_download))
         }
         OutlinedButton(
             onClick = {
@@ -229,14 +236,14 @@ private fun Results(data: OptimizeResponse, resumeName: String?) {
                 val send = Intent(Intent.ACTION_SEND).apply {
                     type = "text/plain"
                     putExtra(Intent.EXTRA_TEXT, summary)
-                    putExtra(Intent.EXTRA_SUBJECT, "Optimized resume")
+                    putExtra(Intent.EXTRA_SUBJECT, shareSubject)
                 }
-                runCatching { ctx.startActivity(Intent.createChooser(send, "Share resume")) }
+                runCatching { ctx.startActivity(Intent.createChooser(send, shareChooserTitle)) }
             },
             modifier = Modifier.weight(1f).height(50.dp),
             shape = RoundedCornerShape(14.dp),
         ) {
-            Icon(Icons.Outlined.Share, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text("Share")
+            Icon(Icons.Outlined.Share, null, Modifier.size(18.dp)); Spacer(Modifier.width(8.dp)); Text(stringResource(R.string.resume_share))
         }
     }
 }
@@ -248,8 +255,8 @@ private fun buildShareText(data: OptimizeResponse, resumeName: String?): String 
     append("— optimized with Ascend")
 }
 
-private fun formatSize(bytes: Long?): String = when {
-    bytes == null -> "Document"
+private fun formatSize(bytes: Long?, documentLabel: String): String = when {
+    bytes == null -> documentLabel
     bytes >= 1_000_000 -> "%.1f MB".format(bytes / 1_000_000.0)
     bytes >= 1_000 -> "%.0f KB".format(bytes / 1_000.0)
     else -> "$bytes B"
@@ -267,7 +274,7 @@ private fun PrimaryButton(label: String, icon: androidx.compose.ui.graphics.vect
 fun ApiError(message: String, onRetry: (() -> Unit)? = null, onDismiss: () -> Unit) {
     Surface(shape = RoundedCornerShape(16.dp), color = AscendColors.AmberBg, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp)) {
-            Text("Something went wrong", fontWeight = FontWeight.Bold, color = AscendColors.Amber)
+            Text(stringResource(R.string.resume_error_title), fontWeight = FontWeight.Bold, color = AscendColors.Amber)
             Spacer(Modifier.height(4.dp))
             Text(message, fontSize = 13.sp, color = AscendColors.Amber)
             Spacer(Modifier.height(12.dp))
@@ -277,10 +284,10 @@ fun ApiError(message: String, onRetry: (() -> Unit)? = null, onDismiss: () -> Un
                         onClick = onRetry,
                         shape = RoundedCornerShape(12.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
-                    ) { Text("Try again", fontWeight = FontWeight.Bold) }
+                    ) { Text(stringResource(R.string.action_retry), fontWeight = FontWeight.Bold) }
                     Spacer(Modifier.width(8.dp))
                 }
-                TextButton(onClick = onDismiss) { Text("Dismiss", color = AscendColors.Indigo) }
+                TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_dismiss), color = AscendColors.Indigo) }
             }
         }
     }

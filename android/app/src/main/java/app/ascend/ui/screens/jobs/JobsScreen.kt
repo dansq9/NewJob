@@ -20,6 +20,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
@@ -27,6 +28,7 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import app.ascend.R
 import app.ascend.core.Resource
 import app.ascend.data.model.Job
 import app.ascend.ui.components.JobCard
@@ -57,12 +59,12 @@ fun JobsScreen(nav: NavController, vm: JobsViewModel = hiltViewModel()) {
         contentPadding = PaddingValues(start = 18.dp, end = 18.dp, top = 14.dp, bottom = 28.dp),
         verticalArrangement = Arrangement.spacedBy(12.dp),
     ) {
-        item { Text("Find your next role", style = MaterialTheme.typography.headlineMedium, color = AscendColors.Ink) }
+        item { Text(stringResource(R.string.jobs_title), style = MaterialTheme.typography.headlineMedium, color = AscendColors.Ink) }
         item {
             OutlinedTextField(
                 value = state.query, onValueChange = vm::onQueryChange, modifier = Modifier.fillMaxWidth(),
                 leadingIcon = { Icon(Icons.Outlined.Search, null, tint = AscendColors.Muted2) },
-                placeholder = { Text("Title, company or keyword") }, singleLine = true, shape = RoundedCornerShape(14.dp),
+                placeholder = { Text(stringResource(R.string.jobs_search_hint)) }, singleLine = true, shape = RoundedCornerShape(14.dp),
                 keyboardOptions = KeyboardOptions(imeAction = ImeAction.Search),
                 keyboardActions = KeyboardActions(onSearch = { vm.search() }),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -75,7 +77,7 @@ fun JobsScreen(nav: NavController, vm: JobsViewModel = hiltViewModel()) {
             Row(Modifier.fillMaxWidth().padding(top = 2.dp), verticalAlignment = Alignment.CenterVertically) {
                 Icon(Icons.Outlined.LocationOn, null, tint = AscendColors.Indigo, modifier = Modifier.size(19.dp))
                 Spacer(Modifier.width(6.dp))
-                Text(state.location.ifBlank { "Anywhere" }, fontSize = 13.5.sp, fontWeight = FontWeight.SemiBold,
+                Text(state.location.ifBlank { stringResource(R.string.jobs_location_anywhere) }, fontSize = 13.5.sp, fontWeight = FontWeight.SemiBold,
                     color = AscendColors.Ink, modifier = Modifier.weight(1f))
                 FilterButton(state.filters.activeCount) { showFilters = true }
             }
@@ -84,7 +86,8 @@ fun JobsScreen(nav: NavController, vm: JobsViewModel = hiltViewModel()) {
         when (val st = state.status) {
             Resource.Loading -> item { Box(Modifier.fillMaxWidth().padding(40.dp), Alignment.Center) { CircularProgressIndicator(color = AscendColors.Indigo) } }
             is Resource.Error ->
-                if (st.rateLimited) item { RateLimitState() } else item { ErrorState(st.message, onRetry = vm::search) }
+                if (st.rateLimited) item { RateLimitState() }
+                else item { ErrorState(st.messageRes?.let { stringResource(it) } ?: st.message, onRetry = vm::search) }
             is Resource.Success -> {
                 if (state.jobs.isEmpty()) item { EmptyState() }
                 else {
@@ -101,7 +104,7 @@ fun JobsScreen(nav: NavController, vm: JobsViewModel = hiltViewModel()) {
                     }
                     if (state.loadingMore) item { Box(Modifier.fillMaxWidth().padding(16.dp), Alignment.Center) { CircularProgressIndicator(Modifier.size(26.dp), color = AscendColors.Indigo, strokeWidth = 2.dp) } }
                     else if (state.endReached) item {
-                        Text("You've reached the end · ${state.jobs.size} jobs", Modifier.fillMaxWidth().padding(14.dp),
+                        Text(stringResource(R.string.jobs_end_reached, state.jobs.size), Modifier.fillMaxWidth().padding(14.dp),
                             color = AscendColors.Muted2, fontSize = 12.5.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                     }
                 }
@@ -122,7 +125,7 @@ private fun FilterButton(count: Int, onClick: () -> Unit) {
         Row(Modifier.padding(horizontal = 14.dp, vertical = 9.dp), verticalAlignment = Alignment.CenterVertically) {
             Icon(Icons.Outlined.Tune, null, tint = AscendColors.Indigo, modifier = Modifier.size(18.dp))
             Spacer(Modifier.width(6.dp))
-            Text("Filters", fontSize = 13.5.sp, fontWeight = FontWeight.Bold, color = AscendColors.Indigo)
+            Text(stringResource(R.string.jobs_filters), fontSize = 13.5.sp, fontWeight = FontWeight.Bold, color = AscendColors.Indigo)
             if (count > 0) {
                 Spacer(Modifier.width(6.dp))
                 Box(Modifier.size(18.dp).clip(RoundedCornerShape(9.dp)).background(AscendColors.Indigo), Alignment.Center) {
@@ -140,31 +143,42 @@ private fun FilterSheet(current: JobFilters, onApply: (JobFilters) -> Unit, onDi
     ModalBottomSheet(onDismissRequest = onDismiss, containerColor = AscendColors.Card) {
         Column(Modifier.padding(20.dp).navigationBarsPadding()) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                Text("Filters", fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink, modifier = Modifier.weight(1f))
-                TextButton(onClick = { draft = JobFilters() }) { Text("Reset", color = AscendColors.Indigo) }
+                Text(stringResource(R.string.jobs_filters), fontSize = 18.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink, modifier = Modifier.weight(1f))
+                TextButton(onClick = { draft = JobFilters() }) { Text(stringResource(R.string.jobs_reset), color = AscendColors.Indigo) }
             }
             Spacer(Modifier.height(8.dp))
             Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
-                Text("Remote only", fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = AscendColors.Ink, modifier = Modifier.weight(1f))
+                Text(stringResource(R.string.jobs_remote_only), fontSize = 15.sp, fontWeight = FontWeight.SemiBold, color = AscendColors.Ink, modifier = Modifier.weight(1f))
                 Switch(checked = draft.remoteOnly, onCheckedChange = { draft = draft.copy(remoteOnly = it) },
                     colors = SwitchDefaults.colors(checkedTrackColor = AscendColors.Indigo))
             }
             Spacer(Modifier.height(14.dp))
-            SectionLabel("Date posted")
+            SectionLabel(stringResource(R.string.jobs_date_posted))
             ChipRow(
-                listOf("all" to "Any", "today" to "Today", "3days" to "3 days", "week" to "Week", "month" to "Month"),
+                listOf(
+                    "all" to stringResource(R.string.jobs_date_any),
+                    "today" to stringResource(R.string.jobs_date_today),
+                    "3days" to stringResource(R.string.jobs_date_3days),
+                    "week" to stringResource(R.string.jobs_date_week),
+                    "month" to stringResource(R.string.jobs_date_month),
+                ),
                 selected = setOf(draft.datePosted),
             ) { draft = draft.copy(datePosted = it) }
             Spacer(Modifier.height(14.dp))
-            SectionLabel("Employment type")
+            SectionLabel(stringResource(R.string.jobs_employment_type))
             ChipRow(
-                listOf("FULLTIME" to "Full-time", "PARTTIME" to "Part-time", "CONTRACTOR" to "Contract", "INTERN" to "Internship"),
+                listOf(
+                    "FULLTIME" to stringResource(R.string.jobs_emp_fulltime),
+                    "PARTTIME" to stringResource(R.string.jobs_emp_parttime),
+                    "CONTRACTOR" to stringResource(R.string.jobs_emp_contract),
+                    "INTERN" to stringResource(R.string.jobs_emp_internship),
+                ),
                 selected = draft.employmentTypes,
             ) { key -> draft = draft.copy(employmentTypes = draft.employmentTypes.toggle(key)) }
             Spacer(Modifier.height(20.dp))
             Button(onClick = { onApply(draft) }, modifier = Modifier.fillMaxWidth().height(52.dp),
                 shape = RoundedCornerShape(14.dp), colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) {
-                Text("Show results", fontWeight = FontWeight.ExtraBold)
+                Text(stringResource(R.string.jobs_show_results), fontWeight = FontWeight.ExtraBold)
             }
         }
     }
@@ -193,9 +207,9 @@ private fun ChipRow(options: List<Pair<String, String>>, selected: Set<String>, 
 @Composable
 private fun RateLimitState() {
     Column(Modifier.fillMaxWidth().padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Daily search limit reached", fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+        Text(stringResource(R.string.jobs_rate_limit_title), fontWeight = FontWeight.Bold, color = AscendColors.Ink)
         Spacer(Modifier.height(4.dp))
-        Text("You've hit the JSearch quota for now. Try again later, or upgrade the plan.",
+        Text(stringResource(R.string.error_rate_limited),
             fontSize = 13.sp, color = AscendColors.Muted2, textAlign = androidx.compose.ui.text.style.TextAlign.Center)
     }
 }
@@ -203,20 +217,20 @@ private fun RateLimitState() {
 @Composable
 private fun ErrorState(message: String, onRetry: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("Couldn't load jobs", fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+        Text(stringResource(R.string.jobs_error_title), fontWeight = FontWeight.Bold, color = AscendColors.Ink)
         Spacer(Modifier.height(4.dp))
         Text(message, fontSize = 13.sp, color = AscendColors.Muted2)
         Spacer(Modifier.height(16.dp))
-        Button(onClick = onRetry, colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) { Text("Try again") }
+        Button(onClick = onRetry, colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) { Text(stringResource(R.string.action_retry)) }
     }
 }
 
 @Composable
 private fun EmptyState() {
     Column(Modifier.fillMaxWidth().padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("No jobs match your search", fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+        Text(stringResource(R.string.jobs_empty), fontWeight = FontWeight.Bold, color = AscendColors.Ink)
         Spacer(Modifier.height(4.dp))
-        Text("Try a different keyword or widen your filters.", fontSize = 13.sp, color = AscendColors.Muted2)
+        Text(stringResource(R.string.jobs_empty_hint), fontSize = 13.sp, color = AscendColors.Muted2)
     }
 }
 
@@ -242,10 +256,10 @@ private fun NativeAdSlot() {
             }
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text("Sponsored", fontSize = 15.sp, fontWeight = FontWeight.Bold, color = AscendColors.Ink)
-                Text("Your native ad here", fontSize = 13.sp, color = AscendColors.Muted)
+                Text(stringResource(R.string.jobs_ad_sponsored), fontSize = 15.sp, fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+                Text(stringResource(R.string.jobs_ad_placeholder), fontSize = 13.sp, color = AscendColors.Muted)
             }
-            Text("Ad", color = Color(0xFFB0A06A), fontSize = 9.sp, fontWeight = FontWeight.Bold,
+            Text(stringResource(R.string.jobs_ad_badge), color = Color(0xFFB0A06A), fontSize = 9.sp, fontWeight = FontWeight.Bold,
                 modifier = Modifier.clip(RoundedCornerShape(5.dp)).background(Color(0xFFFBF4D9)).padding(horizontal = 7.dp, vertical = 2.dp))
         }
     }

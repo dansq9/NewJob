@@ -33,6 +33,8 @@ object LocaleManager {
         AppLanguage(tag = "de", endonym = "Deutsch", english = "German"),
         AppLanguage(tag = "hi", endonym = "हिन्दी", english = "Hindi"),
         AppLanguage(tag = "ar", endonym = "العربية", english = "Arabic"),
+        AppLanguage(tag = "af", endonym = "Afrikaans", english = "Afrikaans"),
+        AppLanguage(tag = "zu", endonym = "isiZulu", english = "Zulu"),
     )
 
     fun persistedTag(context: Context): String =

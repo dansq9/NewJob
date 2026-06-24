@@ -1,10 +1,11 @@
 package app.ascend.ui.screens.mock
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.ascend.R
 import app.ascend.analytics.Analytics
 import app.ascend.core.isOffline
-import app.ascend.core.userMessage
 import app.ascend.data.remote.platform.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,7 +30,7 @@ sealed interface MockUi {
     }
     data class Report(val data: MockScoreResponse) : MockUi
     /** [phase] tells the screen which op to re-run on retry. */
-    data class Error(val message: String, val phase: Phase) : MockUi
+    data class Error(@StringRes val messageRes: Int, val phase: Phase) : MockUi
 
     enum class Phase { START, SCORE }
 }
@@ -75,7 +76,7 @@ class MockViewModel @Inject constructor(
                 MockUi.Live(r.sessionId, r.questions)
             } catch (t: Throwable) {
                 if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "mock_start"))
-                MockUi.Error(t.userMessage("Couldn't start the interview. Check the Ascend API configuration."), MockUi.Phase.START)
+                MockUi.Error(if (t.isOffline()) R.string.error_offline else R.string.error_mock_start_failed, MockUi.Phase.START)
             }
         }
     }
@@ -112,7 +113,7 @@ class MockViewModel @Inject constructor(
             } catch (t: Throwable) {
                 // Metadata only — never the answer text.
                 if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "mock_score", "answers" to live.answers.size))
-                MockUi.Error(t.userMessage("Couldn't score the session."), MockUi.Phase.SCORE)
+                MockUi.Error(if (t.isOffline()) R.string.error_offline else R.string.error_mock_score_failed, MockUi.Phase.SCORE)
             }
         }
     }

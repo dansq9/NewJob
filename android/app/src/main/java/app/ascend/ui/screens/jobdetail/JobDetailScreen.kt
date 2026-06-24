@@ -27,14 +27,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import app.ascend.R
 import app.ascend.ui.components.CompanyAvatar
 import app.ascend.ui.components.Pill
+import app.ascend.ui.i18n.label
 import app.ascend.ui.navigation.Routes
 import app.ascend.ui.theme.AscendColors
 
@@ -46,6 +49,7 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
     val stage by vm.stage.collectAsStateWithLifecycle()
     val uri = LocalUriHandler.current
     val ctx = androidx.compose.ui.platform.LocalContext.current
+    val openLinkError = stringResource(R.string.error_open_link)
     val j = job
 
     // After the user opens the external apply link and returns, prompt to track it.
@@ -67,14 +71,14 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
                 title = {},
                 navigationIcon = {
                     IconButton(onClick = { nav.popBackStack() }) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, "Back", tint = AscendColors.Ink)
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, stringResource(R.string.action_back), tint = AscendColors.Ink)
                     }
                 },
                 actions = {
                     IconButton(onClick = vm::toggleSave) {
                         Icon(
                             if (saved) Icons.Filled.Bookmark else Icons.Outlined.BookmarkBorder,
-                            "Save", tint = if (saved) AscendColors.Indigo else AscendColors.Muted,
+                            stringResource(R.string.action_save), tint = if (saved) AscendColors.Indigo else AscendColors.Muted,
                         )
                     }
                 },
@@ -85,20 +89,20 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
             if (j?.applyUrl != null) Surface(color = AscendColors.Card, shadowElevation = 8.dp) {
                 Row(Modifier.fillMaxWidth().padding(18.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
-                        Text("Apply on company site", fontSize = 11.sp, color = AscendColors.Muted2, fontWeight = FontWeight.SemiBold)
-                        Text("Opens in browser", fontSize = 13.sp, color = AscendColors.Ink, fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.jobdetail_apply_site), fontSize = 11.sp, color = AscendColors.Muted2, fontWeight = FontWeight.SemiBold)
+                        Text(stringResource(R.string.jobdetail_opens_browser), fontSize = 13.sp, color = AscendColors.Ink, fontWeight = FontWeight.Bold)
                     }
                     Button(
                         onClick = {
                             // A malformed URL or a device with no browser must not crash the app.
                             val opened = runCatching { uri.openUri(j.applyUrl!!) }.isSuccess
                             if (opened) pendingApply = true
-                            else android.widget.Toast.makeText(ctx, "Couldn't open the application link.", android.widget.Toast.LENGTH_SHORT).show()
+                            else android.widget.Toast.makeText(ctx, openLinkError, android.widget.Toast.LENGTH_SHORT).show()
                         },
                         colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
                         shape = RoundedCornerShape(14.dp),
                     ) {
-                        Text("Apply", fontWeight = FontWeight.Bold)
+                        Text(stringResource(R.string.jobdetail_apply), fontWeight = FontWeight.Bold)
                         Spacer(Modifier.width(6.dp)); Icon(Icons.Outlined.OpenInNew, null, Modifier.size(18.dp))
                     }
                 }
@@ -110,16 +114,16 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
                 Modifier.fillMaxSize().padding(padding).padding(32.dp),
                 verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-                Text("This job isn't available", fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+                Text(stringResource(R.string.jobdetail_unavailable_title), fontWeight = FontWeight.Bold, color = AscendColors.Ink)
                 Spacer(Modifier.height(6.dp))
-                Text("It may have expired, or the app was reopened. Browse current openings instead.",
+                Text(stringResource(R.string.jobdetail_unavailable_body),
                     fontSize = 13.sp, color = AscendColors.Muted2,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center, lineHeight = 18.sp)
                 Spacer(Modifier.height(16.dp))
                 Button(
                     onClick = { nav.navigate(Routes.JOBS) { popUpTo(Routes.JOB_DETAIL) { inclusive = true } } },
                     colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
-                ) { Text("Browse jobs") }
+                ) { Text(stringResource(R.string.jobdetail_browse)) }
             }
             return@Scaffold
         }
@@ -138,29 +142,29 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
             }
             if (stage != null) {
                 Spacer(Modifier.height(18.dp))
-                Text("Pipeline stage", fontSize = 12.sp, color = AscendColors.Muted2, fontWeight = FontWeight.SemiBold)
+                Text(stringResource(R.string.jobdetail_pipeline_stage), fontSize = 12.sp, color = AscendColors.Muted2, fontWeight = FontWeight.SemiBold)
                 Spacer(Modifier.height(8.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(7.dp), modifier = Modifier.horizontalScroll(rememberScrollState())) {
                     app.ascend.data.model.TrackStage.entries.forEach { s ->
                         FilterChip(
                             selected = stage == s,
                             onClick = { vm.setStage(s) },
-                            label = { Text(s.label, fontSize = 12.5.sp) },
+                            label = { Text(label(s), fontSize = 12.5.sp) },
                         )
                     }
                 }
             }
             Spacer(Modifier.height(18.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                ActionTile("Tailor resume", Icons.Outlined.AutoFixHigh, AscendColors.Green, Modifier.weight(1f)) { nav.navigate(Routes.RESUME) }
-                ActionTile("Interview Copilot", Icons.Outlined.Bolt, AscendColors.Violet2, Modifier.weight(1f)) { nav.navigate(Routes.COPILOT) }
-                ActionTile("Mock interview", Icons.Outlined.RecordVoiceOver, AscendColors.Indigo, Modifier.weight(1f)) { nav.navigate(Routes.MOCK) }
+                ActionTile(stringResource(R.string.jobdetail_action_resume), Icons.Outlined.AutoFixHigh, AscendColors.Green, Modifier.weight(1f)) { nav.navigate(Routes.RESUME) }
+                ActionTile(stringResource(R.string.jobdetail_action_copilot), Icons.Outlined.Bolt, AscendColors.Violet2, Modifier.weight(1f)) { nav.navigate(Routes.COPILOT) }
+                ActionTile(stringResource(R.string.jobdetail_action_mock), Icons.Outlined.RecordVoiceOver, AscendColors.Indigo, Modifier.weight(1f)) { nav.navigate(Routes.MOCK) }
             }
             Spacer(Modifier.height(24.dp))
-            Text("About the role", fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
+            Text(stringResource(R.string.jobdetail_about), fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
             Spacer(Modifier.height(8.dp))
             Text(
-                j.description?.take(1200) ?: "No description provided.",
+                j.description?.take(1200) ?: stringResource(R.string.jobdetail_no_description),
                 fontSize = 14.sp, color = AscendColors.Body, lineHeight = 22.sp,
             )
         }
@@ -168,10 +172,10 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
 
     if (showApplyPrompt && j != null) AlertDialog(
         onDismissRequest = { showApplyPrompt = false },
-        title = { Text("Did you apply?") },
-        text = { Text("Add ${j.title} at ${j.company} to your tracker as Applied?") },
-        confirmButton = { TextButton(onClick = { vm.markApplied(); showApplyPrompt = false }) { Text("Yes, mark Applied") } },
-        dismissButton = { TextButton(onClick = { showApplyPrompt = false }) { Text("Not yet") } },
+        title = { Text(stringResource(R.string.jobdetail_applied_q_title)) },
+        text = { Text(stringResource(R.string.jobdetail_applied_q_body, j.title, j.company)) },
+        confirmButton = { TextButton(onClick = { vm.markApplied(); showApplyPrompt = false }) { Text(stringResource(R.string.jobdetail_applied_q_yes)) } },
+        dismissButton = { TextButton(onClick = { showApplyPrompt = false }) { Text(stringResource(R.string.jobdetail_applied_q_no)) } },
     )
 }
 

@@ -1,10 +1,11 @@
 package app.ascend.ui.screens.copilot
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.ascend.R
 import app.ascend.analytics.Analytics
 import app.ascend.core.isOffline
-import app.ascend.core.userMessage
 import app.ascend.data.remote.platform.*
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -33,7 +34,7 @@ class CopilotViewModel @Inject constructor(
         val question: String = "",
         val loading: Boolean = false,
         val answer: CopilotAnswerResponse? = null,
-        val error: String? = null,
+        @StringRes val error: Int? = null,
     )
 
     private val _state = MutableStateFlow(State())
@@ -60,7 +61,8 @@ class CopilotViewModel @Inject constructor(
             } catch (t: Throwable) {
                 // Never log the interviewer question text — metadata only.
                 if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "copilot_answer"))
-                _state.update { it.copy(loading = false, error = t.userMessage("Couldn't reach the Copilot API.")) }
+                val msg = if (t.isOffline()) R.string.error_offline else R.string.error_copilot_failed
+                _state.update { it.copy(loading = false, error = msg) }
             }
         }
     }

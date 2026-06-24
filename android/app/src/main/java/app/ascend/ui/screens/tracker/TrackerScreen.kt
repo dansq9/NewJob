@@ -23,6 +23,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
@@ -34,7 +35,9 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import app.ascend.data.model.TrackStage
 import app.ascend.data.repo.TrackedJob
+import app.ascend.R
 import app.ascend.ui.components.CompanyAvatar
+import app.ascend.ui.i18n.label
 import app.ascend.ui.navigation.Routes
 import app.ascend.ui.theme.AscendColors
 import app.ascend.ui.theme.JetBrainsMono
@@ -50,6 +53,15 @@ private fun TrackStage.color() = when (this) {
     TrackStage.OFFER -> AscendColors.StageOffer
     TrackStage.CLOSED -> AscendColors.StageClosed
 }
+
+@Composable
+private fun label(sort: TrackerSort): String = stringResource(
+    when (sort) {
+        TrackerSort.RECENT -> R.string.tracker_sort_recent
+        TrackerSort.COMPANY -> R.string.tracker_sort_company
+        TrackerSort.STAGE -> R.string.tracker_sort_stage
+    }
+)
 
 private val dateFmt: DateTimeFormatter = DateTimeFormatter.ofPattern("MMM d, yyyy")
 private fun Long.asDate(): String =
@@ -67,8 +79,8 @@ fun TrackerScreen(nav: NavController, vm: TrackerViewModel = hiltViewModel()) {
     ) {
         item {
             Column {
-                Text("Job Tracker", style = MaterialTheme.typography.headlineMedium, color = AscendColors.Ink)
-                Text("${state.total} jobs · ${state.active} active", fontSize = 13.sp, color = AscendColors.Muted2)
+                Text(stringResource(R.string.tracker_header), style = MaterialTheme.typography.headlineMedium, color = AscendColors.Ink)
+                Text(stringResource(R.string.tracker_count, state.total, state.active), fontSize = 13.sp, color = AscendColors.Muted2)
             }
         }
         item {
@@ -76,11 +88,11 @@ fun TrackerScreen(nav: NavController, vm: TrackerViewModel = hiltViewModel()) {
                 value = state.query,
                 onValueChange = vm::setQuery,
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Search title, company, location") },
+                placeholder = { Text(stringResource(R.string.tracker_search_hint)) },
                 leadingIcon = { Icon(Icons.Outlined.Search, null, tint = AscendColors.Muted2) },
                 trailingIcon = {
                     if (state.query.isNotEmpty()) {
-                        IconButton(onClick = { vm.setQuery("") }) { Icon(Icons.Outlined.Close, "Clear", tint = AscendColors.Muted2) }
+                        IconButton(onClick = { vm.setQuery("") }) { Icon(Icons.Outlined.Close, stringResource(R.string.action_clear), tint = AscendColors.Muted2) }
                     }
                 },
                 singleLine = true,
@@ -94,7 +106,7 @@ fun TrackerScreen(nav: NavController, vm: TrackerViewModel = hiltViewModel()) {
                     FilterChip(
                         selected = state.sort == s,
                         onClick = { vm.setSort(s) },
-                        label = { Text(s.label) },
+                        label = { Text(label(s)) },
                     )
                 }
             }
@@ -166,7 +178,7 @@ private fun TrackerEditSheet(
                     Text(item.job.company, fontSize = 13.sp, color = AscendColors.Muted2)
                 }
                 Surface(shape = RoundedCornerShape(10.dp), color = item.stage.color().copy(alpha = 0.12f)) {
-                    Text(item.stage.label, Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
+                    Text(label(item.stage), Modifier.padding(horizontal = 12.dp, vertical = 6.dp),
                         color = item.stage.color(), fontWeight = FontWeight.ExtraBold, fontSize = 12.sp)
                 }
             }
@@ -181,25 +193,25 @@ private fun TrackerEditSheet(
                     Icon(Icons.Outlined.CalendarMonth, null, tint = AscendColors.Indigo)
                     Spacer(Modifier.width(12.dp))
                     Column(Modifier.weight(1f)) {
-                        Text("Interview / follow-up", fontWeight = FontWeight.Bold, color = AscendColors.Ink, fontSize = 14.sp)
-                        Text(item.interviewDate?.asDate() ?: "Not set", fontSize = 12.5.sp, color = AscendColors.Muted2)
+                        Text(stringResource(R.string.tracker_interview_followup), fontWeight = FontWeight.Bold, color = AscendColors.Ink, fontSize = 14.sp)
+                        Text(item.interviewDate?.asDate() ?: stringResource(R.string.tracker_not_set), fontSize = 12.5.sp, color = AscendColors.Muted2)
                     }
-                    TextButton(onClick = { showDatePicker = true }) { Text(if (item.interviewDate == null) "Set" else "Change") }
+                    TextButton(onClick = { showDatePicker = true }) { Text(if (item.interviewDate == null) stringResource(R.string.action_set) else stringResource(R.string.action_change)) }
                     if (item.interviewDate != null) {
-                        TextButton(onClick = { onSetInterview(null) }) { Text("Clear", color = AscendColors.Muted2) }
+                        TextButton(onClick = { onSetInterview(null) }) { Text(stringResource(R.string.action_clear), color = AscendColors.Muted2) }
                     }
                 }
             }
             Spacer(Modifier.height(14.dp))
 
             // Notes
-            Text("Notes", fontWeight = FontWeight.Bold, color = AscendColors.Ink, fontSize = 14.sp)
+            Text(stringResource(R.string.tracker_notes), fontWeight = FontWeight.Bold, color = AscendColors.Ink, fontSize = 14.sp)
             Spacer(Modifier.height(8.dp))
             OutlinedTextField(
                 value = notes,
                 onValueChange = { notes = it },
                 modifier = Modifier.fillMaxWidth().heightIn(min = 96.dp),
-                placeholder = { Text("Recruiter name, salary range, next steps…") },
+                placeholder = { Text(stringResource(R.string.tracker_notes_placeholder)) },
                 keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                 shape = RoundedCornerShape(14.dp),
             )
@@ -209,24 +221,28 @@ private fun TrackerEditSheet(
                 modifier = Modifier.fillMaxWidth().height(50.dp),
                 shape = RoundedCornerShape(14.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
-            ) { Text("Save notes", fontWeight = FontWeight.Bold) }
+            ) { Text(stringResource(R.string.tracker_save_notes), fontWeight = FontWeight.Bold) }
 
             Spacer(Modifier.height(18.dp))
             HorizontalDivider(color = AscendColors.Line2)
             Spacer(Modifier.height(14.dp))
 
             if (closing) {
-                Text("Why did this close?", fontWeight = FontWeight.Bold, color = AscendColors.Ink, fontSize = 14.sp)
+                Text(stringResource(R.string.tracker_close_why), fontWeight = FontWeight.Bold, color = AscendColors.Ink, fontSize = 14.sp)
                 Spacer(Modifier.height(8.dp))
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), modifier = Modifier.fillMaxWidth()) {
-                    listOf("Rejected", "Withdrew", "Position filled").forEach { r ->
-                        FilterChip(selected = closeReason == r, onClick = { closeReason = r }, label = { Text(r, fontSize = 12.sp) })
+                    listOf(
+                        "Rejected" to R.string.tracker_close_reason_rejected,
+                        "Withdrew" to R.string.tracker_close_reason_withdrew,
+                        "Position filled" to R.string.tracker_close_reason_filled,
+                    ).forEach { (r, resId) ->
+                        FilterChip(selected = closeReason == r, onClick = { closeReason = r }, label = { Text(stringResource(resId), fontSize = 12.sp) })
                     }
                 }
                 Spacer(Modifier.height(8.dp))
                 OutlinedTextField(
                     value = closeReason, onValueChange = { closeReason = it },
-                    modifier = Modifier.fillMaxWidth(), placeholder = { Text("Reason (optional)") },
+                    modifier = Modifier.fillMaxWidth(), placeholder = { Text(stringResource(R.string.tracker_close_reason_placeholder)) },
                     keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
                     singleLine = true, shape = RoundedCornerShape(14.dp),
                 )
@@ -235,19 +251,19 @@ private fun TrackerEditSheet(
                     onClick = { onClose(closeReason.ifBlank { null }) },
                     modifier = Modifier.fillMaxWidth().height(48.dp), shape = RoundedCornerShape(14.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = AscendColors.StageClosed),
-                ) { Text("Mark closed", fontWeight = FontWeight.Bold) }
+                ) { Text(stringResource(R.string.tracker_mark_closed), fontWeight = FontWeight.Bold) }
             } else if (item.stage != TrackStage.CLOSED) {
                 OutlinedButton(
                     onClick = { closing = true },
                     modifier = Modifier.fillMaxWidth().height(48.dp), shape = RoundedCornerShape(14.dp),
-                ) { Text("Mark as closed / lost") }
+                ) { Text(stringResource(R.string.tracker_mark_closed_lost)) }
             } else if (item.closedReason != null) {
-                Text("Closed: ${item.closedReason}", fontSize = 13.sp, color = AscendColors.Muted2)
+                Text(stringResource(R.string.tracker_closed_reason, item.closedReason), fontSize = 13.sp, color = AscendColors.Muted2)
             }
 
             Spacer(Modifier.height(10.dp))
             TextButton(onClick = { confirmDelete = true }, modifier = Modifier.fillMaxWidth()) {
-                Text("Remove from tracker", color = AscendColors.StageClosed, fontWeight = FontWeight.Bold)
+                Text(stringResource(R.string.tracker_remove), color = AscendColors.StageClosed, fontWeight = FontWeight.Bold)
             }
         }
     }
@@ -257,19 +273,19 @@ private fun TrackerEditSheet(
         DatePickerDialog(
             onDismissRequest = { showDatePicker = false },
             confirmButton = {
-                TextButton(onClick = { onSetInterview(dpState.selectedDateMillis); showDatePicker = false }) { Text("Set") }
+                TextButton(onClick = { onSetInterview(dpState.selectedDateMillis); showDatePicker = false }) { Text(stringResource(R.string.action_set)) }
             },
-            dismissButton = { TextButton(onClick = { showDatePicker = false }) { Text("Cancel") } },
+            dismissButton = { TextButton(onClick = { showDatePicker = false }) { Text(stringResource(R.string.action_cancel)) } },
         ) { DatePicker(state = dpState) }
     }
 
     if (confirmDelete) {
         AlertDialog(
             onDismissRequest = { confirmDelete = false },
-            title = { Text("Remove from tracker?") },
-            text = { Text("\"${item.job.title}\" at ${item.job.company} will be removed. This can't be undone.") },
-            confirmButton = { TextButton(onClick = { confirmDelete = false; onDelete() }) { Text("Remove", color = AscendColors.StageClosed) } },
-            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text("Cancel") } },
+            title = { Text(stringResource(R.string.tracker_remove_confirm_title)) },
+            text = { Text(stringResource(R.string.tracker_remove_confirm_body, item.job.title, item.job.company)) },
+            confirmButton = { TextButton(onClick = { confirmDelete = false; onDelete() }) { Text(stringResource(R.string.action_remove), color = AscendColors.StageClosed) } },
+            dismissButton = { TextButton(onClick = { confirmDelete = false }) { Text(stringResource(R.string.action_cancel)) } },
         )
     }
 }
@@ -279,7 +295,7 @@ private fun StatChip(stage: TrackStage, count: Int, modifier: Modifier) {
     Surface(modifier, shape = RoundedCornerShape(14.dp), color = AscendColors.Card, border = BorderStroke(1.5.dp, AscendColors.Line)) {
         Column(Modifier.padding(vertical = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text("$count", fontFamily = JetBrainsMono, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp, color = stage.color())
-            Text(stage.label, fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AscendColors.Muted2)
+            Text(label(stage), fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AscendColors.Muted2)
         }
     }
 }
@@ -289,7 +305,7 @@ private fun StageHeader(stage: TrackStage, count: Int) {
     Row(verticalAlignment = Alignment.CenterVertically) {
         Box(Modifier.size(9.dp).clip(RoundedCornerShape(3.dp)).background(stage.color()))
         Spacer(Modifier.width(8.dp))
-        Text(stage.label.uppercase(), fontSize = 13.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
+        Text(label(stage).uppercase(), fontSize = 13.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
         Spacer(Modifier.width(8.dp))
         Surface(shape = RoundedCornerShape(999.dp), color = AscendColors.Line) {
             Text("$count", Modifier.padding(horizontal = 8.dp, vertical = 1.dp), fontSize = 12.sp,
@@ -338,10 +354,10 @@ private fun TrackerCard(item: TrackedJob, onMove: (String, TrackStage) -> Unit, 
                     onClick = { onMove(item.job.id, TrackStage.entries[(ordinal - 1).coerceAtLeast(0)]) },
                     enabled = ordinal > 0,
                     modifier = Modifier.size(34.dp),
-                ) { Icon(Icons.Outlined.ArrowDownward, "Demote", tint = AscendColors.Muted) }
+                ) { Icon(Icons.Outlined.ArrowDownward, stringResource(R.string.tracker_demote), tint = AscendColors.Muted) }
                 Spacer(Modifier.width(8.dp))
                 Surface(Modifier.weight(1f), shape = RoundedCornerShape(10.dp), color = stage.color().copy(alpha = 0.12f)) {
-                    Text(stage.label, Modifier.padding(vertical = 8.dp), color = stage.color(),
+                    Text(label(stage), Modifier.padding(vertical = 8.dp), color = stage.color(),
                         fontWeight = FontWeight.ExtraBold, fontSize = 12.5.sp,
                         textAlign = androidx.compose.ui.text.style.TextAlign.Center)
                 }
@@ -350,7 +366,7 @@ private fun TrackerCard(item: TrackedJob, onMove: (String, TrackStage) -> Unit, 
                     onClick = { onMove(item.job.id, TrackStage.entries[(ordinal + 1).coerceAtMost(TrackStage.entries.lastIndex)]) },
                     enabled = ordinal < TrackStage.entries.lastIndex,
                     modifier = Modifier.size(34.dp),
-                ) { Icon(Icons.Outlined.ArrowUpward, "Promote", tint = stage.color()) }
+                ) { Icon(Icons.Outlined.ArrowUpward, stringResource(R.string.tracker_promote), tint = stage.color()) }
             }
         }
     }
@@ -359,18 +375,18 @@ private fun TrackerCard(item: TrackedJob, onMove: (String, TrackStage) -> Unit, 
 @Composable
 private fun NoMatches() {
     Column(Modifier.fillMaxWidth().padding(40.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("No matches", fontWeight = FontWeight.Bold, color = AscendColors.Muted)
-        Text("Try a different search.", fontSize = 13.sp, color = AscendColors.Muted2)
+        Text(stringResource(R.string.tracker_no_matches), fontWeight = FontWeight.Bold, color = AscendColors.Muted)
+        Text(stringResource(R.string.tracker_no_matches_hint), fontSize = 13.sp, color = AscendColors.Muted2)
     }
 }
 
 @Composable
 private fun EmptyTracker(onFind: () -> Unit) {
     Column(Modifier.fillMaxWidth().padding(50.dp), horizontalAlignment = Alignment.CenterHorizontally) {
-        Text("No jobs tracked yet", fontWeight = FontWeight.Bold, color = AscendColors.Muted)
+        Text(stringResource(R.string.tracker_empty_title), fontWeight = FontWeight.Bold, color = AscendColors.Muted)
         Spacer(Modifier.height(4.dp))
-        Text("Save or apply to jobs and they'll appear here.", fontSize = 13.sp, color = AscendColors.Muted2)
+        Text(stringResource(R.string.tracker_empty_body), fontSize = 13.sp, color = AscendColors.Muted2)
         Spacer(Modifier.height(16.dp))
-        Button(onClick = onFind, colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) { Text("Find jobs") }
+        Button(onClick = onFind, colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) { Text(stringResource(R.string.tracker_find_jobs)) }
     }
 }

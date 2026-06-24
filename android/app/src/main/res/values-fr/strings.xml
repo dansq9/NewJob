@@ -26,29 +26,29 @@
     <string name="home_greeting_afternoon">Bon après-midi</string>
     <string name="home_greeting_evening">Bonsoir</string>
     <string name="home_greeting_default">Bonjour</string>
-    <string name="home_search_hint">Rechercher des emplois, des postes, des entreprises</string>
+    <string name="home_search_hint">Rechercher des emplois, intitulés, entreprises</string>
     <string name="home_quick_actions">Actions rapides</string>
     <string name="home_qa_resume">Optimiser le CV</string>
-    <string name="home_qa_resume_sub">Déjouer les ATS</string>
-    <string name="home_qa_mock">Entretien simulé</string>
+    <string name="home_qa_resume_sub">Déjouer l\'ATS</string>
+    <string name="home_qa_mock">Entretien blanc</string>
     <string name="home_qa_mock_sub">S\'entraîner &amp; être noté</string>
-    <string name="home_qa_copilot">Copilote en direct</string>
+    <string name="home_qa_copilot">Copilot en direct</string>
     <string name="home_qa_copilot_sub">Réponses en temps réel</string>
     <string name="home_qa_games">Jeux de réflexion</string>
-    <string name="home_qa_games_sub">Se perfectionner chaque jour</string>
+    <string name="home_qa_games_sub">Aiguisez votre esprit chaque jour</string>
     <string name="home_top_matches">Meilleures correspondances</string>
     <string name="home_see_all">Tout voir</string>
     <string name="home_matches_for">pour %1$s</string>
-    <string name="home_no_matches">Aucune correspondance pour le moment pour le poste visé. Essayez une recherche plus large.</string>
+    <string name="home_no_matches">Aucune correspondance pour votre poste cible. Essayez une recherche plus large.</string>
     <string name="home_find_jobs">Rechercher des emplois</string>
 
     <!-- ============ Interviews ============ -->
     <string name="interviews_title">Entretiens</string>
     <string name="interviews_subtitle">Préparez-vous avec l\'IA, puis obtenez de l\'aide en temps réel pendant l\'appel.</string>
-    <string name="interviews_mock_title">Entretien simulé</string>
-    <string name="interviews_mock_sub">Questions générées par l\'IA avec un retour noté et instantané.</string>
-    <string name="interviews_copilot_title">Copilote d\'entretien en direct</string>
-    <string name="interviews_copilot_sub">Des réponses en temps réel dans votre voix pendant l\'appel.</string>
+    <string name="interviews_mock_title">Entretien blanc</string>
+    <string name="interviews_mock_sub">Questions générées par l\'IA avec un retour instantané et noté.</string>
+    <string name="interviews_copilot_title">Copilot d\'entretien en direct</string>
+    <string name="interviews_copilot_sub">Réponses en temps réel, dans votre style, pendant l\'appel.</string>
 
     <!-- ============ Onboarding ============ -->
     <string name="onboarding_get_started">Commencer</string>
@@ -59,13 +59,13 @@
     <string name="onboarding_name_sub">Votre nom nous aide à personnaliser Ascend.</string>
     <string name="onboarding_name_hint">ex. Alex Morgan</string>
     <string name="onboarding_role_title">Quel poste recherchez-vous ?</string>
-    <string name="onboarding_role_sub">Cela adapte vos correspondances, vos conseils de CV &amp; vos entretiens simulés.</string>
+    <string name="onboarding_role_sub">Cela adapte vos correspondances, conseils CV &amp; entretiens blancs.</string>
     <string name="onboarding_role_hint">ex. Chef de produit</string>
     <string name="onboarding_location_title">Où cherchez-vous ?</string>
-    <string name="onboarding_location_sub">Nous mettrons en avant les emplois près de chez vous et les postes en télétravail.</string>
-    <string name="onboarding_location_hint">Ville, région ou Télétravail</string>
+    <string name="onboarding_location_sub">Nous mettrons en avant les emplois près de chez vous et les postes à distance.</string>
+    <string name="onboarding_location_hint">Ville, région ou À distance</string>
     <string name="onboarding_resume_title">Ajoutez votre CV</string>
-    <string name="onboarding_resume_sub">Nous l\'utiliserons pour adapter vos correspondances et vous offrir une réécriture gratuite compatible ATS. Vous pouvez passer cette étape et l\'ajouter plus tard.</string>
+    <string name="onboarding_resume_sub">Nous l\'utiliserons pour adapter vos correspondances et vous offrir une réécriture compatible ATS gratuite. Vous pouvez passer cette étape et l\'ajouter plus tard.</string>
     <string name="onboarding_resume_upload">Importer un CV</string>
     <string name="onboarding_resume_formats">PDF, DOCX · jusqu\'à 10 Mo</string>
     <string name="onboarding_resume_replace">Appuyez pour remplacer</string>
@@ -75,7 +75,7 @@
     <string name="settings_title">Paramètres</string>
     <string name="settings_section_profile">Votre profil</string>
     <string name="settings_field_name">Nom</string>
-    <string name="settings_field_role">Poste visé</string>
+    <string name="settings_field_role">Poste cible</string>
     <string name="settings_field_location">Lieu</string>
     <string name="settings_save_profile">Enregistrer le profil</string>
     <string name="settings_profile_saved">Profil enregistré</string>
@@ -86,11 +86,232 @@
     <string name="settings_app_language">Langue de l\'application</string>
     <string name="settings_choose_language">Choisir la langue</string>
     <string name="settings_section_data">Données &amp; sauvegarde</string>
-    <string name="settings_backup_note">Votre profil, vos emplois enregistrés et votre suivi sont sauvegardés sur votre compte Google et restaurés sur un nouvel appareil. L\'identifiant anonyme de cet appareil reste toujours local.</string>
-    <string name="settings_section_reset">Réinitialiser</string>
+    <string name="settings_backup_note">Votre profil, vos emplois enregistrés et votre suivi sont sauvegardés sur votre compte Google et restaurés sur un nouvel appareil. L\'identifiant anonyme de cet appareil reste toujours en local.</string>
+    <string name="settings_section_reset">Réinitialisation</string>
     <string name="settings_reset_onboarding">Réinitialiser l\'intégration</string>
     <string name="settings_reset_confirm_title">Réinitialiser l\'intégration ?</string>
-    <string name="settings_reset_confirm_body">Votre nom, votre poste, votre lieu et votre sélection de CV seront effacés et vous referez la configuration. Les emplois enregistrés et votre bibliothèque de CV sont conservés.</string>
+    <string name="settings_reset_confirm_body">Votre nom, votre poste, votre lieu et votre sélection de CV seront effacés et vous referez la configuration. Vos emplois enregistrés et votre bibliothèque de CV sont conservés.</string>
     <string name="settings_reset_confirm_action">Réinitialiser</string>
     <string name="settings_version">v%1$s (%2$d)</string>
+
+    <!-- ============ Jobs ============ -->
+    <string name="jobs_title">Trouvez votre prochain poste</string>
+    <string name="jobs_search_hint">Intitulé, entreprise ou mot-clé</string>
+    <string name="jobs_location_anywhere">N\'importe où</string>
+    <string name="jobs_filters">Filtres</string>
+    <string name="jobs_reset">Réinitialiser</string>
+    <string name="jobs_remote_only">À distance uniquement</string>
+    <string name="jobs_date_posted">Date de publication</string>
+    <string name="jobs_date_any">Toutes</string>
+    <string name="jobs_date_today">Aujourd\'hui</string>
+    <string name="jobs_date_3days">3 jours</string>
+    <string name="jobs_date_week">Semaine</string>
+    <string name="jobs_date_month">Mois</string>
+    <string name="jobs_employment_type">Type de contrat</string>
+    <string name="jobs_emp_fulltime">Temps plein</string>
+    <string name="jobs_emp_parttime">Temps partiel</string>
+    <string name="jobs_emp_contract">Contrat</string>
+    <string name="jobs_emp_internship">Stage</string>
+    <string name="jobs_show_results">Afficher les résultats</string>
+    <string name="jobs_end_reached">Vous avez atteint la fin · %1$d emplois</string>
+    <string name="jobs_rate_limit_title">Limite de recherche quotidienne atteinte</string>
+    <string name="jobs_error_title">Impossible de charger les emplois</string>
+    <string name="jobs_empty">Aucun emploi ne correspond à votre recherche</string>
+    <string name="jobs_empty_hint">Essayez un autre mot-clé ou élargissez vos filtres.</string>
+    <string name="jobs_ad_sponsored">Sponsorisé</string>
+    <string name="jobs_ad_placeholder">Votre annonce native ici</string>
+    <string name="jobs_ad_badge">Pub</string>
+
+    <!-- ============ Job detail ============ -->
+    <string name="jobdetail_apply">Postuler</string>
+    <string name="jobdetail_apply_site">Postuler sur le site de l\'entreprise</string>
+    <string name="jobdetail_opens_browser">S\'ouvre dans le navigateur</string>
+    <string name="jobdetail_pipeline_stage">Étape du processus</string>
+    <string name="jobdetail_about">À propos du poste</string>
+    <string name="jobdetail_no_description">Aucune description fournie.</string>
+    <string name="jobdetail_applied_q_title">Avez-vous postulé ?</string>
+    <string name="jobdetail_applied_q_body">Ajouter %1$s chez %2$s à votre suivi en tant que Candidature envoyée ?</string>
+    <string name="jobdetail_applied_q_yes">Oui, marquer comme Postulé</string>
+    <string name="jobdetail_applied_q_no">Pas encore</string>
+    <string name="jobdetail_unavailable_title">Cet emploi n\'est pas disponible</string>
+    <string name="jobdetail_unavailable_body">Il a peut-être expiré, ou l\'application a été rouverte. Parcourez plutôt les offres actuelles.</string>
+    <string name="jobdetail_browse">Parcourir les emplois</string>
+    <!-- ============ Resume ============ -->
+    <string name="resume_title">Optimiseur de CV</string>
+    <string name="resume_hero_eyebrow">ADAPTER À UN EMPLOI</string>
+    <string name="resume_hero_title">Déjouez l\'ATS pour le poste exact que vous voulez</string>
+    <string name="resume_hero_subtitle">L\'IA d\'Ascend réécrit votre CV pour correspondre aux mots-clés et au scoring de ce poste.</string>
+    <string name="resume_library_label">Vos CV</string>
+    <string name="resume_add">Ajouter</string>
+    <string name="resume_target_role">Poste cible</string>
+    <string name="resume_optimization_mode">Mode d\'optimisation</string>
+    <string name="resume_general_optimization">Optimisation ATS générale</string>
+    <string name="resume_open_job_hint">Ouvrez d\'abord un emploi pour l\'adapter à ce poste précis.</string>
+    <string name="resume_add_to_start">Ajoutez un CV pour commencer</string>
+    <string name="resume_analyze">Analyser &amp; optimiser</string>
+    <string name="resume_selected">Sélectionné</string>
+    <string name="resume_select">Sélectionner</string>
+    <string name="resume_ats_label">ATS</string>
+    <string name="resume_document">Document</string>
+    <string name="resume_remove">Supprimer</string>
+    <string name="resume_upload_title">Importez votre CV</string>
+    <string name="resume_upload_subtitle">PDF, DOC ou DOCX · jusqu\'à 10 Mo</string>
+    <string name="resume_download_link_error">Impossible d\'ouvrir le lien de téléchargement.</string>
+    <string name="resume_share_subject">CV optimisé</string>
+    <string name="resume_share_chooser">Partager le CV</string>
+    <string name="resume_download">Télécharger</string>
+    <string name="resume_share">Partager</string>
+    <string name="resume_error_title">Une erreur s\'est produite</string>
+
+    <!-- ============ Mock interview ============ -->
+    <string name="mock_title">Entretien blanc</string>
+    <string name="mock_setup_intro">Entraînez-vous avec des questions générées par l\'IA et recevez un retour instantané.</string>
+    <string name="mock_role_label">Poste à préparer</string>
+    <string name="mock_count_label">Nombre de questions</string>
+    <string name="mock_start">Démarrer l\'entretien blanc</string>
+    <string name="mock_question_progress">Question %1$d sur %2$d</string>
+    <string name="mock_type">Saisir</string>
+    <string name="mock_speak">Parler</string>
+    <string name="mock_answer_placeholder">Saisissez votre réponse ici…</string>
+    <string name="mock_finish_score">Terminer &amp; noter</string>
+    <string name="mock_next_question">Question suivante</string>
+    <string name="mock_report_title">Rapport de session</string>
+    <string name="mock_average_score">Note moyenne</string>
+    <string name="mock_practice_again">S\'entraîner à nouveau</string>
+
+    <!-- ============ Job detail action tiles ============ -->
+    <string name="jobdetail_action_resume">Adapter le CV</string>
+    <string name="jobdetail_action_copilot">Copilot d\'entretien</string>
+    <string name="jobdetail_action_mock">Entretien blanc</string>
+    <!-- ============ Copilot ============ -->
+    <string name="copilot_title">Copilot d\'entretien IA</string>
+    <string name="copilot_prolock_title">Navigateur d\'entretien en direct</string>
+    <string name="copilot_prolock_desc">Obtenez des réponses en temps réel, dans votre style, pendant les entretiens. Le copilot en direct est une fonctionnalité Ascend Pro.</string>
+    <string name="copilot_unlock_pro">Débloquer avec Pro</string>
+    <string name="copilot_setup_eyebrow">COPILOT D\'ENTRETIEN</string>
+    <string name="copilot_setup_intro">Définissez le contexte une seule fois. Pendant votre appel, nous transcrivons chaque question depuis votre micro — ou collez-la manuellement — et rédigeons une réponse dans votre style.</string>
+    <string name="copilot_job_title">Intitulé du poste</string>
+    <string name="copilot_company_optional">Entreprise · facultatif</string>
+    <string name="copilot_launch">Lancer le Copilot</string>
+    <string name="copilot_split_screen_hint">Gardez ceci ouvert en écran partagé pendant votre appel vidéo.</string>
+    <string name="copilot_status_manual">Mode manuel · collez chaque question</string>
+    <string name="copilot_status_listening">En direct · à l\'écoute</string>
+    <string name="copilot_status_tap_mic">Appuyez sur le micro pour transcrire</string>
+    <string name="copilot_back">Retour</string>
+    <string name="copilot_role_at_company">%1$s @ %2$s</string>
+    <string name="copilot_end">Terminer</string>
+    <string name="copilot_question_placeholder">Collez ou saisissez la question du recruteur…</string>
+    <string name="copilot_clear_question">Effacer la question</string>
+    <string name="copilot_listen">Écouter</string>
+    <string name="copilot_stop">Arrêter</string>
+    <string name="copilot_draft_answer">Rédiger une réponse</string>
+    <string name="copilot_tip">Astuce : gardez votre téléphone près du haut-parleur de l\'ordinateur.</string>
+    <string name="copilot_answer_eyebrow">RÉPONSE DU COPILOT</string>
+    <string name="copilot_mic_rationale_title">Utiliser votre microphone ?</string>
+    <string name="copilot_mic_rationale_body">Ascend utilise votre microphone pour transcrire les questions du recruteur en temps réel afin de rédiger des réponses. L\'audio est traité uniquement pour la transcription — il n\'est ni enregistré ni stocké par Ascend.</string>
+    <string name="copilot_mic_not_now">Pas maintenant</string>
+    <string name="copilot_mic_denied_title">Le microphone est désactivé</string>
+    <string name="copilot_mic_denied_body">Pour transcrire les questions en direct, activez l\'autorisation Microphone pour Ascend dans les Paramètres. Vous pouvez toujours coller ou saisir les questions manuellement.</string>
+    <string name="copilot_mic_open_settings">Ouvrir les paramètres</string>
+    <string name="copilot_mic_manual_entry">Utiliser la saisie manuelle</string>
+
+    <!-- ============ Paywall ============ -->
+    <string name="paywall_close">Fermer</string>
+    <string name="paywall_headline">SOYEZ EMBAUCHÉ COMME UN PRO</string>
+    <string name="paywall_subhead">Débloquez toutes les fonctionnalités</string>
+    <string name="paywall_col_premium">PREMIUM</string>
+    <string name="paywall_col_basic">STANDARD</string>
+    <string name="paywall_feature_find_jobs">Trouver &amp; postuler à des emplois</string>
+    <string name="paywall_feature_resume">Optimiseur de CV IA</string>
+    <string name="paywall_feature_mock">Entretiens blancs</string>
+    <string name="paywall_feature_navigator">Navigateur d\'entretien en direct</string>
+    <string name="paywall_feature_ad_free">Expérience sans publicité</string>
+    <string name="paywall_feature_support">Assistance prioritaire</string>
+    <string name="paywall_basic_ads">Publicités</string>
+    <string name="paywall_price_line">%1$s/%2$s après un essai GRATUIT de 3 jours</string>
+    <string name="paywall_price_fallback">Démarrer votre essai gratuit</string>
+    <string name="paywall_start_trial">DÉMARRER L\'ESSAI GRATUIT</string>
+    <string name="paywall_billing_disclosure">L\'abonnement est facturé à la fin de l\'essai et se renouvelle automatiquement. Annulez à tout moment avant la fin de l\'essai pour éviter les frais.</string>
+    <string name="paywall_restore">Restaurer</string>
+    <string name="paywall_terms">Conditions</string>
+    <string name="paywall_privacy">Confidentialité</string>
+    <string name="paywall_purchase_failed">L\'achat n\'a pas abouti. Veuillez réessayer.</string>
+    <string name="paywall_restore_success">Pro restauré.</string>
+    <string name="paywall_restore_none">Aucun achat précédent trouvé.</string>
+    <!-- ============ Tracker ============ -->
+    <string name="tracker_header">Suivi des candidatures</string>
+    <string name="tracker_count">%1$d emplois · %2$d actifs</string>
+    <string name="tracker_search_hint">Rechercher intitulé, entreprise, lieu</string>
+    <string name="tracker_sort_recent">Récent</string>
+    <string name="tracker_sort_company">Entreprise</string>
+    <string name="tracker_sort_stage">Étape</string>
+    <string name="tracker_interview_followup">Entretien / relance</string>
+    <string name="tracker_not_set">Non défini</string>
+    <string name="tracker_notes">Notes</string>
+    <string name="tracker_notes_placeholder">Nom du recruteur, fourchette de salaire, prochaines étapes…</string>
+    <string name="tracker_save_notes">Enregistrer les notes</string>
+    <string name="tracker_mark_closed_lost">Marquer comme clôturé / perdu</string>
+    <string name="tracker_close_why">Pourquoi cette candidature est-elle clôturée ?</string>
+    <string name="tracker_close_reason_rejected">Refusé</string>
+    <string name="tracker_close_reason_withdrew">Retiré</string>
+    <string name="tracker_close_reason_filled">Poste pourvu</string>
+    <string name="tracker_close_reason_placeholder">Raison (facultatif)</string>
+    <string name="tracker_mark_closed">Marquer comme clôturé</string>
+    <string name="tracker_closed_reason">Clôturé : %1$s</string>
+    <string name="tracker_remove">Retirer du suivi</string>
+    <string name="tracker_remove_confirm_title">Retirer du suivi ?</string>
+    <string name="tracker_remove_confirm_body">« %1$s » chez %2$s sera retiré. Cette action est irréversible.</string>
+    <string name="tracker_demote">Rétrograder</string>
+    <string name="tracker_promote">Promouvoir</string>
+    <string name="tracker_no_matches">Aucune correspondance</string>
+    <string name="tracker_no_matches_hint">Essayez une autre recherche.</string>
+    <string name="tracker_empty_title">Aucun emploi suivi pour le moment</string>
+    <string name="tracker_empty_body">Enregistrez ou postulez à des emplois et ils apparaîtront ici.</string>
+    <string name="tracker_find_jobs">Trouver des emplois</string>
+
+    <!-- ============ Games ============ -->
+    <string name="games_header_blurb">Une énigme quotidienne pour garder l\'esprit vif entre deux candidatures.</string>
+    <string name="games_play">Jouer</string>
+    <string name="games_patches_title">Patches</string>
+    <string name="games_patches_blurb">Révélez l\'image cachée</string>
+    <string name="games_sudoku_title">Mini Sudoku</string>
+    <string name="games_sudoku_blurb">Remplissez la grille de 6 sur 6</string>
+    <string name="games_zip_title">Tracé</string>
+    <string name="games_zip_blurb">Reliez 1 à 7 en un seul chemin</string>
+    <string name="games_queens_title">Étoiles</string>
+    <string name="games_queens_blurb">Une par ligne, colonne, couleur</string>
+    <string name="games_tango_title">Éclipse</string>
+    <string name="games_tango_blurb">Équilibrez soleils et lunes</string>
+    <string name="games_g2048_title">2048</string>
+    <string name="games_g2048_blurb">Fusionnez les tuiles jusqu\'à 2048</string>
+    <string name="games_clusters_title">Clusters</string>
+    <string name="games_clusters_blurb">Regroupez les seize mots</string>
+    <string name="games_crossword_title">Mini Mots croisés</string>
+    <string name="games_crossword_blurb">Des mots croisés de cinq sur cinq</string>
+    <string name="games_lightsout_title">Lights Out</string>
+    <string name="games_lightsout_blurb">Éteignez toutes les lumières</string>
+
+    <!-- ============ Shared: work type / pipeline stage labels ============ -->
+    <string name="worktype_remote">À distance</string>
+    <string name="worktype_hybrid">Hybride</string>
+    <string name="worktype_onsite">Sur site</string>
+    <string name="stage_saved">Enregistré</string>
+    <string name="stage_applied">Candidature envoyée</string>
+    <string name="stage_interview">Entretien</string>
+    <string name="stage_offer">Offre</string>
+    <string name="stage_closed">Clôturé</string>
+
+    <!-- ============ Shared: errors / network ============ -->
+    <string name="error_offline">Vous êtes hors ligne. Vérifiez votre connexion et réessayez.</string>
+    <string name="error_generic">Une erreur s\'est produite. Veuillez réessayer.</string>
+    <string name="error_rate_limited">Vous avez atteint la limite de recherche quotidienne. Réessayez plus tard.</string>
+    <string name="error_load_jobs">Impossible de charger les emplois. Veuillez réessayer.</string>
+    <string name="error_optimize_failed">L\'optimisation a échoué. Vérifiez votre connexion et réessayez.</string>
+    <string name="error_mock_start_failed">Impossible de démarrer l\'entretien. Veuillez réessayer.</string>
+    <string name="error_mock_score_failed">Impossible de noter la session. Veuillez réessayer.</string>
+    <string name="error_copilot_failed">Impossible de joindre le Copilot. Veuillez réessayer.</string>
+    <string name="error_open_link">Impossible d\'ouvrir le lien.</string>
+
+    <!-- ============ Misc fallbacks ============ -->
+    <string name="home_fallback_name">vous</string>
 </resources>

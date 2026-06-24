@@ -1,10 +1,11 @@
 package app.ascend.ui.screens.resume
 
+import androidx.annotation.StringRes
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.ascend.R
 import app.ascend.analytics.Analytics
 import app.ascend.core.isOffline
-import app.ascend.core.userMessage
 import app.ascend.data.remote.platform.AscendApi
 import app.ascend.data.remote.platform.OptimizeRequest
 import app.ascend.data.remote.platform.OptimizeResponse
@@ -27,7 +28,7 @@ sealed interface ResumeUi {
     data object Idle : ResumeUi
     data object Loading : ResumeUi
     data class Result(val data: OptimizeResponse) : ResumeUi
-    data class Error(val message: String) : ResumeUi
+    data class Error(@StringRes val messageRes: Int) : ResumeUi
 }
 
 /** Library + selection state for the resume screen. */
@@ -92,7 +93,7 @@ class ResumeViewModel @Inject constructor(
             } catch (t: Throwable) {
                 // Record only metadata (op + jobId) — never resume content. Skip offline (expected).
                 if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "resume_optimize", "jobId" to jobId))
-                ResumeUi.Error(t.userMessage("Optimization failed. Check the Ascend API configuration."))
+                ResumeUi.Error(if (t.isOffline()) R.string.error_offline else R.string.error_optimize_failed)
             }
         }
     }
