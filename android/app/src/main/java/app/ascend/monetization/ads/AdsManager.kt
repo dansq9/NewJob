@@ -22,6 +22,13 @@ interface AdsManager {
     /** false when the user is Pro — UIs hide native ad slots accordingly. */
     val adsEnabled: Flow<Boolean>
 
+    /**
+     * Initialize the ad SDK. MUST only be called once the UMP gate is open
+     * (ConsentManager.canRequestAds == true) — see CLAUDE.md rule 1. Idempotent.
+     * No ad request may fire until this has run.
+     */
+    fun initialize()
+
     suspend fun showInterstitial(placement: AdPlacement = AdPlacement.SPLASH_INTERSTITIAL)
 
     /** Show a rewarded ad to unlock one use of [feature]; true if reward granted

@@ -314,4 +314,6 @@
 
     <!-- ============ Misc fallbacks ============ -->
     <string name="home_fallback_name">daar</string>
+    <string name="settings_privacy_options">Privaatheidopsies</string>
+    <string name="settings_privacy_options_sub">Bestuur jou advertensie-toestemmingskeuses</string>
 </resources>

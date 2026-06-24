@@ -10,6 +10,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Language
+import androidx.compose.material.icons.outlined.PrivacyTip
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -104,6 +105,16 @@ fun SettingsScreen(nav: NavController, vm: SettingsViewModel = hiltViewModel()) 
             Surface(shape = RoundedCornerShape(14.dp), color = AscendColors.Card, modifier = Modifier.fillMaxWidth()) {
                 Text(stringResource(R.string.settings_backup_note), Modifier.padding(14.dp),
                     fontSize = 12.5.sp, color = AscendColors.Muted2, lineHeight = 18.sp)
+            }
+
+            // UMP "Privacy options" — only where the consent mandate requires it (EEA/UK/CH).
+            if (vm.privacyOptionsRequired()) {
+                Spacer(Modifier.height(10.dp))
+                RowCard(
+                    Icons.Outlined.PrivacyTip,
+                    stringResource(R.string.settings_privacy_options),
+                    stringResource(R.string.settings_privacy_options_sub),
+                ) { (context as? Activity)?.let { vm.showPrivacyOptions(it) } }
             }
 
             Spacer(Modifier.height(24.dp))

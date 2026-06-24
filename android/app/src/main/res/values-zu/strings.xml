@@ -314,4 +314,6 @@
 
     <!-- ============ Misc fallbacks ============ -->
     <string name="home_fallback_name">lapho</string>
+    <string name="settings_privacy_options">Izinketho zobumfihlo</string>
+    <string name="settings_privacy_options_sub">Phatha izinketho zakho zemvume yezikhangiso</string>
 </resources>

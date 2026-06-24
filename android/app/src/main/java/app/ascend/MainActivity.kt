@@ -14,7 +14,11 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import kotlinx.coroutines.launch
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -43,6 +47,9 @@ import dagger.hilt.android.AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val appViewModel: AppViewModel by viewModels()
 
+    @javax.inject.Inject lateinit var consentManager: app.ascend.monetization.consent.ConsentManager
+    @javax.inject.Inject lateinit var ads: app.ascend.monetization.ads.AdsManager
+
     // Apply the user's chosen language before resources are resolved.
     override fun attachBaseContext(newBase: Context) {
         super.attachBaseContext(app.ascend.i18n.LocaleManager.wrap(newBase))
@@ -53,6 +60,17 @@ class MainActivity : ComponentActivity() {
         splash.setKeepOnScreenCondition { appViewModel.start.value is AppStart.Loading }
         enableEdgeToEdge()
         super.onCreate(savedInstanceState)
+
+        // UMP consent gate (CLAUDE.md rule 1): gather on every launch; the ad SDK
+        // is initialized ONLY once consent resolves and ads are permitted. Nothing
+        // requests an ad before this.
+        consentManager.gather(this)
+        lifecycleScope.launch {
+            repeatOnLifecycle(Lifecycle.State.CREATED) {
+                consentManager.canRequestAds.collect { allowed -> if (allowed) ads.initialize() }
+            }
+        }
+
         setContent {
             AscendTheme {
                 val state by appViewModel.start.collectAsStateWithLifecycle()

@@ -115,6 +115,10 @@ dependencies {
 
     implementation(libs.androidx.datastore.preferences)
 
+    // UMP consent SDK — gates all ad init/requests (CLAUDE.md rule 1). Ships
+    // globally; the consent form is shown only where required (EEA/UK/CH).
+    implementation(libs.user.messaging.platform)
+
     // Games engine uses java.time (LocalDate) — desugared for minSdk 24
     coreLibraryDesugaring("com.android.tools:desugar_jdk_libs:2.1.2")
 }

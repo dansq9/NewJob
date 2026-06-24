@@ -314,4 +314,6 @@
 
     <!-- ============ Misc fallbacks ============ -->
     <string name="home_fallback_name">vous</string>
+    <string name="settings_privacy_options">Options de confidentialité</string>
+    <string name="settings_privacy_options_sub">Gérez vos choix de consentement publicitaire</string>
 </resources>

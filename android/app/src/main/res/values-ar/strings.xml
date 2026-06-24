@@ -314,4 +314,6 @@
 
     <!-- ============ Misc fallbacks ============ -->
     <string name="home_fallback_name">صديقي</string>
+    <string name="settings_privacy_options">خيارات الخصوصية</string>
+    <string name="settings_privacy_options_sub">إدارة خيارات موافقتك على الإعلانات</string>
 </resources>

@@ -314,4 +314,6 @@
 
     <!-- ============ Misc fallbacks ============ -->
     <string name="home_fallback_name">there</string>
+    <string name="settings_privacy_options">Privacy options</string>
+    <string name="settings_privacy_options_sub">Manage your ad-consent choices</string>
 </resources>
