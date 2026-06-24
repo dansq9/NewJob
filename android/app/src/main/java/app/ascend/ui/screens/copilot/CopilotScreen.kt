@@ -5,6 +5,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -17,6 +19,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -121,6 +125,11 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
                 value = s.question, onValueChange = vm::setQuestion, modifier = Modifier.fillMaxWidth(),
                 placeholder = { Text("Paste or type the interviewer's question…", color = Color(0xFF8A8A99)) },
                 shape = RoundedCornerShape(14.dp),
+                keyboardOptions = KeyboardOptions(
+                    capitalization = KeyboardCapitalization.Sentences,
+                    imeAction = ImeAction.Send,
+                ),
+                keyboardActions = KeyboardActions(onSend = { vm.ask() }),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedContainerColor = DarkCard, unfocusedContainerColor = DarkCard,
                     focusedTextColor = Color.White, unfocusedTextColor = Color.White,
@@ -135,7 +144,7 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
             Spacer(Modifier.height(16.dp))
             when {
                 s.loading -> Box(Modifier.fillMaxWidth().padding(24.dp), Alignment.Center) { CircularProgressIndicator(color = Lilac) }
-                s.error != null -> Text(s.error!!, color = Color(0xFFFFB4B4), fontSize = 13.sp)
+                s.error != null -> CopilotError(s.error!!, onRetry = vm::ask)
                 s.answer != null -> AnswerCard(s.answer!!)
                 else -> Text("Tip: keep your phone near the computer speaker.", color = Color(0xFF8A8A99), fontSize = 12.5.sp)
             }
@@ -163,6 +172,20 @@ private fun AnswerCard(answer: app.ascend.data.remote.platform.CopilotAnswerResp
     }
 }
 
+@Composable
+private fun CopilotError(message: String, onRetry: () -> Unit) {
+    Surface(shape = RoundedCornerShape(14.dp), color = Color(0xFF2A1A22), modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.padding(14.dp)) {
+            Text(message, color = Color(0xFFFFB4B4), fontSize = 13.sp, lineHeight = 18.sp)
+            Spacer(Modifier.height(10.dp))
+            Button(onClick = onRetry, shape = RoundedCornerShape(10.dp),
+                colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) {
+                Text("Try again", fontWeight = FontWeight.Bold)
+            }
+        }
+    }
+}
+
 @Composable private fun Label(t: String) {
     Text(t.uppercase(), fontFamily = JetBrainsMono, fontSize = 12.sp, fontWeight = FontWeight.Bold, color = AscendColors.Muted2)
     Spacer(Modifier.height(8.dp))
@@ -171,5 +194,6 @@ private fun AnswerCard(answer: app.ascend.data.remote.platform.CopilotAnswerResp
 @Composable private fun Field(value: String, onChange: (String) -> Unit) {
     OutlinedTextField(value = value, onValueChange = onChange, singleLine = true, modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
+        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Next),
         colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = AscendColors.Card, unfocusedContainerColor = AscendColors.Card))
 }

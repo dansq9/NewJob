@@ -115,7 +115,7 @@ fun ResumeScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) {
                 )
                 ResumeUi.Loading -> Box(Modifier.fillMaxWidth().padding(40.dp), Alignment.Center) { CircularProgressIndicator(color = AscendColors.Indigo) }
                 is ResumeUi.Result -> Results(s.data, lib.selected?.name)
-                is ResumeUi.Error -> ApiError(s.message, vm::reset)
+                is ResumeUi.Error -> ApiError(s.message, onRetry = vm::optimize, onDismiss = vm::reset)
             }
             Spacer(Modifier.height(24.dp))
         }
@@ -205,7 +205,13 @@ private fun Results(data: OptimizeResponse, resumeName: String?) {
     Spacer(Modifier.height(6.dp))
     Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         OutlinedButton(
-            onClick = { data.downloadUrl?.let { uriHandler.openUri(it) } },
+            onClick = {
+                data.downloadUrl?.let { url ->
+                    if (runCatching { uriHandler.openUri(url) }.isFailure) {
+                        android.widget.Toast.makeText(ctx, "Couldn't open the download link.", android.widget.Toast.LENGTH_SHORT).show()
+                    }
+                }
+            },
             enabled = data.downloadUrl != null,
             modifier = Modifier.weight(1f).height(50.dp),
             shape = RoundedCornerShape(14.dp),
@@ -220,7 +226,7 @@ private fun Results(data: OptimizeResponse, resumeName: String?) {
                     putExtra(Intent.EXTRA_TEXT, summary)
                     putExtra(Intent.EXTRA_SUBJECT, "Optimized resume")
                 }
-                ctx.startActivity(Intent.createChooser(send, "Share resume"))
+                runCatching { ctx.startActivity(Intent.createChooser(send, "Share resume")) }
             },
             modifier = Modifier.weight(1f).height(50.dp),
             shape = RoundedCornerShape(14.dp),
@@ -253,14 +259,24 @@ private fun PrimaryButton(label: String, icon: androidx.compose.ui.graphics.vect
 }
 
 @Composable
-fun ApiError(message: String, onDismiss: () -> Unit) {
+fun ApiError(message: String, onRetry: (() -> Unit)? = null, onDismiss: () -> Unit) {
     Surface(shape = RoundedCornerShape(16.dp), color = AscendColors.AmberBg, modifier = Modifier.fillMaxWidth()) {
         Column(Modifier.padding(16.dp)) {
-            Text("Couldn't reach the Ascend API", fontWeight = FontWeight.Bold, color = AscendColors.Amber)
+            Text("Something went wrong", fontWeight = FontWeight.Bold, color = AscendColors.Amber)
             Spacer(Modifier.height(4.dp))
             Text(message, fontSize = 13.sp, color = AscendColors.Amber)
             Spacer(Modifier.height(12.dp))
-            TextButton(onClick = onDismiss) { Text("Dismiss", color = AscendColors.Indigo) }
+            Row {
+                if (onRetry != null) {
+                    Button(
+                        onClick = onRetry,
+                        shape = RoundedCornerShape(12.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
+                    ) { Text("Try again", fontWeight = FontWeight.Bold) }
+                    Spacer(Modifier.width(8.dp))
+                }
+                TextButton(onClick = onDismiss) { Text("Dismiss", color = AscendColors.Indigo) }
+            }
         }
     }
 }

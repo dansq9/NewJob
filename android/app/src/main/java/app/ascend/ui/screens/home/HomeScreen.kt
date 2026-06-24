@@ -97,9 +97,30 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
 
         when (val m = matches) {
             is Resource.Loading -> item { Box(Modifier.fillMaxWidth().padding(30.dp), Alignment.Center) { CircularProgressIndicator(color = AscendColors.Indigo) } }
-            is Resource.Error -> item { Text(m.message, color = AscendColors.Muted2, fontSize = 13.sp) }
-            is Resource.Success -> items(m.data, key = { it.id }) { job ->
-                JobCard(job = job, onClick = { vm.select(job); nav.navigate(Routes.JOB_DETAIL) })
+            is Resource.Error -> item { MatchesMessage(m.message, onRetry = vm::retry) }
+            is Resource.Success ->
+                if (m.data.isEmpty()) {
+                    item { MatchesMessage("No matches yet for your target role. Try a broader search.", onRetry = null, action = "Search jobs") { nav.navigate(Routes.JOBS) } }
+                } else items(m.data, key = { it.id }) { job ->
+                    JobCard(job = job, onClick = { vm.select(job); nav.navigate(Routes.JOB_DETAIL) })
+                }
+        }
+    }
+}
+
+@Composable
+private fun MatchesMessage(message: String, onRetry: (() -> Unit)?, action: String? = null, onAction: (() -> Unit)? = null) {
+    Surface(shape = RoundedCornerShape(16.dp), color = AscendColors.Card, border = BorderStroke(1.5.dp, AscendColors.Line), modifier = Modifier.fillMaxWidth()) {
+        Column(Modifier.fillMaxWidth().padding(20.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+            Text(message, color = AscendColors.Muted2, fontSize = 13.sp, textAlign = androidx.compose.ui.text.style.TextAlign.Center, lineHeight = 18.sp)
+            if (onRetry != null) {
+                Spacer(Modifier.height(12.dp))
+                Button(onClick = onRetry, shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) { Text("Try again", fontWeight = FontWeight.Bold) }
+            } else if (action != null && onAction != null) {
+                Spacer(Modifier.height(12.dp))
+                Button(onClick = onAction, shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo)) { Text(action, fontWeight = FontWeight.Bold) }
             }
         }
     }

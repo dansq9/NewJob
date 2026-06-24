@@ -3,10 +3,12 @@ package app.ascend.ui.util
 import android.app.Activity
 import android.content.Intent
 import android.speech.RecognizerIntent
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
+import androidx.compose.ui.platform.LocalContext
 import java.util.Locale
 
 /**
@@ -18,6 +20,7 @@ import java.util.Locale
  */
 @Composable
 fun rememberVoiceInput(onResult: (String) -> Unit): () -> Unit {
+    val context = LocalContext.current
     val launcher = rememberLauncherForActivityResult(
         ActivityResultContracts.StartActivityForResult()
     ) { result ->
@@ -27,8 +30,9 @@ fun rememberVoiceInput(onResult: (String) -> Unit): () -> Unit {
                 ?.firstOrNull()
                 ?.let(onResult)
         }
+        // RESULT_CANCELED (user backed out / denied mic / no speech) is a no-op: keep the typed answer.
     }
-    return remember(launcher) {
+    return remember(launcher, context) {
         {
             val intent = Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH).apply {
                 putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL, RecognizerIntent.LANGUAGE_MODEL_FREE_FORM)
@@ -36,7 +40,10 @@ fun rememberVoiceInput(onResult: (String) -> Unit): () -> Unit {
                 putExtra(RecognizerIntent.EXTRA_PROMPT, "Answer out loud…")
                 putExtra(RecognizerIntent.EXTRA_PARTIAL_RESULTS, true)
             }
-            runCatching { launcher.launch(intent) }
+            // No speech recognizer (e.g. some devices without Google app) → guide the user to type.
+            if (launcher.runCatching { launch(intent) }.isFailure) {
+                Toast.makeText(context, "Voice input isn't available — you can type your answer instead.", Toast.LENGTH_SHORT).show()
+            }
         }
     }
 }

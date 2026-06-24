@@ -8,5 +8,6 @@ sealed interface Resource<out T> {
         val message: String,
         val cause: Throwable? = null,
         val rateLimited: Boolean = false,
+        val offline: Boolean = false,
     ) : Resource<Nothing>
 }

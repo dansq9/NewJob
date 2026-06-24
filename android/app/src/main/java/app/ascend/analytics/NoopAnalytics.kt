@@ -13,4 +13,12 @@ class NoopAnalytics @Inject constructor() : Analytics {
     }
     override fun screen(name: String) { if (BuildConfig.DEBUG) Log.d("Analytics", "screen:$name") }
     override fun setUserProperty(key: String, value: String?) { if (BuildConfig.DEBUG) Log.d("Analytics", "prop:$key=$value") }
+
+    override fun recordError(throwable: Throwable, context: Map<String, Any?>) {
+        // Debug: surface to Logcat with diagnostics. Release: no-op until a real
+        // crash backend (Sentry/Crashlytics) is bound — swap this impl, not the call sites.
+        if (BuildConfig.DEBUG) {
+            Log.w("Analytics", "non-fatal: ${context + Diagnostics.base()}", throwable)
+        }
+    }
 }

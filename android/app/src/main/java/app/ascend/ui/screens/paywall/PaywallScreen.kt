@@ -116,8 +116,8 @@ fun PaywallScreen(onClose: () -> Unit, vm: PaywallViewModel = hiltViewModel()) {
             vm.message?.let { Text(it, Modifier.fillMaxWidth().padding(top = 8.dp), color = AscendColors.Indigo, fontSize = 13.sp, textAlign = TextAlign.Center) }
             Row(Modifier.fillMaxWidth().padding(top = 14.dp), horizontalArrangement = Arrangement.Center) {
                 LinkText("Restore") { vm.restore() }
-                Dot(); LinkText("Terms") { uri.openUri(TERMS_URL) }
-                Dot(); LinkText("Privacy") { uri.openUri(PRIVACY_URL) }
+                Dot(); LinkText("Terms") { runCatching { uri.openUri(TERMS_URL) } }
+                Dot(); LinkText("Privacy") { runCatching { uri.openUri(PRIVACY_URL) } }
             }
         }
     }

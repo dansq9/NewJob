@@ -45,6 +45,7 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
     val saved by vm.saved.collectAsStateWithLifecycle()
     val stage by vm.stage.collectAsStateWithLifecycle()
     val uri = LocalUriHandler.current
+    val ctx = androidx.compose.ui.platform.LocalContext.current
     val j = job
 
     // After the user opens the external apply link and returns, prompt to track it.
@@ -88,7 +89,12 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
                         Text("Opens in browser", fontSize = 13.sp, color = AscendColors.Ink, fontWeight = FontWeight.Bold)
                     }
                     Button(
-                        onClick = { uri.openUri(j.applyUrl!!); pendingApply = true },
+                        onClick = {
+                            // A malformed URL or a device with no browser must not crash the app.
+                            val opened = runCatching { uri.openUri(j.applyUrl!!) }.isSuccess
+                            if (opened) pendingApply = true
+                            else android.widget.Toast.makeText(ctx, "Couldn't open the application link.", android.widget.Toast.LENGTH_SHORT).show()
+                        },
                         colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
                         shape = RoundedCornerShape(14.dp),
                     ) {

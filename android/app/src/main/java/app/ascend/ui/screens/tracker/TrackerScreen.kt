@@ -25,6 +25,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -199,6 +200,7 @@ private fun TrackerEditSheet(
                 onValueChange = { notes = it },
                 modifier = Modifier.fillMaxWidth().heightIn(min = 96.dp),
                 placeholder = { Text("Recruiter name, salary range, next steps…") },
+                keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences),
                 shape = RoundedCornerShape(14.dp),
             )
             Spacer(Modifier.height(8.dp))
@@ -225,6 +227,7 @@ private fun TrackerEditSheet(
                 OutlinedTextField(
                     value = closeReason, onValueChange = { closeReason = it },
                     modifier = Modifier.fillMaxWidth(), placeholder = { Text("Reason (optional)") },
+                    keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Sentences, imeAction = ImeAction.Done),
                     singleLine = true, shape = RoundedCornerShape(14.dp),
                 )
                 Spacer(Modifier.height(8.dp))

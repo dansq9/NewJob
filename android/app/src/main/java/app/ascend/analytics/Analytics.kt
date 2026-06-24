@@ -10,6 +10,14 @@ interface Analytics {
     fun log(event: String, params: Map<String, Any?> = emptyMap())
     fun screen(name: String)
     fun setUserProperty(key: String, value: String?)
+
+    /**
+     * Record a non-fatal error (caught exception). [context] must contain only
+     * non-sensitive metadata — never resume content, interview answers, or
+     * other user text. The real impl forwards to Sentry/Crashlytics; the
+     * facade attaches app/device diagnostics. See [Diagnostics].
+     */
+    fun recordError(throwable: Throwable, context: Map<String, Any?> = emptyMap())
 }
 
 /** Event taxonomy (funnels). */

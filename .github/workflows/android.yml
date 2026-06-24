@@ -45,6 +45,12 @@ jobs:
       - name: Assemble debug
         run: ./gradlew :app:assembleDebug --stacktrace
 
+      - name: Assemble release (R8/minify gate)
+        # Builds the minified, resource-shrunk release APK (unsigned) so R8 +
+        # the ProGuard keep rules are actually exercised — catches missing
+        # serialization/Retrofit keep rules that assembleDebug never would.
+        run: ./gradlew :app:assembleRelease --stacktrace
+
       - name: Lint
         run: ./gradlew :app:lintDebug --stacktrace
         continue-on-error: true

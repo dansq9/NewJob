@@ -4,11 +4,14 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.KeyboardCapitalization
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -38,7 +41,7 @@ fun MockScreen(nav: NavController, vm: MockViewModel = hiltViewModel()) {
                 MockUi.Loading -> Box(Modifier.fillMaxWidth().padding(60.dp), Alignment.Center) { CircularProgressIndicator(color = AscendColors.Indigo) }
                 is MockUi.Live -> Live(s, vm)
                 is MockUi.Report -> Report(s, vm)
-                is MockUi.Error -> ApiError(s.message, vm::reset)
+                is MockUi.Error -> ApiError(s.message, onRetry = vm::retry, onDismiss = vm::reset)
             }
         }
     }
@@ -53,6 +56,7 @@ private fun Setup(s: MockUi.Setup, vm: MockViewModel) {
     OutlinedTextField(
         value = s.role, onValueChange = vm::setRole, singleLine = true, modifier = Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(14.dp),
+        keyboardOptions = KeyboardOptions(capitalization = KeyboardCapitalization.Words, imeAction = ImeAction.Done),
         colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = AscendColors.Card, unfocusedContainerColor = AscendColors.Card),
     )
     Spacer(Modifier.height(22.dp))
@@ -109,6 +113,10 @@ private fun Live(s: MockUi.Live, vm: MockViewModel) {
         value = text, onValueChange = { text = it; vm.answer(it) },
         modifier = Modifier.fillMaxWidth().heightIn(min = 130.dp),
         placeholder = { Text("Type your answer here…") }, shape = RoundedCornerShape(14.dp),
+        keyboardOptions = KeyboardOptions(
+            capitalization = KeyboardCapitalization.Sentences,
+            imeAction = ImeAction.Default,   // multiline: Enter inserts newlines
+        ),
         colors = OutlinedTextFieldDefaults.colors(focusedContainerColor = AscendColors.Card, unfocusedContainerColor = AscendColors.Card),
     )
     Spacer(Modifier.height(16.dp))

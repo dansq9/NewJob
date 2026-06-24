@@ -2,6 +2,9 @@ package app.ascend.ui.screens.resume
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.ascend.analytics.Analytics
+import app.ascend.core.isOffline
+import app.ascend.core.userMessage
 import app.ascend.data.remote.platform.AscendApi
 import app.ascend.data.remote.platform.OptimizeRequest
 import app.ascend.data.remote.platform.OptimizeResponse
@@ -41,6 +44,7 @@ class ResumeViewModel @Inject constructor(
     private val selectedJob: SelectedJobStore,
     private val resumes: ResumeRepository,
     private val ads: app.ascend.monetization.ads.AdsManager,
+    private val analytics: Analytics,
 ) : ViewModel() {
 
     val targetTitle = selectedJob.selected.value?.title ?: "Senior Product Manager · Northwind"
@@ -84,7 +88,9 @@ class ResumeViewModel @Inject constructor(
                 }
                 ResumeUi.Result(res)
             } catch (t: Throwable) {
-                ResumeUi.Error(t.message ?: "Optimization failed. Check the Ascend API configuration.")
+                // Record only metadata (op + jobId) — never resume content. Skip offline (expected).
+                if (!t.isOffline()) analytics.recordError(t, mapOf("op" to "resume_optimize", "jobId" to jobId))
+                ResumeUi.Error(t.userMessage("Optimization failed. Check the Ascend API configuration."))
             }
         }
     }

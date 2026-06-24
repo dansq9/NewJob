@@ -1,6 +1,8 @@
 package app.ascend.data.remote.jsearch
 
+import app.ascend.analytics.Analytics
 import app.ascend.core.Resource
+import app.ascend.core.isOffline
 import app.ascend.data.model.Job
 import app.ascend.data.model.WorkType
 import kotlinx.coroutines.Dispatchers
@@ -14,6 +16,7 @@ import kotlin.math.roundToInt
 @Singleton
 class JSearchRepository @Inject constructor(
     private val api: JSearchApi,
+    private val analytics: Analytics,
 ) {
     suspend fun search(
         query: String,
@@ -36,10 +39,20 @@ class JSearchRepository @Inject constructor(
             )
             Resource.Success(resp.data.mapNotNull { it.toJob() })
         } catch (e: HttpException) {
-            if (e.code() == 429) Resource.Error("You've hit the daily search limit. Try again later.", e, rateLimited = true)
-            else Resource.Error("Couldn't load jobs (${e.code()})", e)
+            if (e.code() == 429) {
+                Resource.Error("You've hit the daily search limit. Try again later.", e, rateLimited = true)
+            } else {
+                analytics.recordError(e, mapOf("op" to "job_search", "http" to e.code()))
+                Resource.Error("Couldn't load jobs (${e.code()})", e)
+            }
         } catch (t: Throwable) {
-            Resource.Error(t.message ?: "Couldn't load jobs", t)
+            val offline = t.isOffline()
+            // Offline is an expected condition, not a bug — don't spam the crash backend with it.
+            if (!offline) analytics.recordError(t, mapOf("op" to "job_search"))
+            Resource.Error(
+                if (offline) "You're offline. Check your connection and try again." else (t.message ?: "Couldn't load jobs"),
+                t, offline = offline,
+            )
         }
     }
 }

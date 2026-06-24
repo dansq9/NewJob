@@ -37,6 +37,9 @@ class HomeViewModel @Inject constructor(
     private val _topMatches = MutableStateFlow<Resource<List<Job>>>(Resource.Loading)
     val topMatches: StateFlow<Resource<List<Job>>> = _topMatches.asStateFlow()
 
+    @Volatile private var lastRole = ""
+    @Volatile private var lastLocation = ""
+
     init {
         // (Re)load top matches whenever the target role / location changes.
         viewModelScope.launch {
@@ -44,15 +47,25 @@ class HomeViewModel @Inject constructor(
                 .map { it.targetRole to it.location }
                 .distinctUntilChanged()
                 .collectLatest { (role, location) ->
-                    if (role.isBlank()) { _topMatches.value = Resource.Success(emptyList()); return@collectLatest }
-                    _topMatches.value = Resource.Loading
-                    val res = jobs.search(query = role, location = location.ifBlank { null })
-                    _topMatches.value = when (res) {
-                        is Resource.Success -> Resource.Success(res.data.take(4))
-                        else -> res
-                    }
+                    lastRole = role; lastLocation = location
+                    load(role, location)
                 }
         }
+    }
+
+    private suspend fun load(role: String, location: String) {
+        if (role.isBlank()) { _topMatches.value = Resource.Success(emptyList()); return }
+        _topMatches.value = Resource.Loading
+        val res = jobs.search(query = role, location = location.ifBlank { null })
+        _topMatches.value = when (res) {
+            is Resource.Success -> Resource.Success(res.data.take(4))
+            else -> res
+        }
+    }
+
+    /** Retry the top-matches fetch (e.g. after an error / reconnect). */
+    fun retry() {
+        viewModelScope.launch { load(lastRole, lastLocation) }
     }
 
     fun select(job: Job) = selectedJob.select(job)
