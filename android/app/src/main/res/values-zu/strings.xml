@@ -318,4 +318,12 @@
     <string name="settings_privacy_options_sub">Phatha izinketho zakho zemvume yezikhangiso</string>
     <string name="splash_brand_tagline">Thola umsebenzi wakho olandelayo ngokushesha</string>
     <string name="splash_brand_loading">Silungiselela indawo yakho yokusebenza</string>
+    <string name="onboarding_language_title">Uluphi ulimi oluthandayo?</string>
+    <string name="onboarding_language_sub">Ungalushintsha noma nini kuzilungiselelo.</string>
+    <string name="onboarding_location_current">Sebenzisa indawo yami yamanje</string>
+    <string name="onboarding_section_popular">Edumayo</string>
+    <string name="onboarding_resume_voice">Awunalo i-CV? Yakha ngezwi</string>
+    <string name="onboarding_resume_voice_sub">Phendula imibuzo embalwa, i-AI iyabhala</string>
+    <string name="onboarding_resume_skip">Yeqa okwamanje</string>
+    <string name="onboarding_resume_continue">Kubukeka kulungile, qhubeka</string>
 </resources>

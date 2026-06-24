@@ -318,4 +318,12 @@
     <string name="settings_privacy_options_sub">Bestuur jou advertensie-toestemmingskeuses</string>
     <string name="splash_brand_tagline">Kry vinniger jou volgende pos</string>
     <string name="splash_brand_loading">Berei jou werkruimte voor</string>
+    <string name="onboarding_language_title">Watter taal verkies jy?</string>
+    <string name="onboarding_language_sub">Jy kan dit enige tyd in Instellings verander.</string>
+    <string name="onboarding_location_current">Gebruik my huidige ligging</string>
+    <string name="onboarding_section_popular">Gewild</string>
+    <string name="onboarding_resume_voice">Geen CV nie? Bou een met stem</string>
+    <string name="onboarding_resume_voice_sub">Beantwoord ’n paar vrae en KI skryf dit</string>
+    <string name="onboarding_resume_skip">Slaan vir eers oor</string>
+    <string name="onboarding_resume_continue">Lyk reg, gaan voort</string>
 </resources>

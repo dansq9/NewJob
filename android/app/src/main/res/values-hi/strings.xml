@@ -318,4 +318,12 @@
     <string name="settings_privacy_options_sub">अपनी विज्ञापन-सहमति के विकल्प प्रबंधित करें</string>
     <string name="splash_brand_tagline">अपनी अगली नौकरी तेज़ी से पाएँ</string>
     <string name="splash_brand_loading">आपका वर्कस्पेस तैयार किया जा रहा है</string>
+    <string name="onboarding_language_title">आप कौन सी भाषा पसंद करते हैं?</string>
+    <string name="onboarding_language_sub">आप इसे कभी भी सेटिंग्स में बदल सकते हैं।</string>
+    <string name="onboarding_location_current">मेरा वर्तमान स्थान उपयोग करें</string>
+    <string name="onboarding_section_popular">लोकप्रिय</string>
+    <string name="onboarding_resume_voice">रिज़्यूमे नहीं है? आवाज़ से बनाएं</string>
+    <string name="onboarding_resume_voice_sub">कुछ सवालों के जवाब दें, AI लिख देगा</string>
+    <string name="onboarding_resume_skip">अभी छोड़ें</string>
+    <string name="onboarding_resume_continue">सही है, जारी रखें</string>
 </resources>

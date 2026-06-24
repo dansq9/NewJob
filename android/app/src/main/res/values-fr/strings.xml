@@ -318,4 +318,12 @@
     <string name="settings_privacy_options_sub">Gérez vos choix de consentement publicitaire</string>
     <string name="splash_brand_tagline">Décrochez votre prochain poste plus vite</string>
     <string name="splash_brand_loading">Préparation de votre espace de travail</string>
+    <string name="onboarding_language_title">Quelle langue préférez-vous ?</string>
+    <string name="onboarding_language_sub">Vous pourrez la changer à tout moment dans les Réglages.</string>
+    <string name="onboarding_location_current">Utiliser ma position actuelle</string>
+    <string name="onboarding_section_popular">Populaire</string>
+    <string name="onboarding_resume_voice">Pas de CV ? Créez-en un à la voix</string>
+    <string name="onboarding_resume_voice_sub">Répondez à quelques questions, l’IA le rédige</string>
+    <string name="onboarding_resume_skip">Ignorer pour l’instant</string>
+    <string name="onboarding_resume_continue">C’est bon, continuer</string>
 </resources>

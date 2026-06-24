@@ -318,4 +318,12 @@
     <string name="settings_privacy_options_sub">Gestiona tus opciones de consentimiento de anuncios</string>
     <string name="splash_brand_tagline">Consigue tu próximo empleo más rápido</string>
     <string name="splash_brand_loading">Preparando tu espacio de trabajo</string>
+    <string name="onboarding_language_title">¿Qué idioma prefieres?</string>
+    <string name="onboarding_language_sub">Puedes cambiarlo cuando quieras en Ajustes.</string>
+    <string name="onboarding_location_current">Usar mi ubicación actual</string>
+    <string name="onboarding_section_popular">Popular</string>
+    <string name="onboarding_resume_voice">¿Sin currículum? Créalo con tu voz</string>
+    <string name="onboarding_resume_voice_sub">Responde unas preguntas y la IA lo redacta</string>
+    <string name="onboarding_resume_skip">Omitir por ahora</string>
+    <string name="onboarding_resume_continue">Se ve bien, continuar</string>
 </resources>

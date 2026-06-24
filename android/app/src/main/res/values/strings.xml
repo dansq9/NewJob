@@ -318,4 +318,12 @@
     <string name="settings_privacy_options_sub">Manage your ad-consent choices</string>
     <string name="splash_brand_tagline">Land your next role, faster</string>
     <string name="splash_brand_loading">Preparing your workspace</string>
+    <string name="onboarding_language_title">What language do you prefer?</string>
+    <string name="onboarding_language_sub">You can change this anytime in Settings.</string>
+    <string name="onboarding_location_current">Use my current location</string>
+    <string name="onboarding_section_popular">Popular</string>
+    <string name="onboarding_resume_voice">No resume? Build one by voice</string>
+    <string name="onboarding_resume_voice_sub">Answer a few prompts and AI writes it</string>
+    <string name="onboarding_resume_skip">Skip for now</string>
+    <string name="onboarding_resume_continue">Looks right, continue</string>
 </resources>
