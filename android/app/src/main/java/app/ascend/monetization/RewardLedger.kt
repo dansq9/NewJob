@@ -30,6 +30,7 @@ class RewardLedger @Inject constructor(
         val day: String = "",
         val rewarded: Map<String, Int> = emptyMap(),
         val free: Map<String, Int> = emptyMap(),
+        val appOpen: Int = 0,
     )
 
     private val key = stringPreferencesKey("reward_ledger")
@@ -48,6 +49,7 @@ class RewardLedger @Inject constructor(
     fun rewardedToday(state: State, placementId: String): Int = state.rewarded[placementId] ?: 0
     fun freeToday(state: State, placementId: String): Int = state.free[placementId] ?: 0
     fun totalRewardedToday(state: State): Int = state.rewarded.values.sum()
+    fun appOpenToday(state: State): Int = state.appOpen
 
     /** Record one free allowance use for [placementId] (atomic read-modify-write). */
     suspend fun incrementFree(placementId: String) = mutate { s ->
@@ -58,6 +60,9 @@ class RewardLedger @Inject constructor(
     suspend fun incrementRewarded(placementId: String) = mutate { s ->
         s.copy(rewarded = s.rewarded + (placementId to (s.rewarded[placementId] ?: 0) + 1))
     }
+
+    /** Record one app-open impression today (atomic read-modify-write). */
+    suspend fun incrementAppOpen() = mutate { s -> s.copy(appOpen = s.appOpen + 1) }
 
     private suspend fun mutate(transform: (State) -> State) {
         val today = today()

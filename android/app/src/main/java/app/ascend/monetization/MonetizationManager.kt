@@ -62,6 +62,16 @@ class MonetizationManager @Inject constructor(
     private val interstitialsShown = AtomicInteger(0)
     @Volatile private var lastFullScreenAtMs: Long = Long.MIN_VALUE
 
+    // ---- App-open state (suppression zones + pacing). Timestamps are elapsedRealtime(). ----
+    @Volatile private var lastExternalLinkAtMs: Long = Long.MIN_VALUE
+    @Volatile private var lastRewardedAtMs: Long = Long.MIN_VALUE
+    @Volatile private var lastPermissionAtMs: Long = Long.MIN_VALUE
+    @Volatile private var lastAppOpenAtMs: Long = Long.MIN_VALUE
+    @Volatile private var backgroundedAtMs: Long = Long.MIN_VALUE
+    private val firstForeground = java.util.concurrent.atomic.AtomicBoolean(true)
+    private val appOpensThisSession = AtomicInteger(0)
+    private val activeFlows = java.util.concurrent.ConcurrentHashMap.newKeySet<AdFlow>()
+
     // App-lifetime scope so a full-screen present survives the caller's lifecycle
     // (e.g. an interstitial requested as a screen pops). The real ad shows over the
     // Activity, independent of any ViewModel scope.
@@ -200,6 +210,7 @@ class MonetizationManager @Inject constructor(
             val timeout = rc.long(RcKeys.REWARD_LOAD_TIMEOUT_MS).takeIf { it > 0 } ?: DEFAULT_REWARD_TIMEOUT_MS
             // The boolean IS the SDK earned-reward signal. NO grant on close/fail/offline/timeout (rule 5).
             val earned = withTimeoutOrNull(timeout) { ads.showRewarded(placement.toFeature()) } ?: false
+            lastRewardedAtMs = SystemClock.elapsedRealtime()   // engaged a rewarded ad → suppress app-open after
             if (!earned) return RewardOutcome.NotGranted(null)
 
             analytics.adRewardEarned(placement.id, placement.rewardType)   // earned — logged before granting
@@ -226,6 +237,103 @@ class MonetizationManager @Inject constructor(
         val s = rewards.snapshot()
         return rewards.rewardedToday(s, placement.id) < placement.rewardedPerDay &&
             rewards.totalRewardedToday(s) < rc.long(RcKeys.REWARD_DAILY_CAP)
+    }
+
+    // ---- App-open ad (return-from-background) + suppression zones (rules 1-4 / spec) ----
+
+    /** Record a jump to an external link / ad click (suppresses app-open briefly). */
+    fun noteExternalLinkOpened() { lastExternalLinkAtMs = SystemClock.elapsedRealtime() }
+
+    /** Record that a runtime-permission / legal prompt was shown. */
+    fun notePermissionPrompt() { lastPermissionAtMs = SystemClock.elapsedRealtime() }
+
+    /** Mark a user flow active so app-open is suppressed while it runs (spec suppress_during_*). */
+    fun enterFlow(flow: AdFlow) { activeFlows.add(flow) }
+    fun exitFlow(flow: AdFlow) { activeFlows.remove(flow) }
+
+    /** ProcessLifecycle ON_STOP — app moved to background. */
+    fun onBackground() { backgroundedAtMs = SystemClock.elapsedRealtime() }
+
+    /** ProcessLifecycle ON_START — app returned to foreground; evaluate + maybe show app-open. */
+    fun onForeground() {
+        if (firstForeground.compareAndSet(true, false)) return  // cold start — never on first launch
+        scope.launch { maybeShowAppOpen() }
+    }
+
+    private suspend fun maybeShowAppOpen() {
+        val reason = appOpenSuppression()
+        if (reason != null) { logDecision(Placement.APPOPEN_RESUME, reason); return }
+        if (!ads.isAppOpenAdAvailable()) return                       // not preloaded → continue (fail open)
+        if (!tryAcquireFullScreen(Placement.APPOPEN_RESUME.id)) return
+        try {
+            ads.showAppOpen()
+            val now = SystemClock.elapsedRealtime()
+            lastAppOpenAtMs = now
+            lastFullScreenAtMs = now
+            appOpensThisSession.incrementAndGet()
+            rewards.incrementAppOpen()
+        } finally {
+            releaseFullScreen(Placement.APPOPEN_RESUME.id)
+        }
+    }
+
+    /** All app-open gates; returns the blocking reason, or null if eligible to show. */
+    private suspend fun appOpenSuppression(): SuppressReason? {
+        val p = Placement.APPOPEN_RESUME
+        if (entitlements.isPro.first()) return SuppressReason.PAID_USER             // rule 6: zero forced ads
+        if (!consent.canRequestAds.value) return SuppressReason.CONSENT_NOT_READY   // rule 1
+        if (!rc.bool(RcKeys.GLOBAL_ENABLED)) return SuppressReason.GLOBAL_DISABLED
+        if (!rc.bool(p.rcEnabledKey)) return SuppressReason.RC_DISABLED             // rule 4: missing → OFF
+
+        // Session eligibility: s2 only if a core action happened in s1, else s3+.
+        val session = profile.currentSessionNumber()
+        val minSession = rc.long(RcKeys.APPOPEN_MIN_SESSION).toInt()
+        if (session < minSession) return SuppressReason.NOT_ELIGIBLE_YET
+        if (session == minSession && rc.bool(RcKeys.APPOPEN_REQUIRE_ACTIVATION_S2) && !profile.activatedOnce()) {
+            return SuppressReason.NOT_ELIGIBLE_YET
+        }
+
+        // Background-time threshold — a brief app switch isn't a real resume.
+        val now = SystemClock.elapsedRealtime()
+        if (backgroundedAtMs == Long.MIN_VALUE ||
+            now - backgroundedAtMs < rc.long(RcKeys.APPOPEN_MIN_BACKGROUND_SECONDS) * 1000
+        ) {
+            return SuppressReason.BACKGROUND_TOO_SHORT
+        }
+
+        if (isFullScreenBusy()) return SuppressReason.MUTEX_BUSY                    // rule 3
+        if (suppressedByFlow()) return SuppressReason.SUPPRESS_ZONE                 // resume/mock/copilot/billing/legal
+
+        // Post-event suppression windows (external link & ad clicks, rewarded, permission, any full-screen ad).
+        if (within(lastExternalLinkAtMs, RcKeys.APPOPEN_SUPPRESS_AFTER_EXTERNAL_LINK)) return SuppressReason.SUPPRESS_ZONE
+        if (within(lastRewardedAtMs, RcKeys.APPOPEN_SUPPRESS_AFTER_REWARDED)) return SuppressReason.SUPPRESS_ZONE
+        if (within(lastPermissionAtMs, RcKeys.APPOPEN_SUPPRESS_AFTER_PERMISSION)) return SuppressReason.SUPPRESS_ZONE
+        if (within(lastFullScreenAtMs, RcKeys.APPOPEN_SUPPRESS_AFTER_FULLSCREEN)) return SuppressReason.SUPPRESS_ZONE
+
+        // App-open cooldown.
+        if (lastAppOpenAtMs != Long.MIN_VALUE &&
+            now - lastAppOpenAtMs < rc.long(RcKeys.APPOPEN_COOLDOWN_MINUTES) * 60_000
+        ) {
+            return SuppressReason.COOLDOWN
+        }
+
+        // Session + daily caps.
+        if (appOpensThisSession.get() >= rc.long(RcKeys.APPOPEN_MAX_PER_SESSION)) return SuppressReason.SESSION_CAP
+        if (rewards.appOpenToday(rewards.snapshot()) >= rc.long(RcKeys.APPOPEN_MAX_PER_DAY)) return SuppressReason.SESSION_CAP
+
+        return null
+    }
+
+    private fun suppressedByFlow(): Boolean =
+        (AdFlow.RESUME in activeFlows && rc.bool(RcKeys.APPOPEN_SUPPRESS_DURING_RESUME)) ||
+            (AdFlow.MOCK in activeFlows && rc.bool(RcKeys.APPOPEN_SUPPRESS_DURING_MOCK)) ||
+            (AdFlow.COPILOT in activeFlows && rc.bool(RcKeys.APPOPEN_SUPPRESS_DURING_COPILOT)) ||
+            (AdFlow.BILLING in activeFlows && rc.bool(RcKeys.APPOPEN_SUPPRESS_DURING_BILLING)) ||
+            (AdFlow.LEGAL in activeFlows)   // consent / privacy form always suppresses
+
+    private fun within(eventAtMs: Long, secondsKey: String): Boolean {
+        if (eventAtMs == Long.MIN_VALUE) return false
+        return SystemClock.elapsedRealtime() - eventAtMs < rc.long(secondsKey) * 1000
     }
 
     // ---- Full-screen mutex (also used by paywall / permission / purchase dialogs, rule 3) ----

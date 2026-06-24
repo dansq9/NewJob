@@ -98,9 +98,19 @@ enum class SuppressReason {
     RC_DISABLED,        // this placement's RC enable key is off / missing (rule 4)
     NOT_ELIGIBLE_YET,   // before the placement's first eligible session
     MUTEX_BUSY,         // another full-screen surface is showing (rule 3)
-    COOLDOWN,           // within the interstitial cooldown window
-    SESSION_CAP,        // per-session interstitial cap reached
+    COOLDOWN,           // within the interstitial / app-open cooldown window
+    SESSION_CAP,        // per-session / per-day cap reached
+    FIRST_LAUNCH,       // app-open: cold start, never on first foreground
+    BACKGROUND_TOO_SHORT, // app-open: returned faster than min_background_seconds
+    SUPPRESS_ZONE,      // app-open: within a suppress_* window or an active suppressed flow
+    NOT_PRELOADED,      // app-open: no ready ad → continue immediately (fail open)
 }
+
+/**
+ * Active user flows that suppress the app-open ad while in progress (spec
+ * `suppress_during_*`). Reported by screens via MonetizationManager.enterFlow/exitFlow.
+ */
+enum class AdFlow { RESUME, MOCK, COPILOT, BILLING, LEGAL }
 
 /** Decision returned by [MonetizationManager.decide]. */
 sealed interface AdDecision {

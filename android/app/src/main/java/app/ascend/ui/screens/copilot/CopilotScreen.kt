@@ -49,6 +49,8 @@ private val Lilac = Color(0xFFA89BFF)
 
 @Composable
 fun CopilotScreen(nav: NavController, vm: CopilotViewModel = hiltViewModel()) {
+    // Suppress the app-open ad during the copilot flow (spec suppress_during_copilot_flow).
+    app.ascend.ui.monetization.SuppressAppOpenWhileActive(app.ascend.monetization.AdFlow.COPILOT)
     val isPro by vm.isPro.collectAsStateWithLifecycle()
     if (!isPro) {
         ProLock(onUpgrade = { nav.navigate(app.ascend.ui.navigation.Routes.PAYWALL) }, onBack = { nav.popBackStack() })
@@ -126,6 +128,7 @@ private fun SetupView(vm: CopilotViewModel, nav: NavController) {
 @Composable
 private fun LiveView(vm: CopilotViewModel, nav: NavController) {
     val s by vm.state.collectAsStateWithLifecycle()
+    val monetization = app.ascend.ui.monetization.rememberMonetizationManager()
     // Live transcription via the native speech recognizer; partial + final text fill the question.
     val transcriber = rememberLiveTranscriber(
         onPartial = { vm.setQuestion(it) },
@@ -240,6 +243,7 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
         confirmButton = {
             TextButton(onClick = {
                 showRationale = false
+                monetization.notePermissionPrompt()   // system permission prompt → suppress app-open after
                 micPermission.launch(android.Manifest.permission.RECORD_AUDIO)
             }) { Text(stringResource(R.string.action_continue)) }
         },

@@ -39,6 +39,17 @@ interface AdsManager {
 
     suspend fun showInterstitial(placement: AdPlacement = AdPlacement.SPLASH_INTERSTITIAL)
 
+    /**
+     * Whether a non-expired app-open ad is preloaded and ready to show right now.
+     * If false, the caller must continue immediately — app-open never blocks resume
+     * (CLAUDE.md rule 4, fail open). The real impl preloads in the background and
+     * honors `ad_expiration_hours`.
+     */
+    fun isAppOpenAdAvailable(): Boolean
+
+    /** Show the preloaded app-open ad. Only called when [isAppOpenAdAvailable] is true. */
+    suspend fun showAppOpen()
+
     /** Show a rewarded ad to unlock one use of [feature]; true if reward granted
      *  (always true for Pro, who bypass the ad). */
     suspend fun showRewarded(feature: RewardedFeature): Boolean

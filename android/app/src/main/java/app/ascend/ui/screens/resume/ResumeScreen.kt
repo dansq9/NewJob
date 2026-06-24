@@ -53,6 +53,8 @@ fun ResumeScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) {
     val snackbar by vm.snackbar.collectAsStateWithLifecycle()
     val snackbarHost = remember { SnackbarHostState() }
     val pickResume = rememberResumePicker { vm.addResume(it) }
+    // Suppress the app-open ad while the user is in the resume flow (spec suppress_during_resume_flow).
+    app.ascend.ui.monetization.SuppressAppOpenWhileActive(app.ascend.monetization.AdFlow.RESUME)
 
     LaunchedEffect(snackbar) {
         snackbar?.let { snackbarHost.showSnackbar(it); vm.clearSnackbar() }
@@ -254,6 +256,7 @@ private fun Results(data: OptimizeResponse, resumeName: String?) {
                     putExtra(Intent.EXTRA_TEXT, summary)
                     putExtra(Intent.EXTRA_SUBJECT, shareSubject)
                 }
+                monetization.noteExternalLinkOpened()   // leaving to a share target — suppress app-open on return
                 runCatching { ctx.startActivity(Intent.createChooser(send, shareChooserTitle)) }
             },
             modifier = Modifier.weight(1f).height(50.dp),

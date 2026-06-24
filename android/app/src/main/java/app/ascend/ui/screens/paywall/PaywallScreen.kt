@@ -52,6 +52,8 @@ private const val PRIVACY_URL = "https://ascend.app/privacy"
 
 @Composable
 fun PaywallScreen(onClose: () -> Unit, vm: PaywallViewModel = hiltViewModel()) {
+    // Suppress the app-open ad during the billing/paywall flow (spec suppress_during_billing_flow).
+    app.ascend.ui.monetization.SuppressAppOpenWhileActive(app.ascend.monetization.AdFlow.BILLING)
     val isPro by vm.isPro.collectAsStateWithLifecycle()
     val uri = LocalUriHandler.current
     LaunchedEffect(isPro) { if (isPro) onClose() }

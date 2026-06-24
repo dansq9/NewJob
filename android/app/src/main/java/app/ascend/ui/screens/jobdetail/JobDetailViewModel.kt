@@ -43,6 +43,9 @@ class JobDetailViewModel @Inject constructor(
         if (detailViewCount >= 2) monetization.requestFullScreen(app.ascend.monetization.Placement.INTER_AFTER_JOB_DETAIL_CLOSE)
     }
 
+    /** The user is leaving to the external apply page — suppress app-open on return. */
+    fun onApplyExternal() = monetization.noteExternalLinkOpened()
+
     private companion object { var detailViewCount = 0 }
 
     val saved: StateFlow<Boolean> = combine(job, tracker.tracked) { j, list ->

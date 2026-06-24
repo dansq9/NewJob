@@ -54,6 +54,7 @@ fun SettingsScreen(nav: NavController, vm: SettingsViewModel = hiltViewModel()) 
     }
     var confirmReset by remember { mutableStateOf(false) }
     var showLanguages by remember { mutableStateOf(false) }
+    val monetization = app.ascend.ui.monetization.rememberMonetizationManager()
 
     val currentTag = LocaleManager.persistedTag(context)
     val currentLanguage = LocaleManager.supported.firstOrNull { it.tag == currentTag }
@@ -119,7 +120,7 @@ fun SettingsScreen(nav: NavController, vm: SettingsViewModel = hiltViewModel()) 
                     Icons.Outlined.PrivacyTip,
                     stringResource(R.string.settings_privacy_options),
                     stringResource(R.string.settings_privacy_options_sub),
-                ) { (context as? Activity)?.let { vm.showPrivacyOptions(it) } }
+                ) { (context as? Activity)?.let { monetization.notePermissionPrompt(); vm.showPrivacyOptions(it) } }
             }
 
             Spacer(Modifier.height(24.dp))

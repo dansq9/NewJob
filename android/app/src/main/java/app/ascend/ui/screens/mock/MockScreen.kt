@@ -33,6 +33,8 @@ import app.ascend.ui.util.rememberVoiceInput
 @Composable
 fun MockScreen(nav: NavController, vm: MockViewModel = hiltViewModel()) {
     val ui by vm.ui.collectAsStateWithLifecycle()
+    // Suppress the app-open ad during the mock-interview flow (spec suppress_during_mock_flow).
+    app.ascend.ui.monetization.SuppressAppOpenWhileActive(app.ascend.monetization.AdFlow.MOCK)
     Scaffold(
         containerColor = AscendColors.Bg,
         topBar = { AscendTopBar(stringResource(R.string.mock_title), onBack = { nav.popBackStack() }) },

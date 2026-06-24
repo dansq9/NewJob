@@ -45,6 +45,17 @@ object RcKeys {
     const val APPOPEN_COOLDOWN_MINUTES = "ads.appopen.resume.cooldown_minutes"
     const val APPOPEN_MAX_PER_SESSION = "ads.appopen.resume.max_per_session"
     const val APPOPEN_MAX_PER_DAY = "ads.appopen.resume.max_per_day"
+    const val APPOPEN_MIN_BACKGROUND_SECONDS = "ads.appopen.resume.min_background_seconds"
+
+    // App-open suppression windows (seconds since the event) and active-flow guards
+    const val APPOPEN_SUPPRESS_AFTER_EXTERNAL_LINK = "ads.appopen.resume.suppress_after_external_link_seconds"
+    const val APPOPEN_SUPPRESS_AFTER_REWARDED = "ads.appopen.resume.suppress_after_rewarded_seconds"
+    const val APPOPEN_SUPPRESS_AFTER_PERMISSION = "ads.appopen.resume.suppress_after_permission_seconds"
+    const val APPOPEN_SUPPRESS_AFTER_FULLSCREEN = "ads.appopen.resume.suppress_after_fullscreen_ad_seconds"
+    const val APPOPEN_SUPPRESS_DURING_RESUME = "ads.appopen.resume.suppress_during_resume_flow"
+    const val APPOPEN_SUPPRESS_DURING_MOCK = "ads.appopen.resume.suppress_during_mock_flow"
+    const val APPOPEN_SUPPRESS_DURING_COPILOT = "ads.appopen.resume.suppress_during_copilot_flow"
+    const val APPOPEN_SUPPRESS_DURING_BILLING = "ads.appopen.resume.suppress_during_billing_flow"
 }
 
 /**
@@ -80,6 +91,16 @@ private val DEFAULTS: Map<String, Any> = mapOf(
     RcKeys.APPOPEN_COOLDOWN_MINUTES to 45L,
     RcKeys.APPOPEN_MAX_PER_SESSION to 1L,
     RcKeys.APPOPEN_MAX_PER_DAY to 2L,
+    RcKeys.APPOPEN_MIN_BACKGROUND_SECONDS to 30L,
+
+    RcKeys.APPOPEN_SUPPRESS_AFTER_EXTERNAL_LINK to 300L,
+    RcKeys.APPOPEN_SUPPRESS_AFTER_REWARDED to 300L,
+    RcKeys.APPOPEN_SUPPRESS_AFTER_PERMISSION to 120L,
+    RcKeys.APPOPEN_SUPPRESS_AFTER_FULLSCREEN to 300L,
+    RcKeys.APPOPEN_SUPPRESS_DURING_RESUME to true,
+    RcKeys.APPOPEN_SUPPRESS_DURING_MOCK to true,
+    RcKeys.APPOPEN_SUPPRESS_DURING_COPILOT to true,
+    RcKeys.APPOPEN_SUPPRESS_DURING_BILLING to true,
 )
 
 /**

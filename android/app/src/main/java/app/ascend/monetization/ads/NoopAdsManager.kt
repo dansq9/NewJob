@@ -65,6 +65,13 @@ class NoopAdsManager @Inject constructor(
         // TODO(AdMob): load + show InterstitialAd for [placement].
     }
 
+    // No real preload in the Noop → never available → app-open always fails open (continues).
+    override fun isAppOpenAdAvailable(): Boolean = false
+
+    override suspend fun showAppOpen() {
+        // TODO(AdMob): show the preloaded AppOpenAd here (only reached once a real ad is ready).
+    }
+
     override suspend fun showRewarded(feature: RewardedFeature): Boolean {
         if (entitlements.isPro.first()) return true   // Pro bypasses ads entirely
         if (!initialized.get()) return false      // consent gate not open — no ad, no reward
