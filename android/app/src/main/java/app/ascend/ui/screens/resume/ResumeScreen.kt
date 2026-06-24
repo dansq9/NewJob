@@ -99,10 +99,15 @@ fun ResumeScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) {
             }
             Spacer(Modifier.height(12.dp))
 
-            SectionLabel("Target role")
+            SectionLabel(if (vm.targetTitle != null) "Target role" else "Optimization mode")
             Spacer(Modifier.height(10.dp))
             Surface(shape = RoundedCornerShape(16.dp), color = AscendColors.Card, border = BorderStroke(1.5.dp, AscendColors.Line), modifier = Modifier.fillMaxWidth()) {
-                Text(vm.targetTitle, Modifier.padding(16.dp), fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+                Column(Modifier.padding(16.dp)) {
+                    Text(vm.targetTitle ?: "General ATS optimization", fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+                    if (vm.targetTitle == null) {
+                        Text("Open a job first to tailor for that specific role.", fontSize = 12.5.sp, color = AscendColors.Muted2)
+                    }
+                }
             }
             Spacer(Modifier.height(22.dp))
 

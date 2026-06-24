@@ -94,12 +94,13 @@ private fun AscendRoot(startOnboarding: Boolean) {
             composable(Routes.COPILOT) { CopilotScreen(nav) }
             composable(Routes.GAMES) { GamesScreen(nav) }
             composable("game/{gameId}") { entry ->
-                com.gamestest.games.games.host.GameHost(
+                app.ascend.games.engine.games.host.GameHost(
                     gameId = entry.arguments?.getString("gameId").orEmpty(),
                     onBack = { nav.popBackStack() },
                 )
             }
             composable(Routes.PAYWALL) { PaywallScreen(onClose = { nav.popBackStack() }) }
+            composable(Routes.SETTINGS) { app.ascend.ui.screens.settings.SettingsScreen(nav) }
         }
     }
 }

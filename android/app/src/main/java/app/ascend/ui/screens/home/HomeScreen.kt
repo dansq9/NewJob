@@ -35,6 +35,14 @@ import app.ascend.ui.theme.AscendColors
 
 private data class QuickAction(val label: String, val sub: String, val icon: ImageVector, val route: String, val accent: Color)
 
+/** Time-of-day greeting (desugared java.time). */
+private fun greeting(): String = when (java.time.LocalTime.now().hour) {
+    in 5..11 -> "Good morning"
+    in 12..16 -> "Good afternoon"
+    in 17..21 -> "Good evening"
+    else -> "Hello"
+}
+
 @Composable
 fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
     val matches by vm.topMatches.collectAsStateWithLifecycle()
@@ -55,11 +63,12 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
         item {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text("Good morning", fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = AscendColors.Muted2)
+                    Text(greeting(), fontSize = 13.sp, fontWeight = FontWeight.SemiBold, color = AscendColors.Muted2)
                     Text(firstName.replaceFirstChar { it.uppercase() }, style = MaterialTheme.typography.headlineMedium, color = AscendColors.Ink)
                 }
                 Box(
-                    Modifier.size(40.dp).clip(CircleShape).background(AscendColors.Indigo),
+                    Modifier.size(40.dp).clip(CircleShape).background(AscendColors.Indigo)
+                        .clickable { nav.navigate(Routes.SETTINGS) },
                     contentAlignment = Alignment.Center,
                 ) { Text(profile.name.firstOrNull()?.uppercase() ?: "A", color = Color.White, fontWeight = FontWeight.Bold) }
             }
@@ -102,7 +111,7 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
                 if (m.data.isEmpty()) {
                     item { MatchesMessage("No matches yet for your target role. Try a broader search.", onRetry = null, action = "Search jobs") { nav.navigate(Routes.JOBS) } }
                 } else items(m.data, key = { it.id }) { job ->
-                    JobCard(job = job, onClick = { vm.select(job); nav.navigate(Routes.JOB_DETAIL) })
+                    JobCard(job = job, onClick = { vm.select(job); nav.navigate(Routes.jobDetail(job.id)) })
                 }
         }
     }

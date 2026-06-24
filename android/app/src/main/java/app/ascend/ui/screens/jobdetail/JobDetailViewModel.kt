@@ -1,7 +1,9 @@
 package app.ascend.ui.screens.jobdetail
 
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import app.ascend.data.model.Job
 import app.ascend.data.model.TrackStage
 import app.ascend.data.repo.TrackerRepository
 import app.ascend.ui.SelectedJobStore
@@ -12,11 +14,23 @@ import javax.inject.Inject
 
 @HiltViewModel
 class JobDetailViewModel @Inject constructor(
+    savedState: SavedStateHandle,
     selectedJob: SelectedJobStore,
     private val tracker: TrackerRepository,
 ) : ViewModel() {
 
-    val job = selectedJob.selected
+    private val jobId: String? = savedState["jobId"]
+
+    // Fast path: the in-memory job tapped from a list. If it's missing or stale
+    // (e.g. process death / deep link), recover from the local tracker (Room).
+    private val _job = MutableStateFlow(selectedJob.selected.value?.takeIf { jobId == null || it.id == jobId })
+    val job: StateFlow<Job?> = _job.asStateFlow()
+
+    init {
+        if (_job.value == null && jobId != null) {
+            viewModelScope.launch { _job.value = tracker.get(jobId)?.job }
+        }
+    }
 
     val saved: StateFlow<Boolean> = combine(job, tracker.tracked) { j, list ->
         j != null && list.any { it.job.id == j.id }

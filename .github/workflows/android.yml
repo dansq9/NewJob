@@ -13,7 +13,7 @@ permissions:
 
 jobs:
   build:
-    name: assembleDebug + lint
+    name: build · unit · R8 · AAB · lint
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -42,6 +42,9 @@ jobs:
       - name: Cache Gradle
         uses: gradle/actions/setup-gradle@v4
 
+      - name: Unit tests
+        run: ./gradlew :app:testDebugUnitTest --stacktrace
+
       - name: Assemble debug
         run: ./gradlew :app:assembleDebug --stacktrace
 
@@ -51,13 +54,37 @@ jobs:
         # serialization/Retrofit keep rules that assembleDebug never would.
         run: ./gradlew :app:assembleRelease --stacktrace
 
-      - name: Lint
-        run: ./gradlew :app:lintDebug --stacktrace
-        continue-on-error: true
+      - name: Bundle release (AAB — the Play upload artifact)
+        run: ./gradlew :app:bundleRelease --stacktrace
+
+      - name: Lint release (blocking)
+        # Blocking quality gate on the release variant. Fails the build on lint
+        # errors (not warnings). Runs after artifacts are built so uploads below
+        # (if: always()) still publish even when lint fails.
+        run: ./gradlew :app:lintRelease --stacktrace
 
       - name: Upload debug APK
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: app-debug-apk
           path: android/app/build/outputs/apk/debug/*.apk
+          if-no-files-found: warn
+
+      - name: Upload release AAB
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: app-release-aab
+          path: android/app/build/outputs/bundle/release/*.aab
+          if-no-files-found: warn
+
+      - name: Upload lint report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: lint-report
+          path: |
+            android/app/build/reports/lint-results-release.html
+            android/app/build/reports/lint-results-release.xml
           if-no-files-found: warn

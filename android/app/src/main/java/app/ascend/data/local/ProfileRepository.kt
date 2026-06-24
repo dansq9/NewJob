@@ -74,6 +74,15 @@ class ProfileRepository @Inject constructor(
         dataStore.edit { p -> if (name.isNullOrBlank()) p.remove(Keys.RESUME) else p[Keys.RESUME] = name }
     }
 
+    /** Clears the profile + onboarding flag so the user re-runs onboarding. Keeps the device install id. */
+    suspend fun resetOnboarding() {
+        dataStore.edit { p ->
+            p.remove(Keys.NAME); p.remove(Keys.ROLE); p.remove(Keys.LOCATION)
+            p.remove(Keys.RESUME); p.remove(Keys.SELECTED_RESUME)
+            p[Keys.ONBOARDED] = false
+        }
+    }
+
     suspend fun update(transform: (UserProfile) -> UserProfile) {
         dataStore.edit { p ->
             val cur = UserProfile(

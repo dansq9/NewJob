@@ -32,7 +32,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.ascend.ui.components.AscendTopBar
 import app.ascend.ui.theme.AscendColors
-import com.gamestest.games.games.GameId
+import app.ascend.games.engine.games.GameId
 
 private fun iconFor(id: GameId): ImageVector = when (id) {
     GameId.PATCHES -> Icons.Outlined.Image

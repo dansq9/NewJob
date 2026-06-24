@@ -92,7 +92,7 @@ fun JobsScreen(nav: NavController, vm: JobsViewModel = hiltViewModel()) {
                         when (val row = feed[idx]) {
                             is FeedRow.JobItem -> JobCard(
                                 job = row.job,
-                                onClick = { vm.select(row.job); nav.navigate(Routes.JOB_DETAIL) },
+                                onClick = { vm.select(row.job); nav.navigate(Routes.jobDetail(row.job.id)) },
                                 saved = state.savedIds.contains(row.job.id),
                                 onToggleSave = { vm.toggleSave(row.job) },
                             )

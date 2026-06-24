@@ -8,7 +8,7 @@ import kotlinx.serialization.Serializable
  */
 
 // ---- Resume optimize (ATS) ----
-@Serializable data class OptimizeRequest(val resumeId: String? = null, val jobId: String, val jobDescription: String? = null)
+@Serializable data class OptimizeRequest(val resumeId: String? = null, val jobId: String? = null, val jobDescription: String? = null)
 @Serializable data class OptimizeIssue(val title: String, val detail: String, val severity: String, val resolved: Boolean = false)
 @Serializable data class OptimizeResponse(
     val atsScore: Int,

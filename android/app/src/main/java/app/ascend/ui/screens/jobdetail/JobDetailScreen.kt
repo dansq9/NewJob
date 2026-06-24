@@ -106,7 +106,21 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
         },
     ) { padding ->
         if (j == null) {
-            Box(Modifier.fillMaxSize().padding(padding), Alignment.Center) { Text("Job unavailable", color = AscendColors.Muted2) }
+            Column(
+                Modifier.fillMaxSize().padding(padding).padding(32.dp),
+                verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
+            ) {
+                Text("This job isn't available", fontWeight = FontWeight.Bold, color = AscendColors.Ink)
+                Spacer(Modifier.height(6.dp))
+                Text("It may have expired, or the app was reopened. Browse current openings instead.",
+                    fontSize = 13.sp, color = AscendColors.Muted2,
+                    textAlign = androidx.compose.ui.text.style.TextAlign.Center, lineHeight = 18.sp)
+                Spacer(Modifier.height(16.dp))
+                Button(
+                    onClick = { nav.navigate(Routes.JOBS) { popUpTo(Routes.JOB_DETAIL) { inclusive = true } } },
+                    colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
+                ) { Text("Browse jobs") }
+            }
             return@Scaffold
         }
         Column(

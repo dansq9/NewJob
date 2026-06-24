@@ -17,12 +17,15 @@ object Routes {
     const val JOBS = "jobs"
     const val TRACKER = "tracker"
     const val INTERVIEWS = "interviews"
-    const val JOB_DETAIL = "job"
+    const val JOB_DETAIL = "job/{jobId}"
+    /** Build a job-detail route for a specific job id. */
+    fun jobDetail(jobId: String) = "job/$jobId"
     const val RESUME = "resume"
     const val MOCK = "mock"
     const val COPILOT = "copilot"
     const val GAMES = "games"
     const val PAYWALL = "paywall"
+    const val SETTINGS = "settings"
 }
 
 enum class Tab(val route: String, val label: String, val icon: ImageVector, val selectedIcon: ImageVector) {

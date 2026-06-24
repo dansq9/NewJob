@@ -47,7 +47,8 @@ class ResumeViewModel @Inject constructor(
     private val analytics: Analytics,
 ) : ViewModel() {
 
-    val targetTitle = selectedJob.selected.value?.title ?: "Senior Product Manager · Northwind"
+    /** The job we're tailoring for, or null for a general (not job-specific) optimization. */
+    val targetTitle: String? = selectedJob.selected.value?.title
 
     val library: StateFlow<ResumeLibraryState> =
         combine(resumes.library, resumes.selectedResumeId) { list, sel ->
@@ -75,7 +76,8 @@ class ResumeViewModel @Inject constructor(
     fun clearSnackbar() { _snackbar.value = null }
 
     fun optimize() {
-        val jobId = selectedJob.selected.value?.id ?: "demo"
+        // null jobId = general optimization (no specific job selected). Never send a fake "demo" id.
+        val jobId = selectedJob.selected.value?.id
         val resumeId = library.value.selectedId
         viewModelScope.launch {
             // Free users watch a rewarded ad to unlock one optimization (Pro bypasses).

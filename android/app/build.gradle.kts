@@ -63,6 +63,15 @@ android {
     packaging {
         resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" }
     }
+
+    lint {
+        // Blocking quality gate (see CI lintRelease step): fail on errors, not warnings.
+        abortOnError = true
+        warningsAsErrors = false
+        checkReleaseBuilds = true
+        // If pre-existing issues need staged triage, generate a baseline:
+        // baseline = file("lint-baseline.xml")
+    }
 }
 
 dependencies {

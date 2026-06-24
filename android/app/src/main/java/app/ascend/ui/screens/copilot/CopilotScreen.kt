@@ -19,6 +19,7 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -153,6 +154,16 @@ private fun LiveView(vm: CopilotViewModel, nav: NavController) {
                 android.content.pm.PackageManager.PERMISSION_GRANTED -> transcriber.start()
             else -> showRationale = true
         }
+    }
+
+    // Stop the mic when the app is backgrounded (don't hold the recorder while away).
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
+            if (e == androidx.lifecycle.Lifecycle.Event.ON_STOP) transcriber.stop()
+        }
+        lifecycleOwner.lifecycle.addObserver(obs)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
     }
 
     Column(Modifier.fillMaxSize().background(AscendColors.Dark).verticalScroll(rememberScrollState())) {
