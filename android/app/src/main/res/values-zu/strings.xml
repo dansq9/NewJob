@@ -331,4 +331,7 @@
     <string name="jobdetail_tailor_title">Lungisa i-CV yami yale ndima</string>
     <string name="jobdetail_tailor_sub">Thola inguqulo elungiselelwe i-ATS yalo msebenzi.</string>
     <string name="jobs_clear_filters">Sula izihlungi</string>
+    <string name="interviews_launch_copilot">Qalisa i-Copilot</string>
+    <string name="interviews_recent">Amaseshini akamuva</string>
+    <string name="interviews_recent_empty">Izingxoxo zakho zokulinga nezikhathi ze-copilot zizovela lapha.</string>
 </resources>

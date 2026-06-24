@@ -331,4 +331,7 @@
     <string name="jobdetail_tailor_title">خصّص سيرتي الذاتية لهذه الوظيفة</string>
     <string name="jobdetail_tailor_sub">احصل على نسخة محسّنة لأنظمة ATS لهذه الوظيفة.</string>
     <string name="jobs_clear_filters">مسح عوامل التصفية</string>
+    <string name="interviews_launch_copilot">تشغيل المساعد</string>
+    <string name="interviews_recent">الجلسات الأخيرة</string>
+    <string name="interviews_recent_empty">ستظهر هنا مقابلاتك التجريبية وجلسات المساعد.</string>
 </resources>

@@ -331,4 +331,7 @@
     <string name="jobdetail_tailor_title">Tailor my resume for this role</string>
     <string name="jobdetail_tailor_sub">Get an ATS-optimized version for this exact job.</string>
     <string name="jobs_clear_filters">Clear filters</string>
+    <string name="interviews_launch_copilot">Launch Copilot</string>
+    <string name="interviews_recent">Recent sessions</string>
+    <string name="interviews_recent_empty">Your mock interviews and copilot sessions will appear here.</string>
 </resources>

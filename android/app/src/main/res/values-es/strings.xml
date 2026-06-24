@@ -331,4 +331,7 @@
     <string name="jobdetail_tailor_title">Adapta mi currículum a este puesto</string>
     <string name="jobdetail_tailor_sub">Obtén una versión optimizada para ATS de este empleo.</string>
     <string name="jobs_clear_filters">Borrar filtros</string>
+    <string name="interviews_launch_copilot">Iniciar Copilot</string>
+    <string name="interviews_recent">Sesiones recientes</string>
+    <string name="interviews_recent_empty">Tus entrevistas de práctica y sesiones de copilot aparecerán aquí.</string>
 </resources>

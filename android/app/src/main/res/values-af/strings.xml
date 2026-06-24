@@ -331,4 +331,7 @@
     <string name="jobdetail_tailor_title">Pas my CV aan vir hierdie rol</string>
     <string name="jobdetail_tailor_sub">Kry ’n ATS-geoptimeerde weergawe vir presies hierdie werk.</string>
     <string name="jobs_clear_filters">Vee filters uit</string>
+    <string name="interviews_launch_copilot">Begin Copilot</string>
+    <string name="interviews_recent">Onlangse sessies</string>
+    <string name="interviews_recent_empty">Jou oefenonderhoude en copilot-sessies sal hier verskyn.</string>
 </resources>

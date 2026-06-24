@@ -331,4 +331,7 @@
     <string name="jobdetail_tailor_title">Meinen Lebenslauf auf diese Stelle zuschneiden</string>
     <string name="jobdetail_tailor_sub">Erhalte eine ATS-optimierte Version für genau diese Stelle.</string>
     <string name="jobs_clear_filters">Filter löschen</string>
+    <string name="interviews_launch_copilot">Copilot starten</string>
+    <string name="interviews_recent">Letzte Sitzungen</string>
+    <string name="interviews_recent_empty">Deine Übungsinterviews und Copilot-Sitzungen erscheinen hier.</string>
 </resources>

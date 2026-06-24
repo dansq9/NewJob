@@ -331,4 +331,7 @@
     <string name="jobdetail_tailor_title">इस भूमिका के लिए मेरा रिज़्यूमे तैयार करें</string>
     <string name="jobdetail_tailor_sub">इस नौकरी के लिए ATS-अनुकूलित संस्करण पाएं।</string>
     <string name="jobs_clear_filters">फ़िल्टर साफ़ करें</string>
+    <string name="interviews_launch_copilot">कोपायलट शुरू करें</string>
+    <string name="interviews_recent">हाल के सत्र</string>
+    <string name="interviews_recent_empty">आपके मॉक इंटरव्यू और कोपायलट सत्र यहाँ दिखेंगे।</string>
 </resources>

@@ -331,4 +331,7 @@
     <string name="jobdetail_tailor_title">Adaptar meu currículo para esta vaga</string>
     <string name="jobdetail_tailor_sub">Receba uma versão otimizada para ATS desta vaga.</string>
     <string name="jobs_clear_filters">Limpar filtros</string>
+    <string name="interviews_launch_copilot">Iniciar Copilot</string>
+    <string name="interviews_recent">Sessões recentes</string>
+    <string name="interviews_recent_empty">Suas entrevistas simuladas e sessões do copilot aparecerão aqui.</string>
 </resources>
