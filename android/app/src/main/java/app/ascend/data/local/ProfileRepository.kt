@@ -33,7 +33,17 @@ class ProfileRepository @Inject constructor(
         val ACTIVATED = booleanPreferencesKey("activated")
         val LOGGED_PURCHASES = stringSetPreferencesKey("logged_purchase_tx")
         val ONB_INTERSTITIAL_SHOWN = booleanPreferencesKey("onboarding_interstitial_shown")
+        val TOUR_SHOWN = booleanPreferencesKey("onboarding_tour_shown")
+        val ONBOARDED_ONCE = booleanPreferencesKey("onboarded_once")
     }
+
+    /** True once the onboarding tour has been shown (once_per_install suppression). */
+    suspend fun tourShown(): Boolean = dataStore.data.first()[Keys.TOUR_SHOWN] ?: false
+    suspend fun markTourShown() { dataStore.edit { it[Keys.TOUR_SHOWN] = true } }
+
+    /** True if the user has completed onboarding at least once before (returning-user suppression). */
+    suspend fun onboardedOnce(): Boolean = dataStore.data.first()[Keys.ONBOARDED_ONCE] ?: false
+    suspend fun markOnboardedOnce() { dataStore.edit { it[Keys.ONBOARDED_ONCE] = true } }
 
     /** True once the onboarding-complete interstitial has shown (per-install cap of 1). */
     suspend fun onboardingInterstitialShown(): Boolean = dataStore.data.first()[Keys.ONB_INTERSTITIAL_SHOWN] ?: false

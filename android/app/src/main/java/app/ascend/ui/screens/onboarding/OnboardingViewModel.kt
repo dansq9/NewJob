@@ -19,7 +19,43 @@ class OnboardingViewModel @Inject constructor(
     private val resumes: ResumeRepository,
     private val analytics: app.ascend.analytics.AnalyticsTracker,
     private val monetization: app.ascend.monetization.MonetizationManager,
+    private val onboardingConfigProvider: OnboardingConfigProvider,
 ) : ViewModel() {
+
+    /** RC-controlled tour + animation config (validated, clamped, fail-open). Loaded once. */
+    val onboardingConfig: OnboardingConfig = onboardingConfigProvider.load()
+
+    // Loaded from persistence in init; default to the suppressing value until loaded.
+    private var returningUser by mutableStateOf(true)
+    private var tourAlreadyShown by mutableStateOf(true)
+    /** False until the persisted suppression flags are read — gate tour triggers on this. */
+    var tourStateLoaded by mutableStateOf(false)
+        private set
+
+    init {
+        viewModelScope.launch {
+            returningUser = repo.onboardedOnce()
+            tourAlreadyShown = repo.tourShown()
+            tourStateLoaded = true
+        }
+    }
+
+    /** Eligible tour-card count at the trigger moment (0 = skip). [resumeUploaded] is read live. */
+    fun eligibleTourCards(resumeUploaded: Boolean): Int =
+        onboardingConfigProvider.eligibleCardCount(onboardingConfig, resumeUploaded, returningUser, tourAlreadyShown)
+
+    fun onTourView(cardIndex: Int) =
+        analytics.onboardingTourView(onboardingConfig.tourVariant, cardIndex, onboardingConfig.placement)
+    fun onTourSkip(cardIndex: Int) {
+        analytics.onboardingTourSkip(onboardingConfig.tourVariant, cardIndex, onboardingConfig.placement)
+        if (onboardingConfig.oncePerInstall) viewModelScope.launch { repo.markTourShown() }
+    }
+    fun onTourComplete(cardsSeen: Int) {
+        analytics.onboardingTourComplete(onboardingConfig.tourVariant, cardsSeen, onboardingConfig.placement)
+        if (onboardingConfig.oncePerInstall) viewModelScope.launch { repo.markTourShown() }
+    }
+    fun onAnimationVariantApplied(placement: String) =
+        analytics.onboardingAnimationVariant(onboardingConfig.animationVariant, placement)
 
     /** onboarding_step — the user advanced past [step] (skipped = field left blank). */
     fun logStep(step: app.ascend.analytics.OnboardingStep, skipped: Boolean) = analytics.onboardingStep(step, skipped)
@@ -67,6 +103,7 @@ class OnboardingViewModel @Inject constructor(
                         onboarded = true,
                     )
                 )
+                repo.markOnboardedOnce()   // returning-user suppression on any future re-onboarding
             }.isSuccess
             // Always clear the busy flag so the user can never get stuck on a failed save.
             saving = false

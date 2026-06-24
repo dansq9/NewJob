@@ -93,6 +93,21 @@ Dual sign-off (partner check, then QA confirm). Evidence (video/screenshot) requ
 | N13 | Native | Paid-user suppression | No native loading placeholder remains for paid users | Critical |
 | R08 | Rewarded | Double-tap / duplicate reward | Reward granted exactly once, never twice | Critical |
 | AX08 | All | No ad requested before UMP consent resolves | Ad SDK init / first request gated behind canRequestAds()==true; EEA/UK/CH form shown first | Critical |
+| ONB01 | Onboarding | Tour disabled | `onboarding.tour.enabled=false` skips all tour slides; onboarding continues | High |
+| ONB02 | Onboarding | Tour variant none | `variant=none` skips tour even if `enabled=true` | High |
+| ONB03 | Onboarding | One-card tour | `variant=one_card` + `max_cards=1` shows exactly one card | Medium |
+| ONB04 | Onboarding | Three-card tour | `variant=three_card` + `max_cards=3` shows exactly three cards if available | Medium |
+| ONB05 | Onboarding | Full tour | `variant=full` shows all available cards up to `max_cards` | Medium |
+| ONB06 | Onboarding | Skip behavior | `show_skip=true` shows Skip; `force_completion=false` allows skip; `force_completion=true` requires completion | High |
+| ONB07 | Onboarding | Placement control | before_language/after_language/after_location/before_home each place the tour correctly | Medium |
+| ONB08 | Onboarding | Missing RC fail-open | Missing/invalid RC keys use safe defaults and do not block onboarding | Critical |
+| ONB09 | Onboarding | Returning-user suppression | `suppress_if_returning_user=true` prevents the tour after first onboarding completion | High |
+| ONB10 | Onboarding | Resume-upload suppression | `suppress_if_resume_uploaded=true` skips tour when a resume was already uploaded in onboarding | High |
+| ONB11 | Onboarding | Animation disabled | `onboarding.animations.enabled=false` disables custom onboarding animations | Medium |
+| ONB12 | Onboarding | Reduced motion | System reduced-motion + `reduce_motion_respect_system=true` → minimal/no animation | High |
+| ONB13 | Onboarding | Animation duration | `duration_ms` controls timing within the allowed range | Low |
+| ONB14 | Onboarding | Animation variant | none/subtle/standard/rich map to valid behaviors without breaking onboarding | Medium |
+| ONB15 | Onboarding | No monetization conflict | Tour does not block/overlap/delay `ad_inter_after_splash`, full-screen onboarding placements, or the onboarding-complete interstitial | Critical |
 
 ## Lifecycle / no-internet
 

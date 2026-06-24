@@ -251,6 +251,20 @@ class AnalyticsTracker @Inject constructor(
 
     fun screen(name: ScreenName) = log(Ev.SCREEN_VIEW, Pr.SCREEN_NAME to name.v, Pr.SCREEN_CLASS to name.v)
 
+    // ---- Onboarding tour-guide + animations (controlled values only; no PII) ----
+
+    fun onboardingTourView(variant: OnboardingTourVariant, cardIndex: Int, placement: OnboardingTourPlacement) =
+        log(Ev.ONBOARDING_TOUR_VIEW, Pr.VARIANT to variant.v, Pr.CARD_INDEX to cardIndex, Pr.PLACEMENT to placement.v)
+
+    fun onboardingTourSkip(variant: OnboardingTourVariant, cardIndex: Int, placement: OnboardingTourPlacement) =
+        log(Ev.ONBOARDING_TOUR_SKIP, Pr.VARIANT to variant.v, Pr.CARD_INDEX to cardIndex, Pr.PLACEMENT to placement.v)
+
+    fun onboardingTourComplete(variant: OnboardingTourVariant, cardsSeen: Int, placement: OnboardingTourPlacement) =
+        log(Ev.ONBOARDING_TOUR_COMPLETE, Pr.VARIANT to variant.v, Pr.CARDS_SEEN to cardsSeen, Pr.PLACEMENT to placement.v)
+
+    fun onboardingAnimationVariant(variant: OnboardingAnimationVariant, placement: String) =
+        log(Ev.ONBOARDING_ANIMATION_VARIANT, Pr.VARIANT to variant.v, Pr.PLACEMENT to placement)
+
     // ---- Non-fatal error capture (diagnostics; never PII) ----
 
     fun recordError(throwable: Throwable, context: Map<String, Any?> = emptyMap()) {

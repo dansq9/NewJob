@@ -145,6 +145,36 @@ Missing full-screen key => OFF. No blank containers.
 | `ads.reward.mock_start.enabled` | true | true|false | opt-in only | retry/upgrade | false |
 | `ads.reward.game_hint.enabled` | true | true|false | opt-in only | retry | false |
 
+## Onboarding Remote Config
+
+Purpose: control onboarding tour-guide slides and onboarding animations without shipping a new app build. These keys affect onboarding UI only. They must not block onboarding if missing or invalid.
+
+| key | default | allowed | paid behavior | offline | missing-key |
+|---|---|---|---|---|---|
+| `onboarding.tour.enabled` | true | true|false | n/a | last cached | false |
+| `onboarding.tour.variant` | one_card | none|one_card|three_card|full | n/a | last cached | none |
+| `onboarding.tour.max_cards` | 1 | 0|1|3|5 | n/a | last cached | 0 |
+| `onboarding.tour.force_completion` | false | true|false | n/a | false | false |
+| `onboarding.tour.show_skip` | true | true|false | n/a | true | true |
+| `onboarding.tour.placement` | after_location | before_language|after_language|after_location|before_home | n/a | after_location | after_location |
+| `onboarding.tour.suppress_if_resume_uploaded` | true | true|false | n/a | true | true |
+| `onboarding.tour.suppress_if_returning_user` | true | true|false | n/a | true | true |
+| `onboarding.tour.once_per_install` | true | true|false | n/a | true | true |
+| `onboarding.animations.enabled` | true | true|false | n/a | true | true |
+| `onboarding.animations.variant` | subtle | none|subtle|standard|rich | n/a | subtle | none |
+| `onboarding.animations.duration_ms` | 700 | 300-1500 | n/a | 700 | 500 |
+| `onboarding.animations.reduce_motion_respect_system` | true | true|false | n/a | true | true |
+| `onboarding.animations.splash_brand_duration_ms` | 1200 | 500-3000 | n/a | 1200 | 800 |
+
+Rules:
+- `onboarding.tour.enabled=false` or `variant=none` → skip all tour slides immediately.
+- Missing/invalid Remote Config → use safe defaults and continue onboarding (never block).
+- Tour is not forced unless `force_completion=true`; if `show_skip=true` and `force_completion=false`, show Skip.
+- Do not place the tour before language by default; default placement is `after_location`.
+- Tour must not interfere with ad placements (`ad_inter_after_splash`, full-screen onboarding native, onboarding-complete interstitial). If a tour placement conflicts with a full-screen ad placement, the monetization placement wins unless Product changes RC; the tour overlay resolves before the onboarding-complete interstitial runs.
+- Respect Android reduced-motion / animator-scale when `reduce_motion_respect_system=true`; animations never delay ad fail-open or block navigation.
+- No raw role/location/query/resume text/filename/name/email/PII may be logged — only controlled `variant`/`card_index`/`cards_seen`/`placement` values.
+
 ## Ad-intensity tiers (`ad_aggressiveness_tier`)
 
 App Open first-eligibility is the canonical `s2 if activated, else s3` from the placement table; tiers modulate **cooldown** and whether it runs at all (they do NOT change first-eligibility).

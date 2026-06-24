@@ -127,6 +127,28 @@ MonetizationManager only; no screen-level ad SDK calls.
 Acceptance: QA IA18-IA27 pass; assembleDebug green.
 ```
 
+### Task 5c — Onboarding tour-guide + animation Remote Config
+```
+Make onboarding tour-guide slides and onboarding animations Remote Config controlled
+(no new build to retune). See /docs/monetization-spec.md "Onboarding Remote Config".
+- Typed RC keys + safe defaults + validation/clamping via OnboardingConfigProvider;
+  missing/invalid RC fails open and NEVER blocks onboarding.
+- Enums: OnboardingTourVariant (none/one_card/three_card/full),
+  OnboardingTourPlacement (before_language/after_language/after_location/before_home),
+  OnboardingAnimationVariant (none/subtle/standard/rich).
+- Product can: turn the tour off, pick variant, move placement, control skip vs
+  force-completion, suppress for returning users / resume-uploaded / once-per-install,
+  and enable/disable + restyle/retime animations.
+- Tour cards use ONLY already-localized strings (no new translation keys). Honest
+  branded content; no fake CTA/reward UI. Respect system reduced-motion.
+- Tour must not block/overlap/delay ad placements (ad_inter_after_splash, full-screen
+  onboarding native, onboarding-complete interstitial); the overlay resolves before
+  the onboarding-complete interstitial runs.
+- Track onboarding_tour_view/skip/complete + onboarding_animation_variant through
+  AnalyticsTracker only; controlled values only (no PII/raw text).
+Acceptance: QA ONB01-ONB15 pass; assembleDebug green.
+```
+
 ### Task 6 — Rewarded unlocks + Copilot gating
 ```
 Read /docs/monetization-spec.md (Rewarded caps) and CLAUDE.md rules 5-6.

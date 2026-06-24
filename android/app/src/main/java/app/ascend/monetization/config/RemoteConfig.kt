@@ -54,6 +54,22 @@ object RcKeys {
     const val AFTER_ONB_ALLOW_AGGRESSIVE_STACK = "ads.inter.after_onboarding_complete.allow_aggressive_stack"
     const val AFTER_ONB_SUPPRESS_NEXT_FULLSCREEN_SECONDS = "ads.inter.after_onboarding_complete.suppress_next_fullscreen_seconds"
 
+    // Onboarding tour-guide + animations (onboarding UI only; must never block onboarding)
+    const val ONB_TOUR_ENABLED = "onboarding.tour.enabled"
+    const val ONB_TOUR_VARIANT = "onboarding.tour.variant"
+    const val ONB_TOUR_MAX_CARDS = "onboarding.tour.max_cards"
+    const val ONB_TOUR_FORCE_COMPLETION = "onboarding.tour.force_completion"
+    const val ONB_TOUR_SHOW_SKIP = "onboarding.tour.show_skip"
+    const val ONB_TOUR_PLACEMENT = "onboarding.tour.placement"
+    const val ONB_TOUR_SUPPRESS_IF_RESUME = "onboarding.tour.suppress_if_resume_uploaded"
+    const val ONB_TOUR_SUPPRESS_IF_RETURNING = "onboarding.tour.suppress_if_returning_user"
+    const val ONB_TOUR_ONCE_PER_INSTALL = "onboarding.tour.once_per_install"
+    const val ONB_ANIM_ENABLED = "onboarding.animations.enabled"
+    const val ONB_ANIM_VARIANT = "onboarding.animations.variant"
+    const val ONB_ANIM_DURATION_MS = "onboarding.animations.duration_ms"
+    const val ONB_ANIM_REDUCE_MOTION_RESPECT = "onboarding.animations.reduce_motion_respect_system"
+    const val ONB_ANIM_SPLASH_BRAND_DURATION_MS = "onboarding.animations.splash_brand_duration_ms"
+
     // Native frequency (job list)
     const val NATIVE_JOB_LIST_FREQUENCY = "ads.native.job_list.frequency"
 
@@ -119,6 +135,22 @@ private val DEFAULTS: Map<String, Any> = mapOf(
     RcKeys.AFTER_ONB_SUPPRESS_IF_FS_ONB_SHOWN_SECONDS to 60L,
     RcKeys.AFTER_ONB_ALLOW_AGGRESSIVE_STACK to false,
     RcKeys.AFTER_ONB_SUPPRESS_NEXT_FULLSCREEN_SECONDS to 180L,
+
+    // Onboarding tour + animations — fail-safe (missing-key) values: tour OFF, minimal motion.
+    RcKeys.ONB_TOUR_ENABLED to false,
+    RcKeys.ONB_TOUR_VARIANT to "none",
+    RcKeys.ONB_TOUR_MAX_CARDS to 0L,
+    RcKeys.ONB_TOUR_FORCE_COMPLETION to false,
+    RcKeys.ONB_TOUR_SHOW_SKIP to true,
+    RcKeys.ONB_TOUR_PLACEMENT to "after_location",
+    RcKeys.ONB_TOUR_SUPPRESS_IF_RESUME to true,
+    RcKeys.ONB_TOUR_SUPPRESS_IF_RETURNING to true,
+    RcKeys.ONB_TOUR_ONCE_PER_INSTALL to true,
+    RcKeys.ONB_ANIM_ENABLED to true,
+    RcKeys.ONB_ANIM_VARIANT to "none",
+    RcKeys.ONB_ANIM_DURATION_MS to 500L,
+    RcKeys.ONB_ANIM_REDUCE_MOTION_RESPECT to true,
+    RcKeys.ONB_ANIM_SPLASH_BRAND_DURATION_MS to 800L,
 
     RcKeys.NATIVE_JOB_LIST_FREQUENCY to 8L,
 

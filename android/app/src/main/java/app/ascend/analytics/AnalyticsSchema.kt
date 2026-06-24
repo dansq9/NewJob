@@ -53,6 +53,11 @@ object Ev {
     const val SESSION_START_ENRICHED = "session_start_enriched"
     const val APP_OPEN_RESUME = "app_open_resume"
     const val PUSH_OPEN = "push_open"
+    // Onboarding tour-guide + animations (RC-controlled onboarding UI)
+    const val ONBOARDING_TOUR_VIEW = "onboarding_tour_view"
+    const val ONBOARDING_TOUR_SKIP = "onboarding_tour_skip"
+    const val ONBOARDING_TOUR_COMPLETE = "onboarding_tour_complete"
+    const val ONBOARDING_ANIMATION_VARIANT = "onboarding_animation_variant"
     // Ad lifecycle diagnostics (DEBUG — not imported to Google Ads)
     const val AD_REQUEST = "ad_request"
     const val AD_LOADED = "ad_loaded"
@@ -124,6 +129,8 @@ object Pr {
     const val SCREEN_NAME = "screen_name"
     const val SCREEN_CLASS = "screen_class"
     const val REFERRER_SOURCE = "referrer_source"
+    const val CARD_INDEX = "card_index"
+    const val CARDS_SEEN = "cards_seen"
 }
 
 /** User property names (≤24 chars each). */
@@ -266,6 +273,25 @@ enum class AggressivenessTier(val v: String) {
 
 enum class AccountStatus(val v: String) { FREE("Free"), PRO("Pro") }
 enum class Plan(val v: String) { FREE("Free"), WEEKLY("Weekly"), YEARLY("Yearly"), LIFETIME("Lifetime") }
+
+// ---- Onboarding tour-guide + animation controlled vocabularies (RC-mapped) ----
+
+/** Tour size. [cap] = max cards this variant ever shows (FULL = no cap of its own). */
+enum class OnboardingTourVariant(val v: String, val cap: Int) {
+    NONE("none", 0), ONE_CARD("one_card", 1), THREE_CARD("three_card", 3), FULL("full", Int.MAX_VALUE);
+    companion object { fun fromValue(s: String?) = entries.firstOrNull { it.v == s } ?: NONE }
+}
+
+enum class OnboardingTourPlacement(val v: String) {
+    BEFORE_LANGUAGE("before_language"), AFTER_LANGUAGE("after_language"),
+    AFTER_LOCATION("after_location"), BEFORE_HOME("before_home");
+    companion object { fun fromValue(s: String?) = entries.firstOrNull { it.v == s } ?: AFTER_LOCATION }
+}
+
+enum class OnboardingAnimationVariant(val v: String) {
+    NONE("none"), SUBTLE("subtle"), STANDARD("standard"), RICH("rich");
+    companion object { fun fromValue(s: String?) = entries.firstOrNull { it.v == s } ?: NONE }
+}
 
 /**
  * ILRD value precision (`ad_impression.precision`). Mirrors the Google Mobile Ads

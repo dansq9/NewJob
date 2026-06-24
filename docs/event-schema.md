@@ -232,6 +232,25 @@ Tracking contract. GA4/Firebase is the source of truth (tROAS-ARO + Remote Confi
 - `screen_name` (String) — home/jobs/job_detail/tracker/resume/resume_result/mock_interview/copilot/games/paywall
 - `screen_class` (String) — Compose route
 
+**`onboarding_tour_view`** — Tour card shown.
+- `variant` (String) — none/one_card/three_card/full
+- `card_index` (Numeric) — 1, 2, 3…
+- `placement` (String) — before_language/after_language/after_location/before_home
+
+**`onboarding_tour_skip`** — User skipped the tour.
+- `variant` (String) — one_card/three_card/full
+- `card_index` (Numeric) — 1, 2, 3…
+- `placement` (String) — before_language/after_language/after_location/before_home
+
+**`onboarding_tour_complete`** — User completed the tour.
+- `variant` (String) — one_card/three_card/full
+- `cards_seen` (Numeric) — 1, 3, 5
+- `placement` (String) — before_language/after_language/after_location/before_home
+
+**`onboarding_animation_variant`** — Animation configuration applied.
+- `variant` (String) — none/subtle/standard/rich
+- `placement` (String) — splash/onboarding_step/tour/before_home
+
 ## Registered / user properties (attached to every event)
 
 | property | scope | sample | used by |

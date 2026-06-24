@@ -1,5 +1,7 @@
 package app.ascend.ui.screens.onboarding
 
+import androidx.compose.animation.Crossfade
+import androidx.compose.animation.core.tween
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -42,6 +44,37 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
     }
     val pickResume = rememberResumePicker { vm.onResumePicked(it) }
 
+    // RC-controlled animations (fail open; reduced-motion aware; never blocks navigation).
+    val config = vm.onboardingConfig
+    val context = androidx.compose.ui.platform.LocalContext.current
+    val reducedMotion = config.reduceMotionRespectSystem && isReducedMotion(context)
+    val animate = config.animationsEnabled &&
+        config.animationVariant != app.ascend.analytics.OnboardingAnimationVariant.NONE && !reducedMotion
+    val stepAnimMs = if (animate) config.animationDurationMs.toInt() else 0
+    LaunchedEffect(Unit) { vm.onAnimationVariantApplied("onboarding_step") }
+
+    // RC-controlled tour-guide overlay. Placement maps to a step boundary (this app has no
+    // language step, so before/after_language map to the first steps). Fails open: cardCount 0 → skip.
+    val triggerStep = remember(config.placement) {
+        when (config.placement) {
+            app.ascend.analytics.OnboardingTourPlacement.BEFORE_LANGUAGE -> 0
+            app.ascend.analytics.OnboardingTourPlacement.AFTER_LANGUAGE -> 1
+            app.ascend.analytics.OnboardingTourPlacement.AFTER_LOCATION -> 4
+            app.ascend.analytics.OnboardingTourPlacement.BEFORE_HOME -> STEPS
+        }
+    }
+    var tourResolved by rememberSaveable { mutableStateOf(false) }
+    var tourActive by remember { mutableStateOf(false) }
+    var tourCards by remember { mutableIntStateOf(0) }
+    var tourThenFinish by remember { mutableStateOf(false) }
+    LaunchedEffect(step, vm.tourStateLoaded) {
+        if (vm.tourStateLoaded && !tourResolved && !tourActive && triggerStep < STEPS && step == triggerStep) {
+            val cards = vm.eligibleTourCards(vm.resumeName != null)
+            if (cards > 0) { tourCards = cards; tourThenFinish = false; tourActive = true } else tourResolved = true
+        }
+    }
+
+    Box(Modifier.fillMaxSize()) {
     Column(Modifier.fillMaxSize().background(AscendColors.Bg).statusBarsPadding().padding(22.dp)) {
         // top bar: back + progress
         Row(verticalAlignment = Alignment.CenterVertically) {
@@ -61,13 +94,15 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
         Spacer(Modifier.height(28.dp))
 
         Box(Modifier.weight(1f)) {
-            when (step) {
-                0 -> Welcome()
-                1 -> Field(stringResource(R.string.onboarding_name_title), stringResource(R.string.onboarding_name_sub),
-                    vm.name, { vm.name = it }, stringResource(R.string.onboarding_name_hint), KeyboardCapitalization.Words)
-                2 -> RoleStep(vm)
-                3 -> LocationStep(vm)
-                else -> ResumeStep(vm, pickResume)
+            Crossfade(targetState = step, animationSpec = tween(stepAnimMs), label = "onboardingStep") { s ->
+                when (s) {
+                    0 -> Welcome()
+                    1 -> Field(stringResource(R.string.onboarding_name_title), stringResource(R.string.onboarding_name_sub),
+                        vm.name, { vm.name = it }, stringResource(R.string.onboarding_name_hint), KeyboardCapitalization.Words)
+                    2 -> RoleStep(vm)
+                    3 -> LocationStep(vm)
+                    else -> ResumeStep(vm, pickResume)
+                }
             }
         }
 
@@ -84,7 +119,16 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
                     3 -> vm.logStep(app.ascend.analytics.OnboardingStep.LOCATION, vm.location.isBlank())
                     STEPS - 1 -> vm.logStep(app.ascend.analytics.OnboardingStep.RESUME, vm.resumeName == null)
                 }
-                if (step < STEPS - 1) step++ else vm.finish(onDone)
+                if (step < STEPS - 1) {
+                    step++
+                } else if (!tourResolved && triggerStep == STEPS) {
+                    // before_home placement: show the tour, then finish (or finish now if not eligible).
+                    val cards = vm.eligibleTourCards(vm.resumeName != null)
+                    if (cards > 0) { tourCards = cards; tourThenFinish = true; tourActive = true }
+                    else { tourResolved = true; vm.finish(onDone) }
+                } else {
+                    vm.finish(onDone)
+                }
             },
             enabled = canContinue && !vm.saving,
             modifier = Modifier.fillMaxWidth().height(54.dp).navigationBarsPadding(),
@@ -96,7 +140,34 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
                 fontWeight = FontWeight.Bold, fontSize = 16.sp,
             )
         }
-    }
+    } // end Column
+        if (tourActive) {
+            OnboardingTour(
+                cardCount = tourCards,
+                showSkip = config.showSkip,
+                forceCompletion = config.forceCompletion,
+                onView = { vm.onTourView(it) },
+                onSkip = { vm.onTourSkip(it) },
+                onComplete = { vm.onTourComplete(it) },
+                onResolve = {
+                    tourActive = false
+                    tourResolved = true
+                    if (tourThenFinish) vm.finish(onDone)
+                },
+            )
+        }
+    } // end Box
+}
+
+/** Reduced-motion when the system animator scale is 0 (Developer options / accessibility). */
+private fun isReducedMotion(context: android.content.Context): Boolean = try {
+    android.provider.Settings.Global.getFloat(
+        context.contentResolver,
+        android.provider.Settings.Global.ANIMATOR_DURATION_SCALE,
+        1f,
+    ) == 0f
+} catch (e: Exception) {
+    false
 }
 
 @Composable
