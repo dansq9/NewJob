@@ -334,4 +334,17 @@
     <string name="interviews_launch_copilot">कोपायलट शुरू करें</string>
     <string name="interviews_recent">हाल के सत्र</string>
     <string name="interviews_recent_empty">आपके मॉक इंटरव्यू और कोपायलट सत्र यहाँ दिखेंगे।</string>
+    <string name="settings_profile_title">प्रोफ़ाइल</string>
+    <string name="profile_stat_applied">आवेदित</string>
+    <string name="profile_stat_saved">सहेजे</string>
+    <string name="profile_stat_ats">ATS स्कोर</string>
+    <string name="profile_upgrade_title">प्रो बनें</string>
+    <string name="profile_upgrade_sub">असीमित AI · Copilot · विज्ञापन रहित</string>
+    <string name="profile_pro_active">Ascend Pro · सक्रिय</string>
+    <string name="profile_row_documents">दस्तावेज़</string>
+    <string name="profile_row_saved_jobs">सहेजी गई नौकरियाँ</string>
+    <string name="profile_row_manage_sub">सदस्यता प्रबंधित करें</string>
+    <string name="profile_row_restore">खरीदारी पुनर्स्थापित करें</string>
+    <string name="profile_row_help">सहायता और समर्थन</string>
+    <string name="profile_edit_title">प्रोफ़ाइल संपादित करें</string>
 </resources>

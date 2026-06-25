@@ -334,4 +334,17 @@
     <string name="interviews_launch_copilot">Launch Copilot</string>
     <string name="interviews_recent">Recent sessions</string>
     <string name="interviews_recent_empty">Your mock interviews and copilot sessions will appear here.</string>
+    <string name="settings_profile_title">Profile</string>
+    <string name="profile_stat_applied">applied</string>
+    <string name="profile_stat_saved">saved</string>
+    <string name="profile_stat_ats">ATS score</string>
+    <string name="profile_upgrade_title">Upgrade to Pro</string>
+    <string name="profile_upgrade_sub">Unlimited AI · Copilot · ad-free</string>
+    <string name="profile_pro_active">Ascend Pro · active</string>
+    <string name="profile_row_documents">Documents</string>
+    <string name="profile_row_saved_jobs">Saved jobs</string>
+    <string name="profile_row_manage_sub">Manage subscription</string>
+    <string name="profile_row_restore">Restore purchases</string>
+    <string name="profile_row_help">Help &amp; support</string>
+    <string name="profile_edit_title">Edit profile</string>
 </resources>

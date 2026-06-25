@@ -334,4 +334,17 @@
     <string name="interviews_launch_copilot">Qalisa i-Copilot</string>
     <string name="interviews_recent">Amaseshini akamuva</string>
     <string name="interviews_recent_empty">Izingxoxo zakho zokulinga nezikhathi ze-copilot zizovela lapha.</string>
+    <string name="settings_profile_title">Iphrofayela</string>
+    <string name="profile_stat_applied">kufakwe</string>
+    <string name="profile_stat_saved">kulondoloziwe</string>
+    <string name="profile_stat_ats">Isikolo se-ATS</string>
+    <string name="profile_upgrade_title">Thuthukela ku-Pro</string>
+    <string name="profile_upgrade_sub">I-AI engenamkhawulo · Copilot · ngaphandle kwezikhangiso</string>
+    <string name="profile_pro_active">Ascend Pro · iyasebenza</string>
+    <string name="profile_row_documents">Amadokhumenti</string>
+    <string name="profile_row_saved_jobs">Imisebenzi elondoloziwe</string>
+    <string name="profile_row_manage_sub">Phatha ukubhalisa</string>
+    <string name="profile_row_restore">Buyisela ukuthenga</string>
+    <string name="profile_row_help">Usizo nokwesekwa</string>
+    <string name="profile_edit_title">Hlela iphrofayela</string>
 </resources>

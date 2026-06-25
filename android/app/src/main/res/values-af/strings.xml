@@ -334,4 +334,17 @@
     <string name="interviews_launch_copilot">Begin Copilot</string>
     <string name="interviews_recent">Onlangse sessies</string>
     <string name="interviews_recent_empty">Jou oefenonderhoude en copilot-sessies sal hier verskyn.</string>
+    <string name="settings_profile_title">Profiel</string>
+    <string name="profile_stat_applied">aansoeke</string>
+    <string name="profile_stat_saved">gestoor</string>
+    <string name="profile_stat_ats">ATS-telling</string>
+    <string name="profile_upgrade_title">Gradeer op na Pro</string>
+    <string name="profile_upgrade_sub">Onbeperkte KI · Copilot · advertensievry</string>
+    <string name="profile_pro_active">Ascend Pro · aktief</string>
+    <string name="profile_row_documents">Dokumente</string>
+    <string name="profile_row_saved_jobs">Gestoorde poste</string>
+    <string name="profile_row_manage_sub">Bestuur intekening</string>
+    <string name="profile_row_restore">Herstel aankope</string>
+    <string name="profile_row_help">Hulp en ondersteuning</string>
+    <string name="profile_edit_title">Wysig profiel</string>
 </resources>

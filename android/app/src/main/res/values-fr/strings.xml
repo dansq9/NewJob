@@ -334,4 +334,17 @@
     <string name="interviews_launch_copilot">Lancer Copilot</string>
     <string name="interviews_recent">Sessions récentes</string>
     <string name="interviews_recent_empty">Vos entretiens d’entraînement et sessions copilot apparaîtront ici.</string>
+    <string name="settings_profile_title">Profil</string>
+    <string name="profile_stat_applied">postulées</string>
+    <string name="profile_stat_saved">enregistrées</string>
+    <string name="profile_stat_ats">Score ATS</string>
+    <string name="profile_upgrade_title">Passer à Pro</string>
+    <string name="profile_upgrade_sub">IA illimitée · Copilot · sans pub</string>
+    <string name="profile_pro_active">Ascend Pro · actif</string>
+    <string name="profile_row_documents">Documents</string>
+    <string name="profile_row_saved_jobs">Offres enregistrées</string>
+    <string name="profile_row_manage_sub">Gérer l’abonnement</string>
+    <string name="profile_row_restore">Restaurer les achats</string>
+    <string name="profile_row_help">Aide et assistance</string>
+    <string name="profile_edit_title">Modifier le profil</string>
 </resources>

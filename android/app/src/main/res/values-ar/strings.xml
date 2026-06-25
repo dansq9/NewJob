@@ -334,4 +334,17 @@
     <string name="interviews_launch_copilot">تشغيل المساعد</string>
     <string name="interviews_recent">الجلسات الأخيرة</string>
     <string name="interviews_recent_empty">ستظهر هنا مقابلاتك التجريبية وجلسات المساعد.</string>
+    <string name="settings_profile_title">الملف الشخصي</string>
+    <string name="profile_stat_applied">تقدّمت</string>
+    <string name="profile_stat_saved">محفوظة</string>
+    <string name="profile_stat_ats">درجة ATS</string>
+    <string name="profile_upgrade_title">الترقية إلى Pro</string>
+    <string name="profile_upgrade_sub">ذكاء اصطناعي غير محدود · Copilot · بدون إعلانات</string>
+    <string name="profile_pro_active">Ascend Pro · نشط</string>
+    <string name="profile_row_documents">المستندات</string>
+    <string name="profile_row_saved_jobs">الوظائف المحفوظة</string>
+    <string name="profile_row_manage_sub">إدارة الاشتراك</string>
+    <string name="profile_row_restore">استعادة المشتريات</string>
+    <string name="profile_row_help">المساعدة والدعم</string>
+    <string name="profile_edit_title">تعديل الملف الشخصي</string>
 </resources>
