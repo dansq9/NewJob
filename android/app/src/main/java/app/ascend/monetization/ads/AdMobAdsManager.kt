@@ -76,21 +76,24 @@ class AdMobAdsManager @Inject constructor(
     override fun initialize() {
         if (!initialized.compareAndSet(false, true)) return   // idempotent
         onMain {
-            if (BuildConfig.DEBUG) {
-                // Emulators are auto-test devices; this also marks physical debug devices as test.
-                MobileAds.setRequestConfiguration(
-                    RequestConfiguration.Builder()
-                        .setTestDeviceIds(listOf(AdRequest.DEVICE_ID_EMULATOR))
-                        .build(),
-                )
-            }
-            MobileAds.initialize(context) {
-                if (BuildConfig.DEBUG) Log.d(TAG, "MobileAds initialized")
-                // Preload the readiness-poll formats so splash/onboarding/app-open show promptly.
-                preloadInterstitial(Placement.INTER_AFTER_SPLASH)
-                preloadInterstitial(Placement.INTER_AFTER_ONBOARDING_COMPLETE)
-                preloadAppOpen()
-            }
+            // A bad SDK state must never crash the app at launch — fail open (no ads).
+            runCatching {
+                if (BuildConfig.DEBUG) {
+                    // Emulators are auto-test devices; this also marks physical debug devices as test.
+                    MobileAds.setRequestConfiguration(
+                        RequestConfiguration.Builder()
+                            .setTestDeviceIds(listOf(AdRequest.DEVICE_ID_EMULATOR))
+                            .build(),
+                    )
+                }
+                MobileAds.initialize(context) {
+                    if (BuildConfig.DEBUG) Log.d(TAG, "MobileAds initialized")
+                    // Preload the readiness-poll formats so splash/onboarding/app-open show promptly.
+                    preloadInterstitial(Placement.INTER_AFTER_SPLASH)
+                    preloadInterstitial(Placement.INTER_AFTER_ONBOARDING_COMPLETE)
+                    preloadAppOpen()
+                }
+            }.onFailure { if (BuildConfig.DEBUG) Log.w(TAG, "MobileAds init failed; ads disabled", it) }
         }
     }
 
@@ -114,7 +117,7 @@ class AdMobAdsManager @Inject constructor(
                 override fun onAdDismissedFullScreenContent() { preloadInterstitial(placement) }
                 override fun onAdFailedToShowFullScreenContent(adError: AdError) { preloadInterstitial(placement) }
             }
-            ad.show(activity)
+            runCatching { ad.show(activity) }
         }
     }
 
@@ -125,16 +128,18 @@ class AdMobAdsManager @Inject constructor(
         val unit = AdUnitIds.unitFor(placement)
         if (unit.isBlank() || interstitials.containsKey(unit)) return
         onMain {
-            InterstitialAd.load(
-                context, unit, AdRequest.Builder().build(),
-                object : InterstitialAdLoadCallback() {
-                    override fun onAdLoaded(ad: InterstitialAd) {
-                        ad.onPaidEventListener = OnPaidEventListener { v -> forwardPaid(placement, ad.adUnitId, v, ad) }
-                        interstitials[unit] = ad
-                    }
-                    override fun onAdFailedToLoad(error: LoadAdError) { interstitials.remove(unit) }
-                },
-            )
+            runCatching {
+                InterstitialAd.load(
+                    context, unit, AdRequest.Builder().build(),
+                    object : InterstitialAdLoadCallback() {
+                        override fun onAdLoaded(ad: InterstitialAd) {
+                            ad.onPaidEventListener = OnPaidEventListener { v -> forwardPaid(placement, ad.adUnitId, v, ad) }
+                            interstitials[unit] = ad
+                        }
+                        override fun onAdFailedToLoad(error: LoadAdError) { interstitials.remove(unit) }
+                    },
+                )
+            }
         }
     }
 
@@ -161,7 +166,7 @@ class AdMobAdsManager @Inject constructor(
                 override fun onAdDismissedFullScreenContent() { preloadAppOpen() }
                 override fun onAdFailedToShowFullScreenContent(adError: AdError) { preloadAppOpen() }
             }
-            ad.show(activity)
+            runCatching { ad.show(activity) }
         }
     }
 
@@ -171,6 +176,7 @@ class AdMobAdsManager @Inject constructor(
         if (unit.isBlank()) return
         appOpenLoading = true
         onMain {
+            runCatching {
             AppOpenAd.load(
                 context, unit, AdRequest.Builder().build(),
                 object : AppOpenAd.AppOpenAdLoadCallback() {
@@ -183,6 +189,7 @@ class AdMobAdsManager @Inject constructor(
                     override fun onAdFailedToLoad(error: LoadAdError) { appOpenAd = null; appOpenLoading = false }
                 },
             )
+            }
         }
     }
 
