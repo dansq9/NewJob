@@ -100,31 +100,34 @@ private fun RealNativeAd(placement: Placement, manager: MonetizationManager, mod
         if (unit.isBlank()) {
             onDispose { }   // not configured → fail open, render nothing
         } else {
-            val loader = AdLoader.Builder(context, unit)
-                .forNativeAd { ad ->
-                    ad.setOnPaidEventListener(
-                        OnPaidEventListener { v ->
-                            manager.onAdPaid(
-                                AdPaidEvent(
-                                    placementId = placement.id,
-                                    format = placement.format,
-                                    valueMicros = v.valueMicros,
-                                    currencyCode = v.currencyCode,
-                                    precision = AdPrecision.fromAdMob(v.precisionType),
-                                    adSource = ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName,
-                                    adUnitId = unit,
-                                ),
-                            )
-                        },
-                    )
-                    nativeAd = ad
-                }
-                .withAdListener(object : AdListener() {
-                    override fun onAdFailedToLoad(error: LoadAdError) { nativeAd = null }
-                })
-                .build()
-            loader.loadAd(AdRequest.Builder().build())
-            onDispose { nativeAd?.destroy() }
+            // Wrapped: a misbehaving ad SDK / loader must never crash the host screen.
+            runCatching {
+                val loader = AdLoader.Builder(context, unit)
+                    .forNativeAd { ad ->
+                        ad.setOnPaidEventListener(
+                            OnPaidEventListener { v ->
+                                manager.onAdPaid(
+                                    AdPaidEvent(
+                                        placementId = placement.id,
+                                        format = placement.format,
+                                        valueMicros = v.valueMicros,
+                                        currencyCode = v.currencyCode,
+                                        precision = AdPrecision.fromAdMob(v.precisionType),
+                                        adSource = ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName,
+                                        adUnitId = unit,
+                                    ),
+                                )
+                            },
+                        )
+                        nativeAd = ad
+                    }
+                    .withAdListener(object : AdListener() {
+                        override fun onAdFailedToLoad(error: LoadAdError) { nativeAd = null }
+                    })
+                    .build()
+                loader.loadAd(AdRequest.Builder().build())
+            }
+            onDispose { runCatching { nativeAd?.destroy() } }
         }
     }
 
@@ -137,7 +140,7 @@ private fun RealNativeAd(placement: Placement, manager: MonetizationManager, mod
         ) {
             AndroidView(
                 modifier = Modifier.fillMaxWidth(),
-                factory = { ctx -> buildNativeAdView(ctx) },
+                factory = { ctx -> runCatching { buildNativeAdView(ctx) }.getOrElse { NativeAdView(ctx) } },
                 update = { view -> bindNativeAd(view, ad) },
             )
         }
