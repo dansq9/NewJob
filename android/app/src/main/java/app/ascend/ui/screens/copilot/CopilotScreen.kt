@@ -20,6 +20,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -53,41 +54,16 @@ fun CopilotScreen(nav: NavController, vm: CopilotViewModel = hiltViewModel()) {
     app.ascend.ui.monetization.SuppressAppOpenWhileActive(app.ascend.monetization.AdFlow.COPILOT)
     val isPro by vm.isPro.collectAsStateWithLifecycle()
     if (!isPro) {
-        ProLock(onUpgrade = { nav.navigate(app.ascend.ui.navigation.Routes.PAYWALL) }, onBack = { nav.popBackStack() })
+        // Gated (Pro-only) feature → straight to the paywall; no intermediate unlock screen.
+        // Pop this destination first so Back from the paywall returns to where the user came from.
+        LaunchedEffect(Unit) {
+            nav.popBackStack()
+            nav.navigate(app.ascend.ui.navigation.Routes.PAYWALL)
+        }
         return
     }
     val s by vm.state.collectAsStateWithLifecycle()
     if (!s.live) SetupView(vm, nav) else LiveView(vm, nav)
-}
-
-@Composable
-private fun ProLock(onUpgrade: () -> Unit, onBack: () -> Unit) {
-    Scaffold(
-        containerColor = AscendColors.Bg,
-        topBar = { app.ascend.ui.components.AscendTopBar(stringResource(R.string.copilot_title), onBack = onBack) },
-    ) { padding ->
-        Column(
-            Modifier.fillMaxSize().padding(padding).padding(28.dp),
-            verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally,
-        ) {
-            Box(Modifier.size(72.dp).clip(RoundedCornerShape(20.dp)).background(AscendColors.ChipIndigo), Alignment.Center) {
-                Icon(Icons.Outlined.Bolt, null, tint = AscendColors.Indigo, modifier = Modifier.size(38.dp))
-            }
-            Spacer(Modifier.height(18.dp))
-            Text(stringResource(R.string.copilot_prolock_title), fontSize = 22.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
-            Spacer(Modifier.height(8.dp))
-            Text(
-                stringResource(R.string.copilot_prolock_desc),
-                fontSize = 14.sp, color = AscendColors.Muted, lineHeight = 21.sp,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-            )
-            Spacer(Modifier.height(24.dp))
-            Button(
-                onClick = onUpgrade, modifier = Modifier.fillMaxWidth().height(54.dp),
-                shape = RoundedCornerShape(16.dp), colors = ButtonDefaults.buttonColors(containerColor = AscendColors.Indigo),
-            ) { Text(stringResource(R.string.copilot_unlock_pro), fontWeight = FontWeight.ExtraBold, fontSize = 16.sp) }
-        }
-    }
 }
 
 @Composable
