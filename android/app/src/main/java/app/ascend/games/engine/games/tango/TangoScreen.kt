@@ -18,7 +18,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import app.ascend.games.engine.games.common.gameViewModel
 import app.ascend.games.engine.core.Daily
 import app.ascend.games.engine.games.GameId
 import app.ascend.games.engine.games.common.BaseGameVM
@@ -69,7 +69,7 @@ private const val G = 4
 private const val P = S + G
 
 @Composable
-fun TangoScreen(onBack: () -> Unit, vm: TangoVM = viewModel()) {
+fun TangoScreen(onBack: () -> Unit, vm: TangoVM = gameViewModel()) {
     GameShell(
         vm = vm,
         controls = listOf(

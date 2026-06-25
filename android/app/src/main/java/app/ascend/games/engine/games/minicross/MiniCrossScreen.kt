@@ -22,7 +22,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import app.ascend.games.engine.games.common.gameViewModel
 import app.ascend.games.engine.core.GameLanguage
 import app.ascend.games.engine.games.GameId
 import app.ascend.games.engine.games.common.BaseGameVM
@@ -113,7 +113,7 @@ class MiniCrossVM(app: Application) : BaseGameVM<CrossState>(app, GameId.CROSSWO
 }
 
 @Composable
-fun MiniCrossScreen(onBack: () -> Unit, vm: MiniCrossVM = viewModel()) {
+fun MiniCrossScreen(onBack: () -> Unit, vm: MiniCrossVM = gameViewModel()) {
     GameShell(
         vm = vm,
         controls = listOf(

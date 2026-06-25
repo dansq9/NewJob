@@ -100,31 +100,34 @@ private fun RealNativeAd(placement: Placement, manager: MonetizationManager, mod
         if (unit.isBlank()) {
             onDispose { }   // not configured → fail open, render nothing
         } else {
-            val loader = AdLoader.Builder(context, unit)
-                .forNativeAd { ad ->
-                    ad.setOnPaidEventListener(
-                        OnPaidEventListener { v ->
-                            manager.onAdPaid(
-                                AdPaidEvent(
-                                    placementId = placement.id,
-                                    format = placement.format,
-                                    valueMicros = v.valueMicros,
-                                    currencyCode = v.currencyCode,
-                                    precision = AdPrecision.fromAdMob(v.precisionType),
-                                    adSource = ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName,
-                                    adUnitId = unit,
-                                ),
-                            )
-                        },
-                    )
-                    nativeAd = ad
-                }
-                .withAdListener(object : AdListener() {
-                    override fun onAdFailedToLoad(error: LoadAdError) { nativeAd = null }
-                })
-                .build()
-            loader.loadAd(AdRequest.Builder().build())
-            onDispose { nativeAd?.destroy() }
+            // Wrapped: a misbehaving ad SDK / loader must never crash the host screen.
+            runCatching {
+                val loader = AdLoader.Builder(context, unit)
+                    .forNativeAd { ad ->
+                        ad.setOnPaidEventListener(
+                            OnPaidEventListener { v ->
+                                manager.onAdPaid(
+                                    AdPaidEvent(
+                                        placementId = placement.id,
+                                        format = placement.format,
+                                        valueMicros = v.valueMicros,
+                                        currencyCode = v.currencyCode,
+                                        precision = AdPrecision.fromAdMob(v.precisionType),
+                                        adSource = ad.responseInfo?.loadedAdapterResponseInfo?.adSourceName,
+                                        adUnitId = unit,
+                                    ),
+                                )
+                            },
+                        )
+                        nativeAd = ad
+                    }
+                    .withAdListener(object : AdListener() {
+                        override fun onAdFailedToLoad(error: LoadAdError) { nativeAd = null }
+                    })
+                    .build()
+                loader.loadAd(AdRequest.Builder().build())
+            }
+            onDispose { runCatching { nativeAd?.destroy() } }
         }
     }
 
@@ -137,7 +140,7 @@ private fun RealNativeAd(placement: Placement, manager: MonetizationManager, mod
         ) {
             AndroidView(
                 modifier = Modifier.fillMaxWidth(),
-                factory = { ctx -> buildNativeAdView(ctx) },
+                factory = { ctx -> runCatching { buildNativeAdView(ctx) }.getOrElse { NativeAdView(ctx) } },
                 update = { view -> bindNativeAd(view, ad) },
             )
         }
@@ -195,23 +198,29 @@ private fun buildNativeAdView(ctx: android.content.Context): NativeAdView {
     return adView
 }
 
-/** Binds the loaded native ad's assets to the view, then registers it (required last step). */
+/**
+ * Binds the loaded native ad's assets to the view, then registers it (required last step).
+ * Wrapped defensively so a malformed asset can never crash the host screen — at worst the
+ * slot stays blank (the manager already collapses suppressed slots).
+ */
 private fun bindNativeAd(adView: NativeAdView, ad: NativeAd) {
-    (adView.headlineView as? TextView)?.text = ad.headline
-    (adView.bodyView as? TextView)?.let { tv ->
-        tv.text = ad.body
-        tv.visibility = if (ad.body.isNullOrBlank()) View.GONE else View.VISIBLE
+    runCatching {
+        (adView.headlineView as? TextView)?.text = ad.headline
+        (adView.bodyView as? TextView)?.let { tv ->
+            tv.text = ad.body
+            tv.visibility = if (ad.body.isNullOrBlank()) View.GONE else View.VISIBLE
+        }
+        (adView.iconView as? ImageView)?.let { iv ->
+            val icon = ad.icon
+            if (icon?.drawable != null) { iv.setImageDrawable(icon.drawable); iv.visibility = View.VISIBLE }
+            else iv.visibility = View.GONE
+        }
+        (adView.callToActionView as? Button)?.let { btn ->
+            if (ad.callToAction.isNullOrBlank()) btn.visibility = View.GONE
+            else { btn.text = ad.callToAction; btn.visibility = View.VISIBLE }
+        }
+        adView.setNativeAd(ad)
     }
-    (adView.iconView as? ImageView)?.let { iv ->
-        val icon = ad.icon
-        if (icon?.drawable != null) { iv.setImageDrawable(icon.drawable); iv.visibility = View.VISIBLE }
-        else iv.visibility = View.GONE
-    }
-    (adView.callToActionView as? Button)?.let { btn ->
-        if (ad.callToAction.isNullOrBlank()) btn.visibility = View.GONE
-        else { btn.text = ad.callToAction; btn.visibility = View.VISIBLE }
-    }
-    adView.setNativeAd(ad)
 }
 
 /** DEBUG-ONLY placeholder (NOT a real ad) — shown only when USE_REAL_ADS is false. */

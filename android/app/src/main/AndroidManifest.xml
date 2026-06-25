@@ -5,6 +5,8 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <!-- Live Copilot transcribes the interviewer's audio during a call -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Optional: "use my current location" in onboarding to prefill the job location. -->
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <!-- Android 11+ package visibility: needed to reach the on-device speech recognizer. -->
     <queries>

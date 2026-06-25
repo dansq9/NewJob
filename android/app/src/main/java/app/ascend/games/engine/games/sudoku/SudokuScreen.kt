@@ -21,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
+import app.ascend.games.engine.games.common.gameViewModel
 import app.ascend.games.engine.core.Daily
 import app.ascend.games.engine.games.GameId
 import app.ascend.games.engine.games.common.BaseGameVM
@@ -78,7 +78,7 @@ class SudokuVM(app: Application) : BaseGameVM<SudokuState>(app, GameId.SUDOKU) {
 }
 
 @Composable
-fun SudokuScreen(onBack: () -> Unit, vm: SudokuVM = viewModel()) {
+fun SudokuScreen(onBack: () -> Unit, vm: SudokuVM = gameViewModel()) {
     GameShell(
         vm = vm,
         controls = listOf(
