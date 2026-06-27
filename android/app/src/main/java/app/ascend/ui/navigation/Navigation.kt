@@ -20,7 +20,16 @@ object Routes {
     const val JOB_DETAIL = "job/{jobId}"
     /** Build a job-detail route for a specific job id. */
     fun jobDetail(jobId: String) = "job/$jobId"
+    /** The Resume hub — Build / Edit / Check-for-a-job chooser. */
     const val RESUME = "resume"
+    /** The optimizer (score & fix vs a job). Job-Detail deep-links straight here. */
+    const val RESUME_OPTIMIZE = "resume/optimize"
+    /** Build a new resume — method chooser (voice / guided form / upload). */
+    const val RESUME_BUILD = "resume/build"
+    /** The guided-form builder (Contact → Summary → Experience → Education → Skills). */
+    const val RESUME_BUILD_FORM = "resume/build/form"
+    /** Edit a saved resume — the resume library. */
+    const val RESUME_EDIT = "resume/edit"
     const val MOCK = "mock"
     const val COPILOT = "copilot"
     const val GAMES = "games"

@@ -13,6 +13,7 @@ import androidx.compose.material.icons.outlined.RecordVoiceOver
 import androidx.compose.material.icons.outlined.ArrowCircleRight
 import androidx.compose.material.icons.outlined.AutoFixHigh
 import androidx.compose.material.icons.outlined.Bolt
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Extension
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Search
@@ -67,7 +68,7 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
     val firstName = profile.name.trim().substringBefore(' ').ifBlank { stringResource(R.string.home_fallback_name) }
     // Prototype order: Resume, Copilot, Mock, Games — each a gradient tile.
     val actions = listOf(
-        QuickAction(stringResource(R.string.home_qa_resume), stringResource(R.string.home_qa_resume_sub), Icons.Outlined.AutoFixHigh, Routes.RESUME,
+        QuickAction(stringResource(R.string.home_qa_resume), stringResource(R.string.home_qa_resume_sub), Icons.Outlined.Description, Routes.RESUME,
             Brush.linearGradient(listOf(AscendColors.Indigo, AscendColors.Violet2))),
         QuickAction(stringResource(R.string.home_qa_copilot), stringResource(R.string.home_qa_copilot_sub), Icons.Outlined.Bolt, Routes.COPILOT,
             Brush.linearGradient(listOf(AscendColors.Violet, AscendColors.Indigo2))),

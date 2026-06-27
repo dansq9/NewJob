@@ -124,7 +124,11 @@ private fun AscendRoot(startOnboarding: Boolean) {
             composable(Routes.TRACKER) { TrackerScreen(nav) }
             composable(Routes.INTERVIEWS) { InterviewsScreen(nav) }
             composable(Routes.JOB_DETAIL) { JobDetailScreen(nav) }
-            composable(Routes.RESUME) { ResumeScreen(nav) }
+            composable(Routes.RESUME) { app.ascend.ui.screens.resume.ResumeHubScreen(nav) }
+            composable(Routes.RESUME_OPTIMIZE) { ResumeScreen(nav) }
+            composable(Routes.RESUME_BUILD) { app.ascend.ui.screens.resume.ResumeBuildScreen(nav) }
+            composable(Routes.RESUME_BUILD_FORM) { app.ascend.ui.screens.resume.ResumeBuilderScreen(nav) }
+            composable(Routes.RESUME_EDIT) { app.ascend.ui.screens.resume.ResumeEditScreen(nav) }
             composable(Routes.MOCK) { MockScreen(nav) }
             composable(Routes.COPILOT) { CopilotScreen(nav) }
             composable(Routes.GAMES) { GamesScreen(nav) }

@@ -183,7 +183,7 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
             Row(
                 Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp))
                     .background(Brush.linearGradient(listOf(AscendColors.Indigo, AscendColors.Violet2)))
-                    .clickable { nav.navigate(Routes.RESUME) }.padding(18.dp),
+                    .clickable { nav.navigate(Routes.RESUME_OPTIMIZE) }.padding(18.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(Modifier.size(44.dp).clip(RoundedCornerShape(13.dp)).background(Color.White.copy(alpha = 0.18f)), Alignment.Center) {
@@ -213,7 +213,7 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
             }
             Spacer(Modifier.height(18.dp))
             Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                ActionTile(stringResource(R.string.jobdetail_action_resume), Icons.Outlined.AutoFixHigh, AscendColors.Green, Modifier.weight(1f)) { nav.navigate(Routes.RESUME) }
+                ActionTile(stringResource(R.string.jobdetail_action_resume), Icons.Outlined.AutoFixHigh, AscendColors.Green, Modifier.weight(1f)) { nav.navigate(Routes.RESUME_OPTIMIZE) }
                 ActionTile(stringResource(R.string.jobdetail_action_copilot), Icons.Outlined.Bolt, AscendColors.Violet2, Modifier.weight(1f)) { nav.navigate(Routes.COPILOT) }
                 ActionTile(stringResource(R.string.jobdetail_action_mock), Icons.Outlined.RecordVoiceOver, AscendColors.Indigo, Modifier.weight(1f)) { nav.navigate(Routes.MOCK) }
             }
