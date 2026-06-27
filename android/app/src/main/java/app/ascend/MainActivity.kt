@@ -128,6 +128,10 @@ private fun AscendRoot(startOnboarding: Boolean) {
             composable(Routes.RESUME_OPTIMIZE) { ResumeScreen(nav) }
             composable(Routes.RESUME_BUILD) { app.ascend.ui.screens.resume.ResumeBuildScreen(nav) }
             composable(Routes.RESUME_BUILD_FORM) { app.ascend.ui.screens.resume.ResumeBuilderScreen(nav) }
+            composable(Routes.RESUME_BUILD_VOICE) { app.ascend.ui.screens.resume.ResumeVoiceScreen(nav) }
+            composable(Routes.RESUME_BUILD_EDIT) { entry ->
+                app.ascend.ui.screens.resume.ResumeBuilderScreen(nav, resumeId = entry.arguments?.getString("resumeId"))
+            }
             composable(Routes.RESUME_EDIT) { app.ascend.ui.screens.resume.ResumeEditScreen(nav) }
             composable(Routes.MOCK) { MockScreen(nav) }
             composable(Routes.COPILOT) { CopilotScreen(nav) }

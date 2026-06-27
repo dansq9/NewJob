@@ -6,6 +6,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.EditNote
+import androidx.compose.material.icons.outlined.Mic
 import androidx.compose.material.icons.outlined.UploadFile
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
@@ -64,6 +65,13 @@ fun ResumeBuildScreen(nav: NavController, vm: ResumeHubViewModel = hiltViewModel
                 color = AscendColors.Muted, lineHeight = 19.sp)
             Spacer(Modifier.height(4.dp))
 
+            MethodCard(
+                icon = Icons.Outlined.Mic,
+                tint = AscendColors.Violet,
+                title = stringResource(R.string.resume_build_voice),
+                subtitle = stringResource(R.string.resume_build_voice_sub),
+                onClick = { nav.navigate(Routes.RESUME_BUILD_VOICE) },
+            )
             MethodCard(
                 icon = Icons.Outlined.EditNote,
                 tint = AscendColors.Indigo,

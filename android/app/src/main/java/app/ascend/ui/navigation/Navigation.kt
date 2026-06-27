@@ -28,6 +28,11 @@ object Routes {
     const val RESUME_BUILD = "resume/build"
     /** The guided-form builder (Contact → Summary → Experience → Education → Skills). */
     const val RESUME_BUILD_FORM = "resume/build/form"
+    /** Build by voice — capture speech, then hand off into the form. */
+    const val RESUME_BUILD_VOICE = "resume/build/voice"
+    /** Edit a built resume by id — opens the form pre-filled from its saved content. */
+    const val RESUME_BUILD_EDIT = "resume/build/edit/{resumeId}"
+    fun resumeBuildEdit(resumeId: String) = "resume/build/edit/$resumeId"
     /** Edit a saved resume — the resume library. */
     const val RESUME_EDIT = "resume/edit"
     const val MOCK = "mock"

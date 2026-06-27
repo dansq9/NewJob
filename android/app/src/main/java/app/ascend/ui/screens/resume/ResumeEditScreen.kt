@@ -80,7 +80,12 @@ fun ResumeEditScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) 
                 lib.resumes.forEach { r ->
                     LibraryRow(
                         record = r,
-                        onOpen = { vm.select(r.id); nav.navigate(Routes.RESUME_OPTIMIZE) },
+                        // Built resumes open the structured editor; uploaded files open the optimizer.
+                        onOpen = {
+                            vm.select(r.id)
+                            if (r.isBuilt) nav.navigate(Routes.resumeBuildEdit(r.id))
+                            else nav.navigate(Routes.RESUME_OPTIMIZE)
+                        },
                         onRename = { renameTarget = r },
                         onDuplicate = { vm.duplicate(r.id) },
                         onDelete = {
@@ -132,9 +137,10 @@ private fun LibraryRow(
                     Text(record.displayName, fontWeight = FontWeight.Bold, color = AscendColors.Ink,
                         fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     val atsLabel = stringResource(R.string.resume_ats_label)
-                    val uploadedHint = stringResource(R.string.resume_edit_uploaded_hint)
+                    val hint = if (record.isBuilt) stringResource(R.string.resume_edit_built_hint)
+                    else stringResource(R.string.resume_edit_uploaded_hint)
                     Text(buildString {
-                        append(uploadedHint)
+                        append(hint)
                         record.atsScore?.let { append(" · $atsLabel $it") }
                     }, fontSize = 12.sp, color = AscendColors.Muted2)
                 }

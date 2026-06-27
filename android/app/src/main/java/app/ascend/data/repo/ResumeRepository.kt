@@ -117,6 +117,37 @@ class ResumeRepository @Inject constructor(
         return copy.toRecord()
     }
 
+    /** Persist a resume built in-app (structured content, no file). Auto-selects it. */
+    suspend fun saveBuilt(title: String, content: String): ResumeRecord {
+        val now = System.currentTimeMillis()
+        val rec = ResumeEntity(
+            id = UUID.randomUUID().toString(),
+            name = title.ifBlank { "My resume" },
+            uri = "",
+            sizeBytes = null,
+            mime = null,
+            addedAt = now,
+            updatedAt = now,
+            source = ResumeEntity.SOURCE_BUILT,
+            content = content,
+            title = title.trim().ifBlank { null },
+        )
+        dao.upsert(rec)
+        profile.setSelectedResume(rec.id)
+        return rec.toRecord()
+    }
+
+    /** Update an existing built resume's content (and title) in place. */
+    suspend fun updateBuilt(id: String, title: String, content: String) {
+        val existing = dao.get(id) ?: return
+        dao.upsert(existing.copy(
+            name = title.ifBlank { existing.name },
+            title = title.trim().ifBlank { null },
+            content = content,
+            updatedAt = System.currentTimeMillis(),
+        ))
+    }
+
     /** Re-insert a previously-removed record (powers the delete → Undo snackbar). */
     suspend fun restore(record: ResumeRecord) {
         dao.upsert(

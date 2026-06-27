@@ -50,9 +50,11 @@ import kotlinx.coroutines.launch
  * rewarded-gated download (per monetization-spec). Auto-save to the library lands in a later increment.
  */
 @Composable
-fun ResumeBuilderScreen(nav: NavController, vm: ResumeBuilderViewModel = hiltViewModel()) {
+fun ResumeBuilderScreen(nav: NavController, resumeId: String? = null, vm: ResumeBuilderViewModel = hiltViewModel()) {
+    androidx.compose.runtime.LaunchedEffect(resumeId) { vm.start(resumeId) }
     val form by vm.form.collectAsStateWithLifecycle()
     val ui by vm.ui.collectAsStateWithLifecycle()
+    val aiBusy by vm.aiBusy.collectAsStateWithLifecycle()
     // Suppress the app-open ad while in the resume build flow (spec suppress_during_resume_flow).
     app.ascend.ui.monetization.SuppressAppOpenWhileActive(app.ascend.monetization.AdFlow.RESUME)
 
@@ -87,9 +89,22 @@ fun ResumeBuilderScreen(nav: NavController, vm: ResumeBuilderViewModel = hiltVie
                     Field(stringResource(R.string.resume_field_location), form.location) { v -> vm.update { it.copy(location = v) } }
 
                     Spacer(Modifier.height(18.dp))
-                    SectionLabel(stringResource(R.string.resume_field_summary))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        SectionLabel(stringResource(R.string.resume_field_summary))
+                        Spacer(Modifier.weight(1f))
+                        TextButton(onClick = vm::aiWriteSummary, enabled = !aiBusy) {
+                            if (aiBusy) {
+                                CircularProgressIndicator(Modifier.size(15.dp), color = AscendColors.Indigo, strokeWidth = 2.dp)
+                            } else {
+                                Icon(Icons.Outlined.AutoAwesome, null, Modifier.size(16.dp), tint = AscendColors.Indigo)
+                            }
+                            Spacer(Modifier.width(6.dp))
+                            Text(stringResource(R.string.resume_ai_write), color = AscendColors.Indigo, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                        }
+                    }
                     Spacer(Modifier.height(10.dp))
                     Field(stringResource(R.string.resume_field_summary_hint), form.summary, minLines = 3) { v -> vm.update { it.copy(summary = v) } }
+                    Text(stringResource(R.string.resume_ai_write_note), fontSize = 11.sp, color = AscendColors.Muted2, lineHeight = 15.sp)
 
                     Spacer(Modifier.height(18.dp))
                     SectionLabel(stringResource(R.string.resume_field_experience))

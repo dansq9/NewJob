@@ -422,4 +422,18 @@
     <string name="resume_duplicate">Duplicate</string>
     <string name="resume_rename_label">Resume name</string>
     <string name="resume_local_only_note">Resumes are saved on this device only. Download one to keep a backup.</string>
+    <!-- Resume builder AI-write (increment 4) -->
+    <string name="resume_ai_write">AI write</string>
+    <string name="resume_ai_write_note">AI rephrases what you wrote — it will not invent jobs or numbers. Review before saving.</string>
+    <!-- Resume build voice + structured editor (increments 5-6) -->
+    <string name="resume_build_voice">Speak it</string>
+    <string name="resume_build_voice_sub">Answer out loud — we turn it into a resume draft</string>
+    <string name="resume_voice_title">Build by voice</string>
+    <string name="resume_voice_heading">Tell us about your experience</string>
+    <string name="resume_voice_sub">Tap the mic and talk about your roles, skills, and education. We will drop it into the form so you can tidy it up.</string>
+    <string name="resume_voice_start">Start speaking</string>
+    <string name="resume_voice_type_instead">Type instead</string>
+    <string name="resume_voice_prompt">Tell us about your work, skills, and education</string>
+    <string name="resume_voice_unavailable">Voice is not available on this device — type instead.</string>
+    <string name="resume_edit_built_hint">Built here — tap to edit</string>
 </resources>
