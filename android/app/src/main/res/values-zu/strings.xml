@@ -399,4 +399,20 @@
     <string name="resume_delete_title">Delete this resume?</string>
     <string name="resume_delete_text">This removes it from this device. This cannot be undone.</string>
     <string name="resume_delete_confirm">Delete</string>
+    <!-- Resume optimizer: JD-attach + apply-fixes (increment 2) -->
+    <string name="resume_target_general_hint">A general ATS score, not tied to a specific job</string>
+    <string name="resume_target_set_hint">Tap to change the job you are tailoring for</string>
+    <string name="resume_target_sheet_title">Tailor for a job</string>
+    <string name="resume_target_general">General score</string>
+    <string name="resume_target_from_tracker">From your tracker</string>
+    <string name="resume_target_manual">Enter a job</string>
+    <string name="resume_target_manual_title">Job title</string>
+    <string name="resume_target_manual_company">Company (optional)</string>
+    <string name="resume_target_use">Use this job</string>
+    <string name="resume_optimized_verdict">Optimized</string>
+    <string name="resume_apply_fixes">Apply AI fixes</string>
+    <string name="resume_apply_fixes_note">Your score is free. Applying AI fixes and downloading each play one short ad, or are instant with Pro.</string>
+    <string name="resume_severity_high">High</string>
+    <string name="resume_severity_medium">Medium</string>
+    <string name="resume_severity_low">Low</string>
 </resources>
