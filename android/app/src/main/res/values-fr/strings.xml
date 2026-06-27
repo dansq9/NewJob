@@ -415,4 +415,11 @@
     <string name="resume_severity_high">High</string>
     <string name="resume_severity_medium">Medium</string>
     <string name="resume_severity_low">Low</string>
+    <!-- Resume library management (increment 3) -->
+    <string name="resume_deleted">Resume deleted</string>
+    <string name="action_undo">Undo</string>
+    <string name="resume_rename">Rename</string>
+    <string name="resume_duplicate">Duplicate</string>
+    <string name="resume_rename_label">Resume name</string>
+    <string name="resume_local_only_note">Resumes are saved on this device only. Download one to keep a backup.</string>
 </resources>

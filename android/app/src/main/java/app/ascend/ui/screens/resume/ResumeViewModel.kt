@@ -116,6 +116,10 @@ class ResumeViewModel @Inject constructor(
 
     fun select(id: String) { viewModelScope.launch { resumes.select(id) } }
     fun remove(id: String) { viewModelScope.launch { resumes.remove(id) } }
+    fun rename(id: String, title: String?) { viewModelScope.launch { resumes.rename(id, title) } }
+    fun duplicate(id: String) { viewModelScope.launch { resumes.duplicate(id) } }
+    /** Re-insert a record removed via the Edit screen's delete → Undo. */
+    fun restore(record: ResumeRecord) { viewModelScope.launch { resumes.restore(record) } }
     fun clearSnackbar() { _snackbar.value = null }
 
     /**

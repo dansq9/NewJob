@@ -10,8 +10,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowForward
 import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.EditNote
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -19,6 +24,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -32,25 +38,30 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
 import app.ascend.R
 import app.ascend.data.repo.ResumeRecord
-import app.ascend.ui.components.AscendConfirmationDialog
 import app.ascend.ui.components.AscendEmptyState
 import app.ascend.ui.components.AscendTopBar
 import app.ascend.ui.navigation.Routes
 import app.ascend.ui.theme.AscendColors
+import kotlinx.coroutines.launch
 
 /**
- * Edit a resume — the saved-resume library. Today every record is an uploaded file pointer, so
- * tapping a row opens it in the optimizer ("open to optimize, not edit"); structured in-app editing
- * of built resumes arrives with the library-model increment. Reuses [ResumeViewModel] for the list.
+ * Edit a resume — the saved-resume library with non-destructive management (rename, duplicate,
+ * delete-with-undo). Uploaded files open in the optimizer ("open to check for a job"); structured
+ * editing of built resumes arrives with the Build editor increment. Reuses [ResumeViewModel].
  */
 @Composable
 fun ResumeEditScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) {
     val lib by vm.library.collectAsStateWithLifecycle()
-    var pendingDelete by remember { mutableStateOf<ResumeRecord?>(null) }
+    var renameTarget by remember { mutableStateOf<ResumeRecord?>(null) }
+    val snackbarHost = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
+    val deletedMsg = stringResource(R.string.resume_deleted)
+    val undoLabel = stringResource(R.string.action_undo)
 
     Scaffold(
         containerColor = AscendColors.Bg,
         topBar = { AscendTopBar(stringResource(R.string.resume_edit_title), onBack = { nav.popBackStack() }) },
+        snackbarHost = { SnackbarHost(snackbarHost) },
     ) { padding ->
         Column(Modifier.padding(padding).fillMaxSize().verticalScroll(rememberScrollState()).padding(18.dp)) {
             if (lib.resumes.isEmpty()) {
@@ -70,51 +81,98 @@ fun ResumeEditScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) 
                     LibraryRow(
                         record = r,
                         onOpen = { vm.select(r.id); nav.navigate(Routes.RESUME_OPTIMIZE) },
-                        onRemove = { pendingDelete = r },
+                        onRename = { renameTarget = r },
+                        onDuplicate = { vm.duplicate(r.id) },
+                        onDelete = {
+                            vm.remove(r.id)
+                            // Soft delete: offer Undo before the removal is final.
+                            scope.launch {
+                                val res = snackbarHost.showSnackbar(deletedMsg, actionLabel = undoLabel)
+                                if (res == SnackbarResult.ActionPerformed) vm.restore(r)
+                            }
+                        },
                     )
                     Spacer(Modifier.height(10.dp))
                 }
+                Spacer(Modifier.height(8.dp))
+                Text(stringResource(R.string.resume_local_only_note), fontSize = 11.5.sp,
+                    color = AscendColors.Muted2, lineHeight = 15.sp)
             }
             Spacer(Modifier.height(24.dp))
         }
     }
 
-    pendingDelete?.let { rec ->
-        AscendConfirmationDialog(
-            title = stringResource(R.string.resume_delete_title),
-            text = stringResource(R.string.resume_delete_text),
-            confirmLabel = stringResource(R.string.resume_delete_confirm),
-            dismissLabel = stringResource(R.string.action_dismiss),
-            onConfirm = { vm.remove(rec.id); pendingDelete = null },
-            onDismiss = { pendingDelete = null },
+    renameTarget?.let { rec ->
+        RenameDialog(
+            initial = rec.title ?: rec.name,
+            onConfirm = { vm.rename(rec.id, it); renameTarget = null },
+            onDismiss = { renameTarget = null },
         )
     }
 }
 
 @Composable
-private fun LibraryRow(record: ResumeRecord, onOpen: () -> Unit, onRemove: () -> Unit) {
+private fun LibraryRow(
+    record: ResumeRecord,
+    onOpen: () -> Unit,
+    onRename: () -> Unit,
+    onDuplicate: () -> Unit,
+    onDelete: () -> Unit,
+) {
     Surface(
-        Modifier.fillMaxWidth().clickable(onClick = onOpen),
+        Modifier.fillMaxWidth(),
         shape = RoundedCornerShape(16.dp), color = AscendColors.Card,
         border = BorderStroke(1.5.dp, AscendColors.Line),
     ) {
-        Row(Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
-            Icon(Icons.Outlined.Description, null, tint = AscendColors.Muted)
-            Spacer(Modifier.width(12.dp))
-            Column(Modifier.weight(1f)) {
-                Text(record.name, fontWeight = FontWeight.Bold, color = AscendColors.Ink,
-                    fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                val atsLabel = stringResource(R.string.resume_ats_label)
-                val uploadedHint = stringResource(R.string.resume_edit_uploaded_hint)
-                Text(buildString {
-                    append(uploadedHint)
-                    record.atsScore?.let { append(" · $atsLabel $it") }
-                }, fontSize = 12.sp, color = AscendColors.Muted2)
+        Column(Modifier.padding(14.dp)) {
+            Row(Modifier.fillMaxWidth().clickable(onClick = onOpen), verticalAlignment = Alignment.CenterVertically) {
+                Icon(Icons.Outlined.Description, null, tint = AscendColors.Muted)
+                Spacer(Modifier.width(12.dp))
+                Column(Modifier.weight(1f)) {
+                    Text(record.displayName, fontWeight = FontWeight.Bold, color = AscendColors.Ink,
+                        fontSize = 14.sp, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                    val atsLabel = stringResource(R.string.resume_ats_label)
+                    val uploadedHint = stringResource(R.string.resume_edit_uploaded_hint)
+                    Text(buildString {
+                        append(uploadedHint)
+                        record.atsScore?.let { append(" · $atsLabel $it") }
+                    }, fontSize = 12.sp, color = AscendColors.Muted2)
+                }
+                Icon(Icons.AutoMirrored.Outlined.ArrowForward, null, tint = AscendColors.Faint, modifier = Modifier.size(18.dp))
             }
-            TextButton(onClick = onRemove) {
-                Text(stringResource(R.string.resume_remove), color = AscendColors.Muted2, fontSize = 13.sp)
+            Spacer(Modifier.height(4.dp))
+            Row {
+                TextButton(onClick = onRename) { Text(stringResource(R.string.resume_rename), color = AscendColors.Indigo, fontSize = 13.sp) }
+                TextButton(onClick = onDuplicate) { Text(stringResource(R.string.resume_duplicate), color = AscendColors.Indigo, fontSize = 13.sp) }
+                Spacer(Modifier.weight(1f))
+                TextButton(onClick = onDelete) { Text(stringResource(R.string.resume_remove), color = AscendColors.Muted2, fontSize = 13.sp) }
             }
-            Icon(Icons.AutoMirrored.Outlined.ArrowForward, null, tint = AscendColors.Faint, modifier = Modifier.size(18.dp))
         }
     }
+}
+
+@Composable
+private fun RenameDialog(initial: String, onConfirm: (String) -> Unit, onDismiss: () -> Unit) {
+    var text by remember { mutableStateOf(initial) }
+    AlertDialog(
+        onDismissRequest = onDismiss,
+        confirmButton = {
+            TextButton(onClick = { onConfirm(text) }) {
+                Text(stringResource(R.string.action_save), color = AscendColors.Indigo, fontWeight = FontWeight.Bold)
+            }
+        },
+        dismissButton = {
+            TextButton(onClick = onDismiss) { Text(stringResource(R.string.action_cancel), color = AscendColors.Muted) }
+        },
+        title = { Text(stringResource(R.string.resume_rename), fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink) },
+        text = {
+            OutlinedTextField(
+                value = text, onValueChange = { text = it }, singleLine = true,
+                label = { Text(stringResource(R.string.resume_rename_label)) },
+                shape = RoundedCornerShape(14.dp), modifier = Modifier.fillMaxWidth(),
+            )
+        },
+        containerColor = AscendColors.Card,
+        shape = RoundedCornerShape(20.dp),
+    )
 }
