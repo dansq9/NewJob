@@ -436,4 +436,16 @@
     <string name="resume_voice_prompt">Tell us about your work, skills, and education</string>
     <string name="resume_voice_unavailable">Voice is not available on this device — type instead.</string>
     <string name="resume_edit_built_hint">Built here — tap to edit</string>
+    <!-- Resume builder paged wizard (increment 7) -->
+    <string name="resume_build_step_of">Step %1$d of %2$d</string>
+    <string name="resume_build_next">Next</string>
+    <string name="resume_exp_entry">Role %1$d</string>
+    <string name="resume_exp_role">Role / title</string>
+    <string name="resume_exp_company">Company</string>
+    <string name="resume_exp_dates">Dates (e.g. 2021–Present)</string>
+    <string name="resume_exp_detail">What you did</string>
+    <string name="resume_exp_remove">Remove</string>
+    <string name="resume_exp_add">Add another role</string>
+    <string name="resume_review_title">Preview</string>
+    <string name="resume_review_sub">Here is your resume. Create it when it looks right.</string>
 </resources>
