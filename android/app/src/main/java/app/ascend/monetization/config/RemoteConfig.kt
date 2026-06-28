@@ -239,6 +239,12 @@ class RemoteConfig @Inject constructor(
             RcKeys.APPOPEN_MIN_SESSION -> 1L
             RcKeys.AFTER_ONB_MAX_PER_INSTALL -> 1L         // onboarding interstitial allowed once
             RcKeys.APPOPEN_MIN_BACKGROUND_SECONDS -> 0L
+            // So a tester actually SEES every interstitial trigger fire (not just the first):
+            // lift the per-session cap and drop the cooldowns. Production keeps the real caps.
+            RcKeys.INTER_MAX_PER_SESSION -> 99L
+            RcKeys.INTER_COOLDOWN_SECONDS -> 0L
+            RcKeys.AFTER_SPLASH_COOLDOWN_SECONDS -> 0L
+            RcKeys.APPOPEN_COOLDOWN_MINUTES -> 0L
             else -> null
         }
     }

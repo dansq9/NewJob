@@ -78,6 +78,19 @@ private fun iconFor(id: GameId): ImageVector = when (id) {
     GameId.LIGHTSOUT -> Icons.Outlined.Lightbulb
 }
 
+/** A distinct accent per game so the hub isn't monochrome. */
+private fun accentFor(id: GameId): androidx.compose.ui.graphics.Color = when (id) {
+    GameId.PATCHES -> androidx.compose.ui.graphics.Color(0xFF4F46E5)   // indigo
+    GameId.SUDOKU -> androidx.compose.ui.graphics.Color(0xFF2563EB)    // blue
+    GameId.ZIP -> androidx.compose.ui.graphics.Color(0xFF0EA5A6)       // teal
+    GameId.QUEENS -> androidx.compose.ui.graphics.Color(0xFFE0913F)    // amber
+    GameId.TANGO -> androidx.compose.ui.graphics.Color(0xFF7C5CFF)     // violet
+    GameId.G2048 -> androidx.compose.ui.graphics.Color(0xFFF0902A)     // orange
+    GameId.CLUSTERS -> androidx.compose.ui.graphics.Color(0xFF0F9D68)  // green
+    GameId.CROSSWORD -> androidx.compose.ui.graphics.Color(0xFFD6457A) // pink
+    GameId.LIGHTSOUT -> androidx.compose.ui.graphics.Color(0xFF8B5CF6) // purple
+}
+
 @Composable
 fun GamesScreen(nav: NavController) {
     Scaffold(
@@ -116,18 +129,19 @@ private fun PuzzleCard(game: GameId, onClick: () -> Unit) {
         shape = RoundedCornerShape(18.dp), color = AscendColors.Card,
         border = BorderStroke(1.5.dp, AscendColors.Line),
     ) {
+        val accent = accentFor(game)
         Column(Modifier.padding(15.dp)) {
-            Box(Modifier.size(40.dp).clip(RoundedCornerShape(12.dp)).background(AscendColors.ChipIndigo), contentAlignment = Alignment.Center) {
-                Icon(iconFor(game), null, tint = AscendColors.Indigo)
+            Box(Modifier.size(40.dp).clip(RoundedCornerShape(12.dp)).background(accent.copy(alpha = 0.14f)), contentAlignment = Alignment.Center) {
+                Icon(iconFor(game), null, tint = accent)
             }
             Spacer(Modifier.height(12.dp))
             Text(titleFor(game), fontSize = 15.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
             Text(blurbFor(game), fontSize = 12.sp, color = AscendColors.Muted2, lineHeight = 16.sp)
             Spacer(Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically, modifier = Modifier.clickable(onClick = onClick)) {
-                Icon(Icons.Filled.PlayArrow, null, tint = AscendColors.Indigo, modifier = Modifier.size(18.dp))
+                Icon(Icons.Filled.PlayArrow, null, tint = accent, modifier = Modifier.size(18.dp))
                 Spacer(Modifier.width(4.dp))
-                Text(stringResource(R.string.games_play), color = AscendColors.Indigo, fontWeight = FontWeight.Bold, fontSize = 13.sp)
+                Text(stringResource(R.string.games_play), color = accent, fontWeight = FontWeight.Bold, fontSize = 13.sp)
             }
         }
     }

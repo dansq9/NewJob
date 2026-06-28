@@ -20,6 +20,9 @@ interface ResumeDao {
     @Query("UPDATE resumes SET atsScore = :score, optimizedForJobId = :jobId WHERE id = :id")
     suspend fun setAtsScore(id: String, score: Int?, jobId: String?)
 
+    @Query("UPDATE resumes SET title = :title, updatedAt = :updatedAt WHERE id = :id")
+    suspend fun rename(id: String, title: String?, updatedAt: Long)
+
     @Query("DELETE FROM resumes WHERE id = :id")
     suspend fun delete(id: String)
 }

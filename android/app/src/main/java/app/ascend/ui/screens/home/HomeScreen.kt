@@ -13,6 +13,7 @@ import androidx.compose.material.icons.outlined.RecordVoiceOver
 import androidx.compose.material.icons.outlined.ArrowCircleRight
 import androidx.compose.material.icons.outlined.AutoFixHigh
 import androidx.compose.material.icons.outlined.Bolt
+import androidx.compose.material.icons.outlined.Description
 import androidx.compose.material.icons.outlined.Extension
 import androidx.compose.material.icons.outlined.Notifications
 import androidx.compose.material.icons.outlined.Search
@@ -67,7 +68,7 @@ fun HomeScreen(nav: NavController, vm: HomeViewModel = hiltViewModel()) {
     val firstName = profile.name.trim().substringBefore(' ').ifBlank { stringResource(R.string.home_fallback_name) }
     // Prototype order: Resume, Copilot, Mock, Games — each a gradient tile.
     val actions = listOf(
-        QuickAction(stringResource(R.string.home_qa_resume), stringResource(R.string.home_qa_resume_sub), Icons.Outlined.AutoFixHigh, Routes.RESUME,
+        QuickAction(stringResource(R.string.home_qa_resume), stringResource(R.string.home_qa_resume_sub), Icons.Outlined.Description, Routes.RESUME,
             Brush.linearGradient(listOf(AscendColors.Indigo, AscendColors.Violet2))),
         QuickAction(stringResource(R.string.home_qa_copilot), stringResource(R.string.home_qa_copilot_sub), Icons.Outlined.Bolt, Routes.COPILOT,
             Brush.linearGradient(listOf(AscendColors.Violet, AscendColors.Indigo2))),
@@ -165,23 +166,23 @@ private fun MatchesMessage(message: String, onRetry: (() -> Unit)?, action: Stri
 
 @Composable
 private fun QuickActionCard(qa: QuickAction, modifier: Modifier, onClick: () -> Unit) {
+    // heightIn(min) so the tile grows with large system fonts instead of clipping its subtitle.
     Box(
         modifier
-            .height(120.dp)
+            .heightIn(min = 120.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(qa.gradient)
             .clickable(onClick = onClick),
     ) {
-        Column(Modifier.fillMaxSize().padding(15.dp), verticalArrangement = Arrangement.SpaceBetween) {
+        Column(Modifier.fillMaxWidth().padding(15.dp)) {
             Box(
                 Modifier.size(42.dp).clip(RoundedCornerShape(13.dp)).background(Color.White.copy(alpha = 0.18f)),
                 contentAlignment = Alignment.Center,
             ) { Icon(qa.icon, null, tint = Color.White) }
-            Column {
-                Text(qa.label, fontSize = 15.5.sp, fontWeight = FontWeight.ExtraBold, color = Color.White, lineHeight = 18.sp)
-                Spacer(Modifier.height(3.dp))
-                Text(qa.sub, fontSize = 11.5.sp, color = Color.White.copy(alpha = 0.85f), lineHeight = 15.sp)
-            }
+            Spacer(Modifier.height(12.dp))
+            Text(qa.label, fontSize = 15.5.sp, fontWeight = FontWeight.ExtraBold, color = Color.White, lineHeight = 18.sp)
+            Spacer(Modifier.height(3.dp))
+            Text(qa.sub, fontSize = 11.5.sp, color = Color.White.copy(alpha = 0.85f), lineHeight = 15.sp)
         }
     }
 }

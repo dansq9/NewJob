@@ -22,7 +22,15 @@ data class ResumeRecord(
     val addedAt: Long,
     val atsScore: Int?,
     val optimizedForJobId: String?,
-)
+    val title: String? = null,
+    val updatedAt: Long = 0L,
+    val source: String = ResumeEntity.SOURCE_UPLOADED,
+    val content: String? = null,
+) {
+    /** Display label: the user-set title if any, else the file name. */
+    val displayName: String get() = title?.takeIf { it.isNotBlank() } ?: name
+    val isBuilt: Boolean get() = source == ResumeEntity.SOURCE_BUILT
+}
 
 /** Outcome of trying to add a picked file to the library. */
 sealed interface AddResumeResult {
@@ -69,6 +77,8 @@ class ResumeRepository @Inject constructor(
             sizeBytes = file.sizeBytes,
             mime = file.mime,
             addedAt = System.currentTimeMillis(),
+            updatedAt = System.currentTimeMillis(),
+            source = ResumeEntity.SOURCE_UPLOADED,
         )
         dao.upsert(record)
         profile.setSelectedResume(record.id)
@@ -89,6 +99,67 @@ class ResumeRepository @Inject constructor(
     suspend fun recordAtsScore(id: String, score: Int?, jobId: String?) =
         dao.setAtsScore(id, score, jobId)
 
+    /** Rename a saved resume (null/blank clears back to the file name). */
+    suspend fun rename(id: String, title: String?) =
+        dao.rename(id, title?.trim()?.ifBlank { null }, System.currentTimeMillis())
+
+    /** Duplicate a saved resume into a new library entry (so a tailored version can be forked). */
+    suspend fun duplicate(id: String): ResumeRecord? {
+        val src = dao.get(id) ?: return null
+        val now = System.currentTimeMillis()
+        val copy = src.copy(
+            id = UUID.randomUUID().toString(),
+            title = (src.title ?: src.name),
+            addedAt = now,
+            updatedAt = now,
+        )
+        dao.upsert(copy)
+        return copy.toRecord()
+    }
+
+    /** Persist a resume built in-app (structured content, no file). Auto-selects it. */
+    suspend fun saveBuilt(title: String, content: String): ResumeRecord {
+        val now = System.currentTimeMillis()
+        val rec = ResumeEntity(
+            id = UUID.randomUUID().toString(),
+            name = title.ifBlank { "My resume" },
+            uri = "",
+            sizeBytes = null,
+            mime = null,
+            addedAt = now,
+            updatedAt = now,
+            source = ResumeEntity.SOURCE_BUILT,
+            content = content,
+            title = title.trim().ifBlank { null },
+        )
+        dao.upsert(rec)
+        profile.setSelectedResume(rec.id)
+        return rec.toRecord()
+    }
+
+    /** Update an existing built resume's content (and title) in place. */
+    suspend fun updateBuilt(id: String, title: String, content: String) {
+        val existing = dao.get(id) ?: return
+        dao.upsert(existing.copy(
+            name = title.ifBlank { existing.name },
+            title = title.trim().ifBlank { null },
+            content = content,
+            updatedAt = System.currentTimeMillis(),
+        ))
+    }
+
+    /** Re-insert a previously-removed record (powers the delete → Undo snackbar). */
+    suspend fun restore(record: ResumeRecord) {
+        dao.upsert(
+            ResumeEntity(
+                id = record.id, name = record.name, uri = record.uri, sizeBytes = record.sizeBytes,
+                mime = record.mime, addedAt = record.addedAt, atsScore = record.atsScore,
+                optimizedForJobId = record.optimizedForJobId, title = record.title,
+                updatedAt = record.updatedAt, source = record.source, content = record.content,
+            )
+        )
+    }
+
     companion object {
         const val MAX_BYTES = 10_000_000L
         val ALLOWED_EXTENSIONS = setOf("pdf", "doc", "docx")
@@ -98,4 +169,5 @@ class ResumeRepository @Inject constructor(
 private fun ResumeEntity.toRecord() = ResumeRecord(
     id = id, name = name, uri = uri, sizeBytes = sizeBytes, mime = mime,
     addedAt = addedAt, atsScore = atsScore, optimizedForJobId = optimizedForJobId,
+    title = title, updatedAt = updatedAt, source = source, content = content,
 )

@@ -153,10 +153,13 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
                 modifier = Modifier.fillMaxWidth().navigationBarsPadding(),
             ) { Text(stringResource(R.string.onboarding_resume_skip), color = AscendColors.Muted, fontWeight = FontWeight.SemiBold) }
         } else {
+            // Location and Job Title are optional — offer a visible Skip so a user is never blocked
+            // before seeing any jobs (they can set these later from Settings / when they search).
+            val showSkip = step == STEP_LOCATION || step == STEP_JOBTITLE
             AscendPrimaryButton(
                 text = stringResource(R.string.action_continue),
                 enabled = canContinue,
-                modifier = Modifier.navigationBarsPadding(),
+                modifier = if (showSkip) Modifier else Modifier.navigationBarsPadding(),
                 onClick = {
                     when (step) {
                         STEP_LANGUAGE -> vm.logStep(app.ascend.analytics.OnboardingStep.LANGUAGE, false)
@@ -166,6 +169,19 @@ fun OnboardingScreen(onDone: () -> Unit, vm: OnboardingViewModel = hiltViewModel
                     step++
                 },
             )
+            if (showSkip) {
+                Spacer(Modifier.height(6.dp))
+                TextButton(
+                    onClick = {
+                        when (step) {
+                            STEP_LOCATION -> vm.logStep(app.ascend.analytics.OnboardingStep.LOCATION, true)
+                            STEP_JOBTITLE -> vm.logStep(app.ascend.analytics.OnboardingStep.ROLE, true)
+                        }
+                        step++
+                    },
+                    modifier = Modifier.fillMaxWidth().navigationBarsPadding(),
+                ) { Text(stringResource(R.string.action_skip), color = AscendColors.Muted, fontWeight = FontWeight.SemiBold) }
+            }
         }
     }
 }

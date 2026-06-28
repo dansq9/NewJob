@@ -183,7 +183,7 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
             Row(
                 Modifier.fillMaxWidth().clip(RoundedCornerShape(18.dp))
                     .background(Brush.linearGradient(listOf(AscendColors.Indigo, AscendColors.Violet2)))
-                    .clickable { nav.navigate(Routes.RESUME) }.padding(18.dp),
+                    .clickable { nav.navigate(Routes.RESUME_OPTIMIZE) }.padding(18.dp),
                 verticalAlignment = Alignment.CenterVertically,
             ) {
                 Box(Modifier.size(44.dp).clip(RoundedCornerShape(13.dp)).background(Color.White.copy(alpha = 0.18f)), Alignment.Center) {
@@ -212,18 +212,15 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
                 }
             }
             Spacer(Modifier.height(18.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
-                ActionTile(stringResource(R.string.jobdetail_action_resume), Icons.Outlined.AutoFixHigh, AscendColors.Green, Modifier.weight(1f)) { nav.navigate(Routes.RESUME) }
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.Top) {
+                ActionTile(stringResource(R.string.jobdetail_action_resume), Icons.Outlined.AutoFixHigh, AscendColors.Green, Modifier.weight(1f)) { nav.navigate(Routes.RESUME_OPTIMIZE) }
                 ActionTile(stringResource(R.string.jobdetail_action_copilot), Icons.Outlined.Bolt, AscendColors.Violet2, Modifier.weight(1f)) { nav.navigate(Routes.COPILOT) }
                 ActionTile(stringResource(R.string.jobdetail_action_mock), Icons.Outlined.RecordVoiceOver, AscendColors.Indigo, Modifier.weight(1f)) { nav.navigate(Routes.MOCK) }
             }
             Spacer(Modifier.height(24.dp))
             Text(stringResource(R.string.jobdetail_about), fontSize = 16.sp, fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink)
             Spacer(Modifier.height(8.dp))
-            Text(
-                j.description?.take(1200) ?: stringResource(R.string.jobdetail_no_description),
-                fontSize = 14.sp, color = AscendColors.Body, lineHeight = 22.sp,
-            )
+            JobDescription(j.description)
             Spacer(Modifier.height(20.dp))
             // ad_native_job_detail_bottom — below the description (collapses on no-fill).
             app.ascend.ui.monetization.NativeAdSlot(app.ascend.monetization.Placement.NATIVE_JOB_DETAIL_BOTTOM)
@@ -237,6 +234,32 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
         confirmButton = { TextButton(onClick = { vm.markApplied(); showApplyPrompt = false }) { Text(stringResource(R.string.jobdetail_applied_q_yes)) } },
         dismissButton = { TextButton(onClick = { showApplyPrompt = false }) { Text(stringResource(R.string.jobdetail_applied_q_no)) } },
     )
+}
+
+/**
+ * Full job description, collapsed to a few lines with Read more / Show less — no 1200-char
+ * truncation, expands in place (no new screen / refetch). Preserves the raw text (no risky parsing).
+ */
+@Composable
+private fun JobDescription(description: String?) {
+    if (description.isNullOrBlank()) {
+        Text(stringResource(R.string.jobdetail_no_description), fontSize = 14.sp, color = AscendColors.Body, lineHeight = 22.sp)
+        return
+    }
+    var expanded by remember { mutableStateOf(false) }
+    Text(
+        description, fontSize = 14.sp, color = AscendColors.Body, lineHeight = 22.sp,
+        maxLines = if (expanded) Int.MAX_VALUE else 8,
+        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis,
+    )
+    if (description.length > 320) {
+        TextButton(onClick = { expanded = !expanded }) {
+            Text(
+                stringResource(if (expanded) R.string.jobdetail_show_less else R.string.jobdetail_read_more),
+                color = AscendColors.Indigo, fontWeight = FontWeight.Bold, fontSize = 13.sp,
+            )
+        }
+    }
 }
 
 @Composable
