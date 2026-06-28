@@ -212,7 +212,7 @@ fun JobDetailScreen(nav: NavController, vm: JobDetailViewModel = hiltViewModel()
                 }
             }
             Spacer(Modifier.height(18.dp))
-            Row(horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            Row(horizontalArrangement = Arrangement.spacedBy(10.dp), verticalAlignment = Alignment.Top) {
                 ActionTile(stringResource(R.string.jobdetail_action_resume), Icons.Outlined.AutoFixHigh, AscendColors.Green, Modifier.weight(1f)) { nav.navigate(Routes.RESUME_OPTIMIZE) }
                 ActionTile(stringResource(R.string.jobdetail_action_copilot), Icons.Outlined.Bolt, AscendColors.Violet2, Modifier.weight(1f)) { nav.navigate(Routes.COPILOT) }
                 ActionTile(stringResource(R.string.jobdetail_action_mock), Icons.Outlined.RecordVoiceOver, AscendColors.Indigo, Modifier.weight(1f)) { nav.navigate(Routes.MOCK) }

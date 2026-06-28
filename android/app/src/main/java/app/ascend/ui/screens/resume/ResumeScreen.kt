@@ -304,7 +304,7 @@ private fun Results(data: OptimizeResponse, fixesApplied: Boolean, resumeName: S
                 Text("$shownScore", fontFamily = JetBrainsMono, fontWeight = FontWeight.ExtraBold, fontSize = 22.sp, color = AscendColors.Ink)
             }
             Spacer(Modifier.width(16.dp))
-            Column {
+            Column(Modifier.weight(1f)) {
                 Text(
                     if (fixesApplied) stringResource(R.string.resume_optimized_verdict) else data.verdict,
                     fontWeight = FontWeight.ExtraBold, color = AscendColors.Ink,

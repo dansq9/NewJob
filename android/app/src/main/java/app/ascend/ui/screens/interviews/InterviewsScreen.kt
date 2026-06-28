@@ -25,6 +25,8 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import app.ascend.R
 import app.ascend.ui.components.AscendEmptyState
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import app.ascend.ui.components.SectionLabel
 import app.ascend.ui.navigation.Routes
 import app.ascend.ui.theme.AscendColors
@@ -33,7 +35,8 @@ import app.ascend.ui.theme.JetBrainsMono
 @Composable
 fun InterviewsScreen(nav: NavController) {
     Column(
-        Modifier.fillMaxSize().statusBarsPadding().padding(18.dp),
+        Modifier.fillMaxSize().statusBarsPadding()
+            .verticalScroll(rememberScrollState()).padding(18.dp),
         verticalArrangement = Arrangement.spacedBy(14.dp),
     ) {
         Text(stringResource(R.string.interviews_title), style = MaterialTheme.typography.headlineMedium, color = AscendColors.Ink)

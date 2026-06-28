@@ -166,23 +166,23 @@ private fun MatchesMessage(message: String, onRetry: (() -> Unit)?, action: Stri
 
 @Composable
 private fun QuickActionCard(qa: QuickAction, modifier: Modifier, onClick: () -> Unit) {
+    // heightIn(min) so the tile grows with large system fonts instead of clipping its subtitle.
     Box(
         modifier
-            .height(120.dp)
+            .heightIn(min = 120.dp)
             .clip(RoundedCornerShape(20.dp))
             .background(qa.gradient)
             .clickable(onClick = onClick),
     ) {
-        Column(Modifier.fillMaxSize().padding(15.dp), verticalArrangement = Arrangement.SpaceBetween) {
+        Column(Modifier.fillMaxWidth().padding(15.dp)) {
             Box(
                 Modifier.size(42.dp).clip(RoundedCornerShape(13.dp)).background(Color.White.copy(alpha = 0.18f)),
                 contentAlignment = Alignment.Center,
             ) { Icon(qa.icon, null, tint = Color.White) }
-            Column {
-                Text(qa.label, fontSize = 15.5.sp, fontWeight = FontWeight.ExtraBold, color = Color.White, lineHeight = 18.sp)
-                Spacer(Modifier.height(3.dp))
-                Text(qa.sub, fontSize = 11.5.sp, color = Color.White.copy(alpha = 0.85f), lineHeight = 15.sp)
-            }
+            Spacer(Modifier.height(12.dp))
+            Text(qa.label, fontSize = 15.5.sp, fontWeight = FontWeight.ExtraBold, color = Color.White, lineHeight = 18.sp)
+            Spacer(Modifier.height(3.dp))
+            Text(qa.sub, fontSize = 11.5.sp, color = Color.White.copy(alpha = 0.85f), lineHeight = 15.sp)
         }
     }
 }

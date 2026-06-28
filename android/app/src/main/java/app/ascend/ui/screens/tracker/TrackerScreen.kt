@@ -27,6 +27,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardCapitalization
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -297,9 +298,11 @@ private fun TrackerEditSheet(
 @Composable
 private fun StatChip(stage: TrackStage, count: Int, modifier: Modifier) {
     Surface(modifier, shape = RoundedCornerShape(14.dp), color = AscendColors.Card, border = BorderStroke(1.5.dp, AscendColors.Line)) {
-        Column(Modifier.padding(vertical = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
+        Column(Modifier.padding(horizontal = 4.dp, vertical = 10.dp), horizontalAlignment = Alignment.CenterHorizontally) {
             Text("$count", fontFamily = JetBrainsMono, fontWeight = FontWeight.ExtraBold, fontSize = 20.sp, color = stage.color())
-            Text(label(stage), fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AscendColors.Muted2)
+            // One line, centered, ellipsized — keeps the 5-up chip row aligned on narrow/large-font screens.
+            Text(label(stage), fontSize = 10.sp, fontWeight = FontWeight.Bold, color = AscendColors.Muted2,
+                maxLines = 1, overflow = TextOverflow.Ellipsis, textAlign = TextAlign.Center)
         }
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -147,14 +148,20 @@ fun AscendPrimaryButton(
         gradient -> Brush.linearGradient(listOf(AscendColors.Indigo, AscendColors.Violet2))
         else -> SolidColor(AscendColors.Indigo)
     }
+    // heightIn(min) + vertical padding so a long/large-font label grows the button rather than
+    // being vertically clipped by a hard 54dp.
     Box(
-        modifier.fillMaxWidth().height(54.dp).clip(shape).background(fill)
+        modifier.fillMaxWidth().heightIn(min = 54.dp).clip(shape).background(fill)
             .clickable(enabled = enabled, onClick = onClick),
         contentAlignment = Alignment.Center,
     ) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
             if (icon != null) { Icon(icon, null, tint = Color.White); Spacer(Modifier.width(8.dp)) }
-            Text(text, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp)
+            Text(text, color = Color.White, fontWeight = FontWeight.Bold, fontSize = 16.sp,
+                textAlign = TextAlign.Center)
         }
     }
 }
@@ -199,17 +206,18 @@ fun AscendActionTile(
     modifier: Modifier = Modifier,
     onClick: () -> Unit,
 ) {
-    Box(modifier.height(120.dp).clip(RoundedCornerShape(20.dp)).background(gradient).clickable(onClick = onClick)) {
-        Column(Modifier.fillMaxSize().padding(15.dp), verticalArrangement = Arrangement.SpaceBetween) {
+    // heightIn(min) — not a fixed height — so the tile grows instead of clipping its text
+    // under large system font scales (accessibility).
+    Box(modifier.heightIn(min = 120.dp).clip(RoundedCornerShape(20.dp)).background(gradient).clickable(onClick = onClick)) {
+        Column(Modifier.fillMaxWidth().padding(15.dp)) {
             Box(
                 Modifier.size(42.dp).clip(RoundedCornerShape(13.dp)).background(Color.White.copy(alpha = 0.18f)),
                 contentAlignment = Alignment.Center,
             ) { Icon(icon, null, tint = Color.White) }
-            Column {
-                Text(label, fontSize = 15.5.sp, fontWeight = FontWeight.ExtraBold, color = Color.White, lineHeight = 18.sp)
-                Spacer(Modifier.height(3.dp))
-                Text(sub, fontSize = 11.5.sp, color = Color.White.copy(alpha = 0.85f), lineHeight = 15.sp)
-            }
+            Spacer(Modifier.height(12.dp))
+            Text(label, fontSize = 15.5.sp, fontWeight = FontWeight.ExtraBold, color = Color.White, lineHeight = 18.sp)
+            Spacer(Modifier.height(3.dp))
+            Text(sub, fontSize = 11.5.sp, color = Color.White.copy(alpha = 0.85f), lineHeight = 15.sp)
         }
     }
 }
