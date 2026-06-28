@@ -68,6 +68,17 @@ fun ResumeHubScreen(nav: NavController, vm: ResumeHubViewModel = hiltViewModel()
                 fontSize = 14.sp, color = AscendColors.Muted, lineHeight = 19.sp,
             )
 
+            // "Continue where you left off" — additive shortcut; the hub stays the default landing
+            // and we never deep-link into a single resume (per the persona panel).
+            vm.lastAction?.let { action ->
+                val (label, route) = when (action) {
+                    ResumeAction.OPTIMIZE -> stringResource(R.string.resume_continue_optimize) to Routes.RESUME_OPTIMIZE
+                    ResumeAction.BUILD -> stringResource(R.string.resume_continue_build) to Routes.RESUME_BUILD
+                    ResumeAction.EDIT -> stringResource(R.string.resume_continue_edit) to Routes.RESUME_EDIT
+                }
+                ContinueChip(label = label, onClick = { nav.navigate(route) })
+            }
+
             HubCard(
                 icon = Icons.Outlined.AutoFixHigh,
                 tint = AscendColors.Indigo,
@@ -115,6 +126,21 @@ fun ResumeHubScreen(nav: NavController, vm: ResumeHubViewModel = hiltViewModel()
                 stringResource(R.string.resume_hub_hint),
                 fontSize = 12.5.sp, color = AscendColors.Muted2, lineHeight = 17.sp,
             )
+        }
+    }
+}
+
+@Composable
+private fun ContinueChip(label: String, onClick: () -> Unit) {
+    AscendCard(onClick = onClick) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            AscendIconBadge(Icons.AutoMirrored.Outlined.ArrowForward, tint = AscendColors.Indigo)
+            Spacer(Modifier.width(13.dp))
+            Column(Modifier.weight(1f)) {
+                Text(stringResource(R.string.resume_continue_label), fontSize = 11.5.sp,
+                    color = AscendColors.Muted2, fontWeight = FontWeight.Bold)
+                Text(label, fontSize = 14.sp, fontWeight = FontWeight.Bold, color = AscendColors.Indigo)
+            }
         }
     }
 }

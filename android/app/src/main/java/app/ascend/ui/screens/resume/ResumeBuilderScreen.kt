@@ -88,14 +88,30 @@ fun ResumeBuilderScreen(nav: NavController, resumeId: String? = null, vm: Resume
                     is BuilderUi.Error -> ApiError(stringResource(s.messageRes), onRetry = vm::generate, onDismiss = vm::backToEditing)
                     BuilderUi.Editing -> {
                         StepProgress(stepIndex, steps.size, vm.strength)
-                        Spacer(Modifier.height(16.dp))
+                        // Fast path: jump to the live preview without walking every step.
+                        if (current != BuildStep.REVIEW) {
+                            Spacer(Modifier.height(6.dp))
+                            TextButton(onClick = { vm.goToStep(steps.lastIndex) }, contentPadding = PaddingValues(0.dp)) {
+                                Text(stringResource(R.string.resume_skip_to_preview), color = AscendColors.Indigo,
+                                    fontSize = 13.sp, fontWeight = FontWeight.Bold)
+                            }
+                        }
+                        Spacer(Modifier.height(10.dp))
                         when (current) {
                             BuildStep.CONTACT -> ContactStep(form, vm)
                             BuildStep.SUMMARY -> SummaryStep(form, vm, aiBusy)
                             BuildStep.EXPERIENCE -> ExperienceStep(form, vm)
-                            BuildStep.EDUCATION -> EducationStep(form, vm)
-                            BuildStep.SKILLS -> SkillsStep(form, vm)
+                            BuildStep.BACKGROUND -> {
+                                EducationStep(form, vm)
+                                Spacer(Modifier.height(18.dp))
+                                SkillsStep(form, vm)
+                            }
                             BuildStep.REVIEW -> ReviewStep(form)
+                        }
+                        if (current == BuildStep.REVIEW && !vm.canGenerate) {
+                            Spacer(Modifier.height(10.dp))
+                            Text(stringResource(R.string.resume_review_need_name), fontSize = 12.5.sp,
+                                color = AscendColors.Amber, lineHeight = 16.sp)
                         }
                         Spacer(Modifier.height(20.dp))
                     }

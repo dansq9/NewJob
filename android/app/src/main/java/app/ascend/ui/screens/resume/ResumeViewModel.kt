@@ -63,9 +63,13 @@ class ResumeViewModel @Inject constructor(
     private val selectedJob: SelectedJobStore,
     private val resumes: ResumeRepository,
     tracker: TrackerRepository,
+    private val lastActions: ResumeLastActionStore,
     private val monetization: app.ascend.monetization.MonetizationManager,
     private val analytics: AnalyticsTracker,
 ) : ViewModel() {
+
+    /** Record which resume action the user entered (for the hub's continue chip). */
+    fun markEntered(action: ResumeAction) = lastActions.mark(action)
 
     // Seed the target from the job the user opened (if any), so the Job-Detail hot path pre-targets.
     private val _target = MutableStateFlow(

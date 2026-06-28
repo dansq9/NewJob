@@ -448,4 +448,14 @@
     <string name="resume_exp_add">Add another role</string>
     <string name="resume_review_title">Preview</string>
     <string name="resume_review_sub">Here is your resume. Create it when it looks right.</string>
+    <!-- Resume builder fast-path + hub continue chip -->
+    <string name="resume_skip_to_preview">Skip to preview</string>
+    <string name="resume_review_need_name">Add your name in the Contact step to create your resume.</string>
+    <string name="resume_continue_optimize">Continue — check a resume for a job</string>
+    <string name="resume_continue_build">Continue building your resume</string>
+    <string name="resume_continue_edit">Continue — your saved resumes</string>
+    <string name="resume_continue_label">Pick up where you left off</string>
+    <!-- Job detail expandable description -->
+    <string name="jobdetail_read_more">Read more</string>
+    <string name="jobdetail_show_less">Show less</string>
 </resources>

@@ -20,12 +20,16 @@ import javax.inject.Inject
 @HiltViewModel
 class ResumeHubViewModel @Inject constructor(
     private val resumes: ResumeRepository,
+    private val lastActions: ResumeLastActionStore,
     private val analytics: AnalyticsTracker,
 ) : ViewModel() {
 
     /** Number of saved resumes — drives whether "Edit" is a live path or routes to Build. */
     val savedCount: StateFlow<Int> =
         resumes.library.map { it.size }.stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), 0)
+
+    /** The action the user last entered this session, or null — powers the "Continue" chip. */
+    val lastAction: ResumeAction? get() = lastActions.last
 
     private val _snackbar = MutableStateFlow<String?>(null)
     val snackbar: StateFlow<String?> = _snackbar.asStateFlow()

@@ -57,6 +57,7 @@ fun ResumeScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) {
     val snackbarHost = remember { SnackbarHostState() }
     val pickResume = rememberResumePicker { vm.addResume(it) }
     var showTargetSheet by androidx.compose.runtime.remember { androidx.compose.runtime.mutableStateOf(false) }
+    LaunchedEffect(Unit) { vm.markEntered(ResumeAction.OPTIMIZE) }
     // Suppress the app-open ad while the user is in the resume flow (spec suppress_during_resume_flow).
     app.ascend.ui.monetization.SuppressAppOpenWhileActive(app.ascend.monetization.AdFlow.RESUME)
 

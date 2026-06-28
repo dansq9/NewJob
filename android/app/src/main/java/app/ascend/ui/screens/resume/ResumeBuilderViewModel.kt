@@ -45,8 +45,8 @@ data class BuilderForm(
     val noExperienceYet: Boolean = false,
 )
 
-/** The wizard steps, in order. REVIEW is the live-preview + generate step. */
-enum class BuildStep { CONTACT, SUMMARY, EXPERIENCE, EDUCATION, SKILLS, REVIEW }
+/** The wizard steps, in order. BACKGROUND merges Education+Skills; REVIEW is preview + generate. */
+enum class BuildStep { CONTACT, SUMMARY, EXPERIENCE, BACKGROUND, REVIEW }
 
 sealed interface BuilderUi {
     data object Editing : BuilderUi
@@ -60,6 +60,7 @@ class ResumeBuilderViewModel @Inject constructor(
     private val api: AscendApi,
     private val resumes: ResumeRepository,
     private val draftStore: ResumeDraftStore,
+    private val lastActions: ResumeLastActionStore,
     private val analytics: AnalyticsTracker,
 ) : ViewModel() {
 
@@ -85,6 +86,7 @@ class ResumeBuilderViewModel @Inject constructor(
     fun start(resumeId: String?) {
         if (loaded) return
         loaded = true
+        lastActions.mark(ResumeAction.BUILD)
         if (resumeId != null) {
             editingId = resumeId
             viewModelScope.launch {
@@ -93,8 +95,11 @@ class ResumeBuilderViewModel @Inject constructor(
                     .getOrNull()?.let { _form.value = it }
             }
         } else {
+            // Voice path: seed the spoken words as a starting Summary (not a phantom job entry,
+            // which strands no-experience users), and land on Review so the draft is visible at once.
             draftStore.consumeTranscript()?.takeIf { it.isNotBlank() }?.let { t ->
-                _form.value = _form.value.copy(experiences = listOf(ExperienceEntry(detail = t)))
+                _form.value = _form.value.copy(summary = t)
+                _step.value = steps.lastIndex
             }
         }
     }

@@ -52,6 +52,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun ResumeEditScreen(nav: NavController, vm: ResumeViewModel = hiltViewModel()) {
     val lib by vm.library.collectAsStateWithLifecycle()
+    androidx.compose.runtime.LaunchedEffect(Unit) { vm.markEntered(ResumeAction.EDIT) }
     var renameTarget by remember { mutableStateOf<ResumeRecord?>(null) }
     val snackbarHost = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
