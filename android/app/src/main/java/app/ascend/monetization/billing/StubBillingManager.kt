@@ -24,11 +24,11 @@ class StubBillingManager @Inject constructor(
     private val analytics: AnalyticsTracker,
 ) : BillingManager {
 
+    // Single weekly subscription. Product id + price are PLACEHOLDERS (Play Console TBD) — the
+    // real PlayBillingManager reads the localized price/currency from ProductDetails at runtime.
     override suspend fun plans(): List<SubPlan> = listOf(
         SubPlan("ascend_pro_weekly", "Ascend Pro", "$4.99", "week", "Free 3-day trial",
             priceMicros = 4_990_000L, currencyCode = "USD", productType = "weekly"),
-        SubPlan("ascend_pro_yearly", "Ascend Pro", "$59.99", "year", "Best value",
-            priceMicros = 59_990_000L, currencyCode = "USD", productType = "yearly"),
     )
 
     override suspend fun subscribe(productId: String): Boolean {
